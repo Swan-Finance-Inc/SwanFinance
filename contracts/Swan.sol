@@ -436,11 +436,19 @@ contract Swan is ERC20 {
     string  public  name;
     string  public  symbol;
     uint8   public constant decimals = 18;
+    
+    
+    uint256 public reserveWalletTokens = 20000000000 ether;
+    uint256 public interestPayoutWallet = 10000000000 ether;
+    uint256 public teamMemberHrWallet = 5000000000 ether;
+    uint256 public generalFundWallet = 1000000000 ether;
+    uint256 public tokenSaleWallet = 140000000000 ether;
 
     constructor(address _owner) public Owned(_owner) {
 
                name = "Swan Finance";
                symbol = "Swan";
+               _mint(address(this),50000000000 ether);
 
     }
 
@@ -478,6 +486,49 @@ contract Swan is ERC20 {
 
         return true;
     }
+
+   function sendTokenSaleWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
+       
+       require(tokenSaleWallet >= value);
+       tokenSaleWallet = tokenSaleWallet.sub(value);
+       transfer(userAddress, value);
+       
+   } 
+
+
+   function sendGeneralFundWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
+       
+       require(generalFundWallet >= value);
+       generalFundWallet = generalFundWallet.sub(value);
+       transfer(userAddress, value);
+       
+   } 
+
+
+   function sendReserveWalletTokens(address userAddress, uint256 value) public onlyOwner returns (bool) {
+       
+       require(reserveWalletTokens >= value);
+       reserveWalletTokens = reserveWalletTokens.sub(value);
+       transfer(userAddress, value);
+       
+   } 
+
+   function sendTeamMemberHrWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
+       
+       require(teamMemberHrWallet >= value);
+       teamMemberHrWallet = teamMemberHrWallet.sub(value);
+       transfer(userAddress, value);
+       
+   } 
+
+
+   function sendInterestPayoutWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
+       
+       require(interestPayoutWallet >= value);
+       interestPayoutWallet = interestPayoutWallet.sub(value);
+       transfer(userAddress, value);
+       
+   } 
 
 
    function burn (uint256 amount) external returns (bool) {

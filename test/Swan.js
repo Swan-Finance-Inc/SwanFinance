@@ -1,4 +1,4 @@
-const UpSwing = artifacts.require('UpSwing.sol');
+const Swan = artifacts.require('Swan.sol');
 
 const { increaseTimeTo, duration } = require('openzeppelin-solidity/test/helpers/increaseTime');
 const { latestTime } = require('openzeppelin-solidity/test/helpers/latestTime');
@@ -8,26 +8,26 @@ var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 var Web3Utils = require('web3-utils');
 
-contract('CXN Contract', async (accounts) => {
+contract('CXSwanN Contract', async (accounts) => {
 
 
-    it('Should correctly initialize constructor of UpSwing token Contract', async () => {
+    it('Should correctly initialize constructor of Swan token Contract', async () => {
 
-        this.tokenhold = await UpSwing.new(1000000,{ gas: 600000000 });
+        this.tokenhold = await Swan.new(accounts[0],{ gas: 600000000 });
 
     });
 
     it('Should check a name of a token', async () => {
 
         let name = await this.tokenhold.name.call();
-        assert.equal(name, "UpSwing");
+        assert.equal(name, "Swan Finance");
 
     });
 
     it('Should check a symbol of a token', async () => {
 
         let symbol = await this.tokenhold.symbol.call();
-        assert.equal(symbol, "UPS");
+        assert.equal(symbol, "SWAN");
 
     });
 
