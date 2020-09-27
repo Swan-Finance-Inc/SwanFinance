@@ -1,0 +1,40 @@
+{
+  "name": "CXN",
+  "version": "1.0.0",
+  "description": "CXN smart contracts for",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/abhi_21094/CXN.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/abhi_21094/CXN/issues"
+  },
+  "homepage": "https://gitlab.com/abhi_21094/CXN#README",
+  "devDependencies": {
+    "@openzeppelin/test-environment": "^0.1.4",
+    "@openzeppelin/test-helpers": "^0.5.5",
+    "eslint": "^7.0.0",
+    "eslint-plugin-mocha": "^6.3.0",
+    "husky": "^4.2.5",
+    "mocha": "^7.1.2",
+    "process-argv": "^1.0.0",
+    "solidity-coverage": "^0.7.9"
+  },
+  "dependencies": {
+    "@openzeppelin/cli": "^2.8.2",
+    "@openzeppelin/contracts-ethereum-package": "^2.5.0",
+    "bn.js": "^5.1.1",
+    "openzeppelin-solidity": "1.12.0",
+    "truffle": "^5.1.42",
+    "web3-utils": "^1.2.4"
+  }
+}

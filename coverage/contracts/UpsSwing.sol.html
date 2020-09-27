@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/UpsSwing.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> UpsSwing.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">66.1% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>39/59</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">40% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>8/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">81.82% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>18/22</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">67.8% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>40/59</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">//SPDX-Licence-Identifier: 2guys
+&nbsp;
+//======================================================================================================
+&nbsp;
+&nbsp;
+pragma solidity ^0.5.16;
+&nbsp;
+import "./Steam.sol";
+import "./ERC20.sol";
+&nbsp;
+interface IUNIv2 {
+    function sync() external;
+}
+&nbsp;
+contract UpSwing is ERC20 {
+&nbsp;
+    using SafeMath for uint256;
+&nbsp;
+    //external variables
+    address private UNIv2;
+    address private Treasury;
+&nbsp;
+    //whitelist
+    mapping(address =&gt; bool) public allowed;
+    modifier onlyAllowed() {
+        require(allowed[_msgSender()] == true, "onlyAllowed");
+        _;
+    }
+&nbsp;
+&nbsp;
+    //internal variables
+    string private _name;
+    string private _symbol;
+    uint8 private _decimals;
+&nbsp;
+    uint256 private _UPSBurned = 0;
+    
+    uint8 public leverage;
+    mapping(address =&gt; uint256) sellPressure; //sells on UNI
+    mapping(address =&gt; uint256) steamToGenerate; //sells on UNI
+    mapping(address =&gt; uint256) txCount;
+    
+    address _STEAM; //steam contract address
+    Steam public steamCont;
+&nbsp;
+    event BurnedFromLiquidityPool(address burnerAddress, uint amount);
+    event SteamGenerated(address steamRecipientddress, uint amount);
+&nbsp;
+//--------------------------------------------------------------------------------------------
+&nbsp;
+    constructor(uint256 UPS_totalSupply) public {
+        _name = "UpSwing"; 
+        _symbol = "UPS";
+        _decimals = 18;
+        ERC20._mint(_msgSender(), UPS_totalSupply.mul(1e18)); //uses "normal" numbers
+&nbsp;
+        leverage = 90;
+        Treasury = msg.sender;
+        
+        _STEAM = address(new Steam(UPS_totalSupply)); //creates steam token
+        allowed[_msgSender()] = true;
+    }
+    
+    
+<span class="fstat-no" title="function not covered" >    modifier canSteam(address _address){</span>
+<span class="cstat-no" title="statement not covered" >        require(steamToGenerate[_address] &gt; 0, "no Steam to generate")</span>;
+        _;
+    }
+    
+    /*  //STEAM function called below:
+    
+        function generateSteam(address account, uint256 amount) external onlyAllowed {
+        require((_totalSupply + amount) &lt; _maxSupply, "STEAM token: cannot generate more steam than the max supply");
+        ERC20._mint(account, amount);
+        _steamMinted = _steamMinted.add(amount);
+    }
+    */
+    
+<span class="fstat-no" title="function not covered" >    function _generateSteamFromUPSBurn(address _address) internal canSteam(_address){</span>
+<span class="cstat-no" title="statement not covered" >        uint256 _steam = steamToGenerate[_address];</span>     // store state 
+<span class="cstat-no" title="statement not covered" >        steamToGenerate[_address] = 0</span>;
+<span class="cstat-no" title="statement not covered" >        Steam(_STEAM).generateSteam(_address, _steam)</span>;  // call state after to avoid reentrancy
+    }   
+    
+<span class="fstat-no" title="function not covered" >    function addToSteam(address _address, uint256 _amount) internal {</span>
+<span class="cstat-no" title="statement not covered" >        steamToGenerate[_address] = steamToGenerate[_address].add(_amount)</span>;
+    }  
+    
+    function amountPressure(uint256 amount) internal view returns(uint256){ 
+        uint256 UNI_SupplyRatio = (getUNIV2Liq().mul(1e18)).div(totalSupply());
+        UNI_SupplyRatio = UNI_SupplyRatio.mul(leverage).div(100);
+&nbsp;
+        return amount.mul(UNI_SupplyRatio).div(1e18);
+        //amount is 1e18 base
+        //UNI_SupplyRatio is 1e18 base
+    }
+&nbsp;
+&nbsp;
+&nbsp;
+    function setUNIv2(address _address) public onlyAllowed {
+        UNIv2 = _address;
+    }
+    
+    function setTreasury(address _address) public onlyAllowed {
+        Treasury = _address;
+    }
+&nbsp;
+    function setLeverage(uint8 _leverage) public onlyAllowed {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(_leverage &lt;= 100 &amp;&amp; _leverage &gt;= 0);
+        leverage = _leverage;
+    }
+&nbsp;
+    function myPressure(address _address) public view returns(uint256){
+        return amountPressure(sellPressure[_address]);
+    }
+    
+<span class="fstat-no" title="function not covered" >    function releasePressure(address _address) internal {</span>
+<span class="cstat-no" title="statement not covered" >        uint256 amount = myPressure(_address);</span> //1e18 base
+        
+<span class="cstat-no" title="statement not covered" >        if(amount &lt; balanceOf(UNIv2)) {</span>
+<span class="cstat-no" title="statement not covered" >            require(_totalSupply.sub(amount) &gt;= _totalSupply.div(1000), "There is less than 0.1% of the Total Supply remaining, unfortunately, kabooming is over")</span>;
+            //@stupid -&gt; added a = in &gt;=
+            
+<span class="cstat-no" title="statement not covered" >            sellPressure[_address] = 0</span>;
+<span class="cstat-no" title="statement not covered" >            addToSteam(_address, amount)</span>;
+            
+<span class="cstat-no" title="statement not covered" >            ERC20._burn(UNIv2, amount)</span>;             //updates totalSupply (see ERC20 _burn function)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >            _UPSBurned = _UPSBurned.add(amount)</span>;    //burns from UNISWAP liquidity pool (= price increase)
+<span class="cstat-no" title="statement not covered" >            emit BurnedFromLiquidityPool(_address, amount);</span>
+            
+<span class="cstat-no" title="statement not covered" >            _generateSteamFromUPSBurn(_address)</span>;    //mints STEAM tokens to the kaboomer
+<span class="cstat-no" title="statement not covered" >            emit SteamGenerated(_address, amount);</span>
+            
+<span class="cstat-no" title="statement not covered" >            txCount[_address] = 0</span>;//resets txCounter (at the end to avoid reentrancy)
+        } else <span class="cstat-no" title="statement not covered" >if (amount &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >            sellPressure[_address] = sellPressure[_address].div(2)</span>;
+        }
+        
+        
+<span class="cstat-no" title="statement not covered" >       IUNIv2(UNIv2).sync()</span>;
+    }
+    
+//convergent function
+    function UPSMath(uint256 n) internal pure returns(uint256){
+        uint _t = n*n + 1;
+        _t =  1e10/(_t);
+        return (92*_t)/100; //sum of _t converges under 1e10 when n 1-&gt;infinity
+        
+        //MATH
+            //https://socratic.org/questions/does-a-n-1-n-2-1-converge
+            //https://www.wolframalpha.com/input/?i=0.92*%28%CF%80*coth+%28%CF%80%29-1%29%2F2
+    }
+    
+//overriden _transfer function
+    function _transfer(address sender, address recipient, uint256 amount) internal {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(sender != address(0), "ERC20: transfer from the zero address");
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(recipient != address(0), "ERC20: transfer to the zero address");
+    
+        ERC20._balances[sender] = ERC20._balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
+        ERC20._balances[recipient] = ERC20._balances[recipient].add(amount);
+    
+    
+        //Each sell accrues txCount for user and sum of all sells converges asymptotically until the user resleases pressure
+            if(recipient == UNIv2){ 
+                txCount[sender] = txCount[sender]+1;
+                amount = amount.mul(UPSMath(txCount[sender])).div(1e10); //do the math, starting at txCount = 1
+                sellPressure[sender] = sellPressure[sender].add(amount);
+            }
+    
+        //RELEASE pressure: send 0 to self
+            <span class="missing-if-branch" title="if path not taken" >I</span>if(sender == recipient &amp;&amp; amount == 0){<span class="cstat-no" title="statement not covered" >releasePressure(sender)</span>;}
+    
+        emit Transfer(sender, recipient, amount);
+    }
+    
+//view getters
+    function mySteam(address _address) public view returns(uint256){
+        return steamToGenerate[_address];
+    }
+    
+    function getUNIV2Address() public view returns (address) {
+        return UNIv2;
+    }
+    
+    function getUNIV2Liq() public view returns (uint256) {
+        return uint256(balanceOf(UNIv2));
+    }
+    
+    function getUPSTotalSupply() public view returns(uint256){
+        return _totalSupply;
+    }
+    
+    function getUPSBurned() public view returns(uint256){
+        return _UPSBurned;
+    }
+    
+    function name() public view returns (string memory) {
+        return _name;
+    }
+&nbsp;
+    function symbol() public view returns (string memory) {
+        return _symbol;
+    }
+&nbsp;
+    function decimals() public view returns (uint8) {
+        return _decimals;
+    }
+&nbsp;
+    function totalSupply() public view returns (uint256) {
+        return ERC20._totalSupply;
+    }
+&nbsp;
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Sep 20 2020 15:45:45 GMT+0530 (India Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
