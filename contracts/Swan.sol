@@ -444,6 +444,12 @@ contract Swan is ERC20 {
     uint256 public generalFundWallet = 1000000000 ether;
     uint256 public tokenSaleWallet = 140000000000 ether;
 
+    mapping (address => uint256) public teamTokensLeft;
+    
+    address public contractAddress;
+    bool public contractSaleOver;
+    uint256 public contractSaleOverTime;
+
     constructor(address _owner) public Owned(_owner) {
 
                name = "Swan Finance";
@@ -489,7 +495,7 @@ contract Swan is ERC20 {
 
    function sendTokenSaleWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
        
-       require(tokenSaleWallet >= value);
+       require(tokenSaleWallet >= value, "token sale wallet has less tokens then value");
        tokenSaleWallet = tokenSaleWallet.sub(value);
        transfer(userAddress, value);
        
@@ -498,7 +504,7 @@ contract Swan is ERC20 {
 
    function sendGeneralFundWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
        
-       require(generalFundWallet >= value);
+       require(generalFundWallet >= value , "General wallet has less tokens then value");
        generalFundWallet = generalFundWallet.sub(value);
        transfer(userAddress, value);
        
@@ -507,7 +513,7 @@ contract Swan is ERC20 {
 
    function sendReserveWalletTokens(address userAddress, uint256 value) public onlyOwner returns (bool) {
        
-       require(reserveWalletTokens >= value);
+       require(reserveWalletTokens >= value , "Reserve wallet has less tokens then value");
        reserveWalletTokens = reserveWalletTokens.sub(value);
        transfer(userAddress, value);
        
@@ -515,18 +521,30 @@ contract Swan is ERC20 {
 
    function sendTeamMemberHrWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
        
-       require(teamMemberHrWallet >= value);
+       require(teamMemberHrWallet >= value , "Team and HR wallet has less tokens then value");
        teamMemberHrWallet = teamMemberHrWallet.sub(value);
-       transfer(userAddress, value);
+       uint256 halfTokens = value.div(2);
+       teamTokensLeft[msg.sender] = halfTokens.add(teamTokensLeft[msg.sender]);
+       transfer(userAddress, halfTokens);
        
    } 
 
 
    function sendInterestPayoutWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
        
-       require(interestPayoutWallet >= value);
+       require(interestPayoutWallet >= value, "InterestPayout wallet has less tokens then value");
        interestPayoutWallet = interestPayoutWallet.sub(value);
        transfer(userAddress, value);
+       
+   } 
+
+
+   function redeemTeamTokensLeft () public returns (bool) {
+       
+       require(teamTokensLeft[msg.sender] > 0 , "Zero team tokens left");
+       require(contractSaleOver && now > contractSaleOverTime.add(15552000), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
+       transfer(msg.sender, teamTokensLeft[msg.sender]);
+       teamTokensLeft[msg.sender] = 0;
        
    } 
 
