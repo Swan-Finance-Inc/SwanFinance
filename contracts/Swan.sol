@@ -442,7 +442,7 @@ contract Swan is ERC20 {
     uint256 public interestPayoutWallet = 10000000000 ether;
     uint256 public teamMemberHrWallet = 5000000000 ether;
     uint256 public generalFundWallet = 1000000000 ether;
-    uint256 public tokenSaleWallet = 140000000000 ether;
+    uint256 public tokenSaleWallet = 14000000000 ether;
 
     mapping (address => uint256) public teamTokensLeft;
     
