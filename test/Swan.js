@@ -279,6 +279,79 @@ contract('CXSwanN Contract', async (accounts) => {
         });
     });
 
+
+    it("should check approval by accounts 0 to SWAN to spend tokens on the behalf of accounts 0", async () => {
+
+        let allowance = await this.tokenhold.allowance.call(accounts[0], this.SWAN.address);
+        assert.equal(allowance/10**18, 100, "allowance is wrong when approve");
+
+    });
+
+    it("should be able to stake tokens for 3 months", async () => {
+
+        this.SWAN.staking(web3.utils.toHex(10 * 10 ** 18),3, { from: accounts[0]});
+
+    });
+
+    it('Should check a balance of a SWAN address by token holder after swaping', async () => {
+
+        let balanceOf = await this.tokenhold.balanceOf.call(this.SWAN.address);
+        assert.equal(balanceOf/10**18,110);
+
+    });
+
+    it('Should check a balance of a SWAN by token holder', async () => {
+
+        let balanceOf = await this.tokenhold.balanceOf.call(accounts[0]);
+        assert.equal(balanceOf/10**18,9999999890);
+
+    });    
+
+    it('Should check a staking Active or not', async () => {
+
+        let stakingActive = await this.SWAN.stakingActive.call(accounts[0]);
+        assert.equal(stakingActive, true);
+
+    });
+
+    it('Should check a staking parameters', async () => {
+
+        let stakingEvent = await this.SWAN.stakingEvent.call(accounts[0]);
+         console.log(stakingEvent[0].toString());
+         console.log(stakingEvent[1].toString());
+         console.log(stakingEvent[2].toString());
+    });
+
+
+    it('Should be able to increase time to get first cycle', async () => {
+
+        this.openingTime = (await latestTime());
+        await increaseTimeTo(this.openingTime + duration.seconds(7776000));
+
+    });
+
+    it("should be able to withdraw after 3 months", async () => {
+
+        this.SWAN.withdrawStaking({ from: accounts[0]});
+
+    });
+
+
+    it('Should check a staking Active or not after staking done onces', async () => {
+
+        let stakingActive = await this.SWAN.stakingActive.call(accounts[0]);
+        assert.equal(stakingActive, false);
+
+    });
+
+    it('Should check a staking parameters', async () => {
+
+        let stakingEvent = await this.SWAN.stakingEvent.call(accounts[0]);
+         console.log(stakingEvent[0].toString());
+         console.log(stakingEvent[1].toString());
+         console.log(stakingEvent[2].toString());
+    });
+
 })
 
 
