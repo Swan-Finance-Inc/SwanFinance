@@ -167,10 +167,12 @@ contract SwanStaking is Pausable{
 
     address public swanTokenAddress;
     
-
+    /**
+     * @dev address of a token contrac swan 
+     */
     constructor(address swanToken) public Owned(msg.sender) {
 
-    swanTokenAddress = swanToken;
+    swanTokenAddress = swanToken
 }
     struct oneMonth 
     {
@@ -191,6 +193,12 @@ contract SwanStaking is Pausable{
   mapping (address => uint256) public oneMonthNumber;
   mapping (address => uint256) public threeMonthNumber;
   mapping (address => bool) public staker;
+
+
+    /**
+     * @dev  stake for one month only
+
+     */
 
   function stakeTokensOneMonth (uint256 amount)  external returns (bool) {
       
@@ -240,7 +248,10 @@ contract SwanStaking is Pausable{
       
   }  
 
+    /**
+     * @dev  stake for three month only
 
+     */
   function stakeTokensThreeMonth (uint256 amount)  external returns (bool) {
       
       if (amount >= 2000 ether) {
@@ -289,7 +300,11 @@ contract SwanStaking is Pausable{
 
     }
 
-    function claimOneMonthTokens(uint256 id) public returns (bool) {
+    /**
+     * @dev  claim tokens for 1 or 3 months from same function
+
+     */
+    function claimTokens(uint256 id) public returns (bool) {
        
         oneMonth memory OneMonth =  oneMonthDetails[msg.sender][id];
         require (OneMonth.amount >= 0 );
@@ -298,6 +313,11 @@ contract SwanStaking is Pausable{
         OneMonth.amount = 0;
         
     } 
+
+    /**
+     * @dev  user can claim payouts in everyt seven days 
+
+     */
 
     function payOuts (uint256 id) public returns (bool) {
         
@@ -321,8 +341,11 @@ contract SwanStaking is Pausable{
         
     }
 
-    
-    function getCycle(address userAddress, uint256 id) public view returns (uint256){
+        /**
+     * @dev  get cycle for payout 
+
+     */
+    function getCycle(address userAddress, uint256 id) internal view returns (uint256){
      
         oneMonth memory OneMonth =  oneMonthDetails[userAddress][id];
         require (OneMonth.amount >= 0 );
