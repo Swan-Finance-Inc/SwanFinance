@@ -213,7 +213,7 @@ contract SwanStaking is Pausable{
 
             amount: amount,
             time: now,
-            interestRate : 20,
+            interestRate : 16,
             interestPayouts : 0,
             timeperiod : 1
 
@@ -234,7 +234,7 @@ contract SwanStaking is Pausable{
 
             amount: amount,
             time: now,
-            interestRate : 16,
+            interestRate : 12,
             interestPayouts : 0,
             timeperiod : 1
 
@@ -264,7 +264,7 @@ contract SwanStaking is Pausable{
 
             amount: amount,
             time: now,
-            interestRate : 12,
+            interestRate : 20,
             interestPayouts : 0,
             timeperiod : 3
 
