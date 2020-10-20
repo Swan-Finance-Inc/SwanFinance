@@ -330,7 +330,7 @@ contract SwanStaking is Pausable{
             
         uint256 tokenToSend = onePercentOfInitialFund.mul(preSaleCycle).sub(OneMonth.interestPayouts);
         OneMonth.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);
-        require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
+        require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend));
 
         }
         
