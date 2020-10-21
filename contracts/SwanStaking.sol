@@ -188,6 +188,7 @@ contract SwanStaking is Pausable{
 
 
   mapping(address => uint256) public userTotalStakes;
+  mapping (address => uint256) public userTotalStakes;
   mapping(address => mapping (uint256 => staking)) public stakingDetails;
 
 
@@ -229,6 +230,7 @@ contract SwanStaking is Pausable{
 
        });       
 
+        userTotalStakes[msg.sender] += amount;
         oneMonthNumber[msg.sender]++;
       } else {
           
@@ -249,7 +251,7 @@ contract SwanStaking is Pausable{
             timeperiod : 1
 
        });       
-          
+          userTotalStakes[msg.sender] += amount;
           oneMonthNumber[msg.sender]++;
       }
   }  
@@ -278,7 +280,7 @@ contract SwanStaking is Pausable{
             timeperiod : 3
 
        });       
-
+        userTotalStakes[msg.sender] += amount;
         oneMonthNumber[msg.sender]++;
           
       } else {
@@ -300,7 +302,7 @@ contract SwanStaking is Pausable{
             timeperiod : 3
 
        });       
-
+          userTotalStakes[msg.sender] += amount;
           oneMonthNumber[msg.sender]++;
       }
 
