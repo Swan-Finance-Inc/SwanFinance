@@ -319,6 +319,7 @@ contract SwanStaking is Pausable{
         require (OneMonth.amount >= 0 );
         require (OneMonth.time >= now.add(86400));//change it to one month for production use 
         require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
+        userTotalStakes[msg.sender] -= OneMonth.amount;
         OneMonth.amount = 0;
         
     } 
