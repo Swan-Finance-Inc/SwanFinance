@@ -192,6 +192,14 @@ contract SwanStaking is Pausable{
 
   mapping (address => uint256) public oneMonthNumber;
 
+  /**
+      * @dev returns the total amount of SWAN tokens staked in this contract
+  **/
+
+  function totalStakedTokens() public view returns(uint256){
+      return ERC20(swanTokenAddress).balanceOf(address(this));
+  }
+
     /**
      * @dev  stake for one month only
 
