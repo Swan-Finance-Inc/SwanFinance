@@ -188,7 +188,7 @@ contract SwanStaking is Pausable{
 
 
   mapping(address => uint256) public userTotalStakes;
-    
+  mapping(address => uint256) public totalPoolRewards;
   mapping (address => uint256) public oneMonthNumber;
   mapping(address => mapping (uint256 => staking)) public stakingDetails;
 
@@ -344,6 +344,7 @@ contract SwanStaking is Pausable{
         uint256 tokenToSend = onePercentOfInitialFund.mul(preSaleCycle).sub(OneMonth.interestPayouts);
         OneMonth.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);
         require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend));
+        totalPoolRewards[msg.sender] += tokenToSend;
 
         }
         
