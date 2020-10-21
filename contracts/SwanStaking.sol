@@ -166,7 +166,7 @@ contract SwanStaking is Pausable{
 
 
     address public swanTokenAddress;
-    uint256 public totalPool
+    uint256 public totalPool;
     /**
      * @dev address of a token contrac swan 
      */
@@ -188,7 +188,8 @@ contract SwanStaking is Pausable{
 
 
   mapping(address => uint256) public userTotalStakes;
-  mapping (address => uint256) public userTotalStakes;
+    
+  mapping (address => uint256) public oneMonthNumber;
   mapping(address => mapping (uint256 => staking)) public stakingDetails;
 
 
