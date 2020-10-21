@@ -166,7 +166,6 @@ contract SwanStaking is Pausable{
 
 
     address public swanTokenAddress;
-    uint256 public totalPool;
     /**
      * @dev address of a token contrac swan 
      */
