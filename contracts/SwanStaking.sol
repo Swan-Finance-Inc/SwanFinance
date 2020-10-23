@@ -192,6 +192,25 @@ contract SwanStaking is Pausable{
   mapping(address => mapping (uint256 => staking)) public stakingDetails;
 
 
+    /**
+     * @dev emitted whenever user stakes tokens for One month LockUp period
+     */
+  event oneMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);
+   /**
+     * @dev emitted whenever user stakes tokens for Three month LockUp period
+    */
+  event threeMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);
+   /**
+     * @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user
+    */
+  event claimedTokensTransferred(address indexed _user,uint256 _amount);
+   /**
+     * @dev emitted whenever weekly token rewards are transferred to the user.
+    */
+  event tokenRewardTransferred(address indexed _user,uint256 _amount);
+
+
+
 
   
 
@@ -232,6 +251,7 @@ contract SwanStaking is Pausable{
 
         userTotalStakes[msg.sender] += amount;
         oneMonthNumber[msg.sender]++;
+        emit oneMonthStaked(msg.sender,amount,1,16);
       } else {
           
        require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
@@ -253,6 +273,8 @@ contract SwanStaking is Pausable{
        });       
           userTotalStakes[msg.sender] += amount;
           oneMonthNumber[msg.sender]++;
+          emit oneMonthStaked(msg.sender,amount,1,12);
+
       }
   }  
 
@@ -282,6 +304,7 @@ contract SwanStaking is Pausable{
        });       
         userTotalStakes[msg.sender] += amount;
         oneMonthNumber[msg.sender]++;
+        emit threeMonthStaked(msg.sender,amount,3,20);
           
       } else {
           
@@ -304,9 +327,8 @@ contract SwanStaking is Pausable{
        });       
           userTotalStakes[msg.sender] += amount;
           oneMonthNumber[msg.sender]++;
+          emit threeMonthStaked(msg.sender,amount,3,16);
       }
-
-
     }
 
     /**
@@ -320,7 +342,9 @@ contract SwanStaking is Pausable{
         require (OneMonth.time >= now.add(86400));//change it to one month for production use 
         require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
         userTotalStakes[msg.sender] -= OneMonth.amount;
+        emit claimedTokensTransferred(msg.sender,OneMonth.amount);
         OneMonth.amount = 0;
+
         
     } 
 
@@ -345,6 +369,7 @@ contract SwanStaking is Pausable{
         OneMonth.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);
         require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend));
         totalPoolRewards[msg.sender] += tokenToSend;
+        emit tokenRewardTransferred(msg.sender,tokenToSend);
 
         }
         
