@@ -517,7 +517,7 @@ contract Crowdsale is Pausable {
     * @param _usdCents Value in usd cents to be converted into tokens
     * @return Number of tokens that can be purchased with the specified _usdCents
     */
-    function _getTokenAmount(uint256 _usdCents) CrowdsaleStarted internal returns (uint256) {
+    function _getTokenAmount(uint256 _usdCents) CrowdsaleStarted internal view returns (uint256) {
 
          uint256 bonusUSD;
          uint256 bonusTokens;
