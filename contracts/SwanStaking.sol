@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Etherscan.io on 2020-10-09
-*/
-
 pragma solidity 0.5.16;
 
 contract ERC20 {
@@ -160,20 +156,29 @@ library SafeMath {
 }
 
 
-contract SwanStaking is Pausable{
+contract SwanStake is Pausable{
 
     using SafeMath for uint256;
 
-
     address public swanTokenAddress;
+
     /**
      * @dev address of a token contrac swan 
      */
     constructor(address swanToken) public Owned(msg.sender) {
 
     swanTokenAddress = swanToken;
-}
-    struct staking 
+  }
+
+  // Includes all the necessary details about the User's initial $2000 stake.
+    struct StakeAccount{
+      uint256 stakedAmount;
+      uint256 time;
+      uint256 interestRate;
+      bool unstaked;
+    }
+// Includes details about further major or minor stakes by a user in order to earn interest
+    struct interestAccount 
     {
 
     uint256 amount;
@@ -181,17 +186,23 @@ contract SwanStaking is Pausable{
     uint256 interestRate;
     uint256 interestPayouts;
     uint256 timeperiod;
-
-
     }
 
-
+  // isStaker is TRUE for those addresses which have staked $2000 worth tokens.
+  mapping(address => bool) public isStaker;
   mapping(address => uint256) public userTotalStakes;
   mapping(address => uint256) public totalPoolRewards;
-  mapping (address => uint256) public oneMonthNumber;
-  mapping(address => mapping (uint256 => staking)) public stakingDetails;
+
+  mapping (address => uint256) public interestAccountNumber;
+  mapping(address => StakeAccount) public stakeAccountDetails;
+  mapping(address => mapping (uint256 => interestAccount)) public interestAccountDetails;
 
 
+  /**
+     * @dev emitted whenever user stakes tokens in the Stake Account
+     */
+   
+  event staked(address indexed _user,uint256 _amount,uint256 _lockupPeriod,uint256 _interest);
     /**
      * @dev emitted whenever user stakes tokens for One month LockUp period
      */
@@ -210,10 +221,6 @@ contract SwanStaking is Pausable{
   event tokenRewardTransferred(address indexed _user,uint256 _amount);
 
 
-
-
-  
-
   /**
       * @dev returns the total amount of SWAN tokens staked in this contract
   **/
@@ -221,24 +228,53 @@ contract SwanStaking is Pausable{
   function totalStakedTokens() public view returns(uint256){
       return ERC20(swanTokenAddress).balanceOf(address(this));
   }
+   
+   /**
+      * @param _amount - the amount user wishes to stake
+      * @dev allows the user to stake the initial $2000 worth of SWAN tokens
+      *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) 
+      *      User can earn comparatively more interest on Future stakes.
+  **/
 
-    /**
-     * @dev  stake for one month only
+  
+  function stake(uint256 _amount) external returns(bool){
+    require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");
+    require(_amount >= 2000 ether, "Staked amount is less than $2000");
+
+    require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
+    uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
+    require (checkAllowance >= _amount,"User has not approved the contract yet.");
+    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
+    
+    stakeAccountDetails[msg.sender] = StakeAccount(
+    {
+      stakedAmount:_amount,
+      time:now,
+      interestRate:14,
+      unstaked:false
+    });
+    
+    isStaker[msg.sender] = true;
+    userTotalStakes[msg.sender] += _amount;
+    emit staked(msg.sender,_amount,4,14);
+  }
+      /**
+     * @dev  User can earn interest by staking for 1 month
 
      */
 
   function stakeTokensOneMonth (uint256 amount)  external returns (bool) {
       
-      if (amount >= 2000 ether) {
+      if (isStaker[msg.sender]) {
           
        require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
        uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
        require (checkAllowance >= amount, 'allowance is wrong');
        require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');
        
-       uint256 oneMonthNum = oneMonthNumber[msg.sender];
+       uint256 oneMonthNum = interestAccountNumber[msg.sender];
        
-     stakingDetails[msg.sender][oneMonthNum ++] = staking(
+     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
        {
 
             amount: amount,
@@ -250,7 +286,7 @@ contract SwanStaking is Pausable{
        });       
 
         userTotalStakes[msg.sender] += amount;
-        oneMonthNumber[msg.sender]++;
+        interestAccountNumber[msg.sender]++;
         emit oneMonthStaked(msg.sender,amount,1,16);
       } else {
           
@@ -259,40 +295,38 @@ contract SwanStaking is Pausable{
        require (checkAllowance >= amount, 'allowance is wrong');
        require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          
 
-       uint256 oneMonthNum = oneMonthNumber[msg.sender];
+       uint256 oneMonthNum = interestAccountNumber[msg.sender];
        
-     stakingDetails[msg.sender][oneMonthNum ++] = staking(
+     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
        {
-
             amount: amount,
             time: now,
             interestRate : 12,
             interestPayouts : 0,
             timeperiod : 1
-
        });       
           userTotalStakes[msg.sender] += amount;
-          oneMonthNumber[msg.sender]++;
+          interestAccountNumber[msg.sender]++;
           emit oneMonthStaked(msg.sender,amount,1,12);
 
       }
   }  
 
     /**
-     * @dev  stake for three month only
+     * @dev  User can earn interest by staking for 3 month
 
      */
   function stakeTokensThreeMonth (uint256 amount)  external returns (bool) {
       
-      if (amount >= 2000 ether) {
+      if (isStaker[msg.sender]){
           
        require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
        uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
        require (checkAllowance >= amount, 'allowance is wrong');
        require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');
-              uint256 oneMonthNum = oneMonthNumber[msg.sender];
+       uint256 oneMonthNum = interestAccountNumber[msg.sender];
        
-        stakingDetails[msg.sender][oneMonthNum ++] = staking(
+        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
        {
 
             amount: amount,
@@ -303,7 +337,7 @@ contract SwanStaking is Pausable{
 
        });       
         userTotalStakes[msg.sender] += amount;
-        oneMonthNumber[msg.sender]++;
+        interestAccountNumber[msg.sender]++;
         emit threeMonthStaked(msg.sender,amount,3,20);
           
       } else {
@@ -313,9 +347,9 @@ contract SwanStaking is Pausable{
        require (checkAllowance >= amount, 'allowance is wrong');
        require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          
 
-              uint256 oneMonthNum = oneMonthNumber[msg.sender];
+              uint256 oneMonthNum = interestAccountNumber[msg.sender];
        
-        stakingDetails[msg.sender][oneMonthNum ++] = staking(
+        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
        {
 
             amount: amount,
@@ -326,7 +360,7 @@ contract SwanStaking is Pausable{
 
        });       
           userTotalStakes[msg.sender] += amount;
-          oneMonthNumber[msg.sender]++;
+          interestAccountNumber[msg.sender]++;
           emit threeMonthStaked(msg.sender,amount,3,16);
       }
     }
@@ -335,19 +369,29 @@ contract SwanStaking is Pausable{
      * @dev  claim tokens for 1 or 3 months from same function
 
      */
-    function claimTokens(uint256 id) public returns (bool) {
+    function claimInterestTokens(uint256 id) public returns (bool) {
        
-        staking memory OneMonth =  stakingDetails[msg.sender][id];
+        interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];
         require (OneMonth.amount >= 0 );
-        require (OneMonth.time >= now.add(86400));//change it to one month for production use 
+        require (now >= OneMonth.time.add(OneMonth.timeperiod * 1 minutes),"Deadline is not over");// will be chnanged to "months" time unit for production
         require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
         userTotalStakes[msg.sender] -= OneMonth.amount;
         emit claimedTokensTransferred(msg.sender,OneMonth.amount);
         OneMonth.amount = 0;
-
-        
     } 
+    
 
+    function claimStakeTokens() public{
+      require(isStaker[msg.sender],"User is not a Staker");
+      StakeAccount memory stakeData = stakeAccountDetails[msg.sender];
+      require (now >= stakeData.time.add(100),"Deadline NOT OVER"); //will be changed to 4 months for production use
+      require(ERC20(swanTokenAddress).transfer(msg.sender, stakeData.stakedAmount));
+      userTotalStakes[msg.sender] -= stakeData.stakedAmount;
+      isStaker[msg.sender] = false;
+      stakeData.unstaked = true;
+      stakeAccountDetails[msg.sender] = stakeData;
+
+    } 
     /**
      * @dev  user can claim payouts in everyt seven days 
 
@@ -355,9 +399,9 @@ contract SwanStaking is Pausable{
 
     function payOuts (uint256 id) public returns (bool) {
         
-        staking memory OneMonth =  stakingDetails[msg.sender][id];
+        interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];
         require (OneMonth.amount >= 0 );
-        require (OneMonth.time >= now.add(86400));//change it to one month for production use 
+        require (now >= OneMonth.time.add(100));//change it to one month for production use 
 
         uint256 preSaleCycle = getCycle(msg.sender, id);
         require (preSaleCycle > 0);
@@ -375,14 +419,13 @@ contract SwanStaking is Pausable{
         
         
     }
-
         /**
      * @dev  get cycle for payout 
 
      */
     function getCycle(address userAddress, uint256 id) internal view returns (uint256){
      
-        staking memory OneMonth =  stakingDetails[userAddress][id];
+        interestAccount memory OneMonth =  interestAccountDetails[userAddress][id];
         require (OneMonth.amount >= 0 );
 
       uint256 cycle = now.sub(OneMonth.timeperiod);
@@ -400,7 +443,5 @@ contract SwanStaking is Pausable{
      }
 
     }    
-    
-    
-    
+
 }
