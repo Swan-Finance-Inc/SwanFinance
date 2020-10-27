@@ -106,12 +106,12 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol\":\"ERC20\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol\":{\"keccak256\":\"0x24cf7e0f8c3b2ef3b2858d4524ce0b0cb1e6403f25d5628ff835d9befa9762ad\",\"urls\":[\"bzz-raw://2488d2bd60a4a79dbbece8cd8a9582ebf6d52df5852a9ba5b374d21919b89e70\",\"dweb:/ipfs/Qmb4Sm3iwpZ9xUM8HqnfXsYh5yHNQJTU6Yz1ER6enuBtXZ\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol\":\"ERC20\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol\":{\"keccak256\":\"0xe6544abdf07fe1754bd5c1c56a953e81c8feeb651bb19bc23e0ae64b4c005b4e\",\"urls\":[\"bzz-raw://ac38b03be55215a14530686da80e89fab197d5fe0557e3a3a8be67c2d9faf348\",\"dweb:/ipfs/QmWW8jfPBQSeMYXvFJvVouKbM2CK9MDYyUEfe6Ya9PMTqu\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity 0.5.16;\n\ncontract ERC20 {\n\n    function transferFrom (address,address, uint256) external returns (bool);\n    function balanceOf(address) public view returns (uint256);\n    function allowance(address, address) external view returns (uint256);\n    function transfer (address, uint256) external returns (bool);\n\n}\n\ncontract Owned {\n\n    address public owner;\n    address public newOwner;\n\n    event OwnershipTransferred(address indexed from, address indexed _to);\n\n    constructor(address _owner) public {\n        owner = _owner;\n    }\n\n    modifier onlyOwner {\n        require(msg.sender == owner);\n        _;\n    }\n\n    function transferOwnership(address _newOwner) public onlyOwner {\n        newOwner = _newOwner;\n    }\n    function acceptOwnership() public {\n        require(msg.sender == newOwner);\n        emit OwnershipTransferred(owner, newOwner);\n        owner = newOwner;\n        newOwner = address(0);\n    }\n}\n\ncontract Pausable is Owned {\n    event Pause();\n    event Unpause();\n\n    bool public paused = false;\n\n    modifier whenNotPaused() {\n      require(!paused);\n      _;\n    }\n\n    modifier whenPaused() {\n      require(paused);\n      _;\n    }\n\n    function pause() onlyOwner whenNotPaused public {\n      paused = true;\n      emit Pause();\n    }\n\n    function unpause() onlyOwner whenPaused public {\n      paused = false;\n      emit Unpause();\n    }\n}\n\n\n/**\n * @dev Wrappers over Solidity's arithmetic operations with added overflow\n * checks.\n *\n * Arithmetic operations in Solidity wrap on overflow. This can easily result\n * in bugs, because programmers usually assume that an overflow raises an\n * error, which is the standard behavior in high level programming languages.\n * `SafeMath` restores this intuition by reverting the transaction when an\n * operation overflows.\n *\n * Using this library instead of the unchecked operations eliminates an entire\n * class of bugs, so it's recommended to use it always.\n */\nlibrary SafeMath {\n    /**\n     * @dev Returns the addition of two unsigned integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `+` operator.\n     *\n     * Requirements:\n     * - Addition cannot overflow.\n     */\n    function add(uint256 a, uint256 b) internal pure returns (uint256) {\n        uint256 c = a + b;\n        require(c >= a, \"SafeMath: addition overflow\");\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the subtraction of two unsigned integers, reverting on\n     * overflow (when the result is negative).\n     *\n     * Counterpart to Solidity's `-` operator.\n     *\n     * Requirements:\n     * - Subtraction cannot overflow.\n     */\n    function sub(uint256 a, uint256 b) internal pure returns (uint256) {\n        require(b <= a, \"SafeMath: subtraction overflow\");\n        uint256 c = a - b;\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the multiplication of two unsigned integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `*` operator.\n     *\n     * Requirements:\n     * - Multiplication cannot overflow.\n     */\n    function mul(uint256 a, uint256 b) internal pure returns (uint256) {\n        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the\n        // benefit is lost if 'b' is also tested.\n        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522\n        if (a == 0) {\n            return 0;\n        }\n\n        uint256 c = a * b;\n        require(c / a == b, \"SafeMath: multiplication overflow\");\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the integer division of two unsigned integers. Reverts on\n     * division by zero. The result is rounded towards zero.\n     *\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\n     * uses an invalid opcode to revert (consuming all remaining gas).\n     *\n     * Requirements:\n     * - The divisor cannot be zero.\n     */\n    function div(uint256 a, uint256 b) internal pure returns (uint256) {\n        // Solidity only automatically asserts when dividing by 0\n        require(b > 0, \"SafeMath: division by zero\");\n        uint256 c = a / b;\n        // assert(a == b * c + a % b); // There is no case in which this doesn't hold\n\n        return c;\n    }\n\n}\n\n\ncontract SwanStake is Pausable{\n\n    using SafeMath for uint256;\n\n    address public swanTokenAddress;\n\n    /**\n     * @dev address of a token contrac swan \n     */\n    constructor(address swanToken) public Owned(msg.sender) {\n\n    swanTokenAddress = swanToken;\n  }\n\n  // Includes all the necessary details about the User's initial $2000 stake.\n    struct StakeAccount{\n      uint256 stakedAmount;\n      uint256 time;\n      uint256 interestRate;\n      bool unstaked;\n    }\n// Includes details about further major or minor stakes by a user in order to earn interest\n    struct interestAccount \n    {\n\n    uint256 amount;\n    uint256 time;\n    uint256 interestRate;\n    uint256 interestPayouts;\n    uint256 timeperiod;\n    }\n\n  // isStaker is TRUE for those addresses which have staked $2000 worth tokens.\n  mapping(address => bool) public isStaker;\n  mapping(address => uint256) public userTotalStakes;\n  mapping(address => uint256) public totalPoolRewards;\n\n  mapping (address => uint256) public interestAccountNumber;\n  mapping(address => StakeAccount) public stakeAccountDetails;\n  mapping(address => mapping (uint256 => interestAccount)) public interestAccountDetails;\n\n\n  /**\n     * @dev emitted whenever user stakes tokens in the Stake Account\n  */\n   \n  event staked(address indexed _user,uint256 _amount,uint256 _lockupPeriod,uint256 _interest);\n   \n  /**\n     * @dev emitted whenever user stakes tokens in the Stake Account\n  **/\n\n  event claimedStakedTokens(address indexed _user,uint256 _amount);\n  \n    /**\n     * @dev emitted whenever user stakes tokens for One month LockUp period\n     */\n  event oneMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);\n   /**\n     * @dev emitted whenever user stakes tokens for Three month LockUp period\n    */\n  event threeMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);\n   /**\n     * @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user\n    */\n  event claimedInterestTokens(address indexed _user,uint256 _amount);\n   /**\n     * @dev emitted whenever weekly token rewards are transferred to the user.\n    */\n  event tokenRewardTransferred(address indexed _user,uint256 _amount);\n\n\n  /**\n      * @dev returns the total amount of SWAN tokens staked in this contract\n  **/\n\n  function totalStakedTokens() public view returns(uint256){\n      return ERC20(swanTokenAddress).balanceOf(address(this));\n  }\n   \n   /**\n      * @param _amount - the amount user wishes to stake\n      * @dev allows the user to stake the initial $2000 worth of SWAN tokens\n      *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) \n      *      User can earn comparatively more interest on Future stakes.\n  **/\n\n  \n  function stake(uint256 _amount) external returns(bool){\n    require(!isStaker[msg.sender],\"Previous Staked Amount is not Withdrawn yet\");\n    require(_amount >= 2000 ether, \"Staked amount is less than $2000\");\n\n    require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, \"User doesn't have Enough Balance\");\n    uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n    require (checkAllowance >= _amount,\"User has not approved the contract yet.\");\n    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),\"Token Transfer Failed\");\n    \n    stakeAccountDetails[msg.sender] = StakeAccount(\n    {\n      stakedAmount:_amount,\n      time:now,\n      interestRate:14,\n      unstaked:false\n    });\n    \n    isStaker[msg.sender] = true;\n    userTotalStakes[msg.sender] += _amount;\n    emit staked(msg.sender,_amount,4,14);\n  }\n      /**\n     * @dev  User can earn interest by staking for 1 month\n\n     */\n\n  function stakeTokensOneMonth (uint256 amount)  external returns (bool) {\n      \n      if (isStaker[msg.sender]) {\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');\n       \n       uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n\n            amount: amount,\n            time: now,\n            interestRate : 16,\n            interestPayouts : 0,\n            timeperiod : 1\n\n       });       \n\n        userTotalStakes[msg.sender] += amount;\n        interestAccountNumber[msg.sender]++;\n        emit oneMonthStaked(msg.sender,amount,1,16);\n      } else {\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          \n\n       uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n            amount: amount,\n            time: now,\n            interestRate : 12,\n            interestPayouts : 0,\n            timeperiod : 1\n       });       \n          userTotalStakes[msg.sender] += amount;\n          interestAccountNumber[msg.sender]++;\n          emit oneMonthStaked(msg.sender,amount,1,12);\n\n      }\n  }  \n\n    /**\n     * @dev  User can earn interest by staking for 3 month\n\n     */\n  function stakeTokensThreeMonth (uint256 amount)  external returns (bool) {\n      \n      if (isStaker[msg.sender]){\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');\n       uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n\n            amount: amount,\n            time: now,\n            interestRate : 20,\n            interestPayouts : 0,\n            timeperiod : 3\n\n       });       \n        userTotalStakes[msg.sender] += amount;\n        interestAccountNumber[msg.sender]++;\n        emit threeMonthStaked(msg.sender,amount,3,20);\n          \n      } else {\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          \n\n              uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n\n            amount: amount,\n            time: now,\n            interestRate : 16,\n            interestPayouts : 0,\n            timeperiod : 3\n\n       });       \n          userTotalStakes[msg.sender] += amount;\n          interestAccountNumber[msg.sender]++;\n          emit threeMonthStaked(msg.sender,amount,3,16);\n      }\n    }\n\n    /**\n     * @dev  claim tokens for 1 or 3 months from same function\n\n     */\n    function claimInterestTokens(uint256 id) public returns (bool) {\n       \n        interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];\n        require (OneMonth.amount >= 0 );\n        require (now >= OneMonth.time.add(OneMonth.timeperiod * 1 minutes),\"Deadline is not over\");// will be chnanged to \"months\" time unit for production\n        require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));\n        userTotalStakes[msg.sender] -= OneMonth.amount;\n        emit claimedInterestTokens(msg.sender,OneMonth.amount);\n        OneMonth.amount = 0;\n    } \n    \n\n    function claimStakeTokens() public{\n      require(isStaker[msg.sender],\"User is not a Staker\");\n      StakeAccount memory stakeData = stakeAccountDetails[msg.sender];\n      require (now >= stakeData.time.add(100),\"Deadline NOT OVER\"); //will be changed to 4 months for production use\n      require(ERC20(swanTokenAddress).transfer(msg.sender, stakeData.stakedAmount));\n      userTotalStakes[msg.sender] -= stakeData.stakedAmount;\n      isStaker[msg.sender] = false;\n      stakeData.unstaked = true;\n      stakeAccountDetails[msg.sender] = stakeData;\n      emit claimedStakedTokens(msg.sender,stakeData.stakedAmount);\n    } \n    /**\n     * @dev  user can claim payouts in everyt seven days \n\n     */\n\n    function payOuts (uint256 id) public returns (bool) {\n        \n        interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];\n        require (OneMonth.amount >= 0 );\n        require (now >= OneMonth.time.add(100));//change it to one month for production use \n\n        uint256 preSaleCycle = getCycle(msg.sender, id);\n        require (preSaleCycle > 0);\n\n        uint256 onePercentOfInitialFund = OneMonth.amount.div(86400);\n        if(OneMonth.interestPayouts <= onePercentOfInitialFund.mul(preSaleCycle)) {\n            \n        uint256 tokenToSend = onePercentOfInitialFund.mul(preSaleCycle).sub(OneMonth.interestPayouts);\n        OneMonth.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);\n        require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend));\n        totalPoolRewards[msg.sender] += tokenToSend;\n        emit tokenRewardTransferred(msg.sender,tokenToSend);\n\n        }\n        \n        \n    }\n        /**\n     * @dev  get cycle for payout \n\n     */\n    function getCycle(address userAddress, uint256 id) internal view returns (uint256){\n     \n        interestAccount memory OneMonth =  interestAccountDetails[userAddress][id];\n        require (OneMonth.amount >= 0 );\n\n      uint256 cycle = now.sub(OneMonth.timeperiod);\n    \n     if(cycle <= 21600)//21600 6 hours for testing \n     {\n         return 0;\n     }\n     else if (cycle > 21600)//21600 6 hours \n     {     \n    \n      uint256 secondsToHours = cycle.div(21600);//21600 6 hours\n      return secondsToHours;\n     \n     }\n\n    }    \n\n}\n",
+  "source": "pragma solidity 0.5.16;\n\ncontract ERC20 {\n\n    function transferFrom (address,address, uint256) external returns (bool);\n    function balanceOf(address) public view returns (uint256);\n    function allowance(address, address) external view returns (uint256);\n    function transfer (address, uint256) external returns (bool);\n\n}\n\ncontract Owned {\n\n    address public owner;\n    address public newOwner;\n\n    event OwnershipTransferred(address indexed from, address indexed _to);\n\n    constructor(address _owner) public {\n        owner = _owner;\n    }\n\n    modifier onlyOwner {\n        require(msg.sender == owner);\n        _;\n    }\n\n    function transferOwnership(address _newOwner) public onlyOwner {\n        newOwner = _newOwner;\n    }\n    function acceptOwnership() public {\n        require(msg.sender == newOwner);\n        emit OwnershipTransferred(owner, newOwner);\n        owner = newOwner;\n        newOwner = address(0);\n    }\n}\n\ncontract Pausable is Owned {\n    event Pause();\n    event Unpause();\n\n    bool public paused = false;\n\n    modifier whenNotPaused() {\n      require(!paused);\n      _;\n    }\n\n    modifier whenPaused() {\n      require(paused);\n      _;\n    }\n\n    function pause() onlyOwner whenNotPaused public {\n      paused = true;\n      emit Pause();\n    }\n\n    function unpause() onlyOwner whenPaused public {\n      paused = false;\n      emit Unpause();\n    }\n}\n\n\n/**\n * @dev Wrappers over Solidity's arithmetic operations with added overflow\n * checks.\n *\n * Arithmetic operations in Solidity wrap on overflow. This can easily result\n * in bugs, because programmers usually assume that an overflow raises an\n * error, which is the standard behavior in high level programming languages.\n * `SafeMath` restores this intuition by reverting the transaction when an\n * operation overflows.\n *\n * Using this library instead of the unchecked operations eliminates an entire\n * class of bugs, so it's recommended to use it always.\n */\nlibrary SafeMath {\n    /**\n     * @dev Returns the addition of two unsigned integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `+` operator.\n     *\n     * Requirements:\n     * - Addition cannot overflow.\n     */\n    function add(uint256 a, uint256 b) internal pure returns (uint256) {\n        uint256 c = a + b;\n        require(c >= a, \"SafeMath: addition overflow\");\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the subtraction of two unsigned integers, reverting on\n     * overflow (when the result is negative).\n     *\n     * Counterpart to Solidity's `-` operator.\n     *\n     * Requirements:\n     * - Subtraction cannot overflow.\n     */\n    function sub(uint256 a, uint256 b) internal pure returns (uint256) {\n        require(b <= a, \"SafeMath: subtraction overflow\");\n        uint256 c = a - b;\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the multiplication of two unsigned integers, reverting on\n     * overflow.\n     *\n     * Counterpart to Solidity's `*` operator.\n     *\n     * Requirements:\n     * - Multiplication cannot overflow.\n     */\n    function mul(uint256 a, uint256 b) internal pure returns (uint256) {\n        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the\n        // benefit is lost if 'b' is also tested.\n        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522\n        if (a == 0) {\n            return 0;\n        }\n\n        uint256 c = a * b;\n        require(c / a == b, \"SafeMath: multiplication overflow\");\n\n        return c;\n    }\n\n    /**\n     * @dev Returns the integer division of two unsigned integers. Reverts on\n     * division by zero. The result is rounded towards zero.\n     *\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\n     * uses an invalid opcode to revert (consuming all remaining gas).\n     *\n     * Requirements:\n     * - The divisor cannot be zero.\n     */\n    function div(uint256 a, uint256 b) internal pure returns (uint256) {\n        // Solidity only automatically asserts when dividing by 0\n        require(b > 0, \"SafeMath: division by zero\");\n        uint256 c = a / b;\n        // assert(a == b * c + a % b); // There is no case in which this doesn't hold\n\n        return c;\n    }\n\n}\n\n\ncontract SwanStake is Pausable{\n\n    using SafeMath for uint256;\n\n    address public swanTokenAddress;\n\n    /**\n     * @dev address of a token contrac swan \n     */\n    constructor(address swanToken) public Owned(msg.sender) {\n\n    swanTokenAddress = swanToken;\n  }\n\n  // Includes all the necessary details about the User's initial $2000 stake.\n    struct StakeAccount{\n      uint256 stakedAmount;\n      uint256 time;\n      uint256 interestRate;\n      bool unstaked;\n    }\n// Includes details about further major or minor stakes by a user in order to earn interest\n    struct interestAccount \n    {\n\n    uint256 amount;\n    uint256 time;\n    uint256 interestRate;\n    uint256 interestPayouts;\n    uint256 timeperiod;\n    }\n\n  // isStaker is TRUE for those addresses which have staked $2000 worth tokens.\n  mapping(address => bool) public isStaker;\n  mapping(address => uint256) public userTotalStakes;\n  mapping(address => uint256) public totalPoolRewards;\n\n  mapping (address => uint256) public interestAccountNumber;\n  mapping(address => StakeAccount) public stakeAccountDetails;\n  mapping(address => mapping (uint256 => interestAccount)) public interestAccountDetails;\n\n\n  /**\n     * @dev emitted whenever user stakes tokens in the Stake Account\n  */\n   \n  event staked(address indexed _user,uint256 _amount,uint256 _lockupPeriod,uint256 _interest);\n   \n  /**\n     * @dev emitted whenever user stakes tokens in the Stake Account\n  **/\n\n  event claimedStakedTokens(address indexed _user,uint256 _amount);\n  \n    /**\n     * @dev emitted whenever user stakes tokens for One month LockUp period\n     */\n  event oneMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);\n   /**\n     * @dev emitted whenever user stakes tokens for Three month LockUp period\n    */\n  event threeMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);\n   /**\n     * @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user\n    */\n  event claimedInterestTokens(address indexed _user,uint256 _amount);\n   /**\n     * @dev emitted whenever weekly token rewards are transferred to the user.\n    */\n  event tokenRewardTransferred(address indexed _user,uint256 _amount);\n\n\n  /**\n      * @dev returns the total amount of SWAN tokens staked in this contract\n  **/\n\n  function totalStakedTokens() public view returns(uint256){\n      return ERC20(swanTokenAddress).balanceOf(address(this));\n  }\n   \n   /**\n      * @param _amount - the amount user wishes to stake\n      * @dev allows the user to stake the initial $2000 worth of SWAN tokens\n      *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) \n      *      User can earn comparatively more interest on Future stakes.\n  **/\n\n  \n  function stake(uint256 _amount) external returns(bool){\n    require(!isStaker[msg.sender],\"Previous Staked Amount is not Withdrawn yet\");\n    require(_amount >= 2000 ether, \"Staked amount is less than $2000\");\n\n    require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, \"User doesn't have Enough Balance\");\n    uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n    require (checkAllowance >= _amount,\"User has not approved the contract yet.\");\n    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),\"Token Transfer Failed\");\n    \n    stakeAccountDetails[msg.sender] = StakeAccount(\n    {\n      stakedAmount:_amount,\n      time:now,\n      interestRate:14,\n      unstaked:false\n    });\n    \n    isStaker[msg.sender] = true;\n    userTotalStakes[msg.sender] += _amount;\n    emit staked(msg.sender,_amount,4,14);\n  }\n      /**\n     * @dev  User can earn interest by staking for 1 month\n\n     */\n\n  function stakeTokensOneMonth (uint256 amount)  external returns (bool) {\n      \n      if (isStaker[msg.sender]) {\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');\n       \n       uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n\n            amount: amount,\n            time: now,\n            interestRate : 16,\n            interestPayouts : 0,\n            timeperiod : 1\n\n       });       \n\n        userTotalStakes[msg.sender] += amount;\n        interestAccountNumber[msg.sender]++;\n        emit oneMonthStaked(msg.sender,amount,1,16);\n      } else {\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          \n\n       uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n            amount: amount,\n            time: now,\n            interestRate : 12,\n            interestPayouts : 0,\n            timeperiod : 1\n       });       \n          userTotalStakes[msg.sender] += amount;\n          interestAccountNumber[msg.sender]++;\n          emit oneMonthStaked(msg.sender,amount,1,12);\n\n      }\n  }  \n\n    /**\n     * @dev  User can earn interest by staking for 3 month\n\n     */\n  function stakeTokensThreeMonth (uint256 amount)  external returns (bool) {\n      \n      if (isStaker[msg.sender]){\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');\n       uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n\n            amount: amount,\n            time: now,\n            interestRate : 20,\n            interestPayouts : 0,\n            timeperiod : 3\n\n       });       \n        userTotalStakes[msg.sender] += amount;\n        interestAccountNumber[msg.sender]++;\n        emit threeMonthStaked(msg.sender,amount,3,20);\n          \n      } else {\n          \n       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');\n       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); \n       require (checkAllowance >= amount, 'allowance is wrong');\n       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          \n\n              uint256 oneMonthNum = interestAccountNumber[msg.sender];\n       \n        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(\n       {\n\n            amount: amount,\n            time: now,\n            interestRate : 16,\n            interestPayouts : 0,\n            timeperiod : 3\n\n       });       \n          userTotalStakes[msg.sender] += amount;\n          interestAccountNumber[msg.sender]++;\n          emit threeMonthStaked(msg.sender,amount,3,16);\n      }\n    }\n\n    /**\n     * @dev  claim tokens for 1 or 3 months from same function\n\n     */\n    function claimInterestTokens(uint256 id) public returns (bool) {\n       \n        interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];\n        require (OneMonth.amount >= 0 );\n        require (now >= OneMonth.time.add(OneMonth.timeperiod * 1 minutes),\"Deadline is not over\");// will be chnanged to \"months\" time unit for production\n        require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));\n        userTotalStakes[msg.sender] -= OneMonth.amount;\n        emit claimedInterestTokens(msg.sender,OneMonth.amount);\n        OneMonth.amount = 0;\n    } \n    \n\n    function claimStakeTokens() public{\n      require(isStaker[msg.sender],\"User is not a Staker\");\n      StakeAccount memory stakeData = stakeAccountDetails[msg.sender];\n      require (now >= stakeData.time.add(100),\"Deadline NOT OVER\"); //will be changed to 4 months for production use\n      require(ERC20(swanTokenAddress).transfer(msg.sender, stakeData.stakedAmount));\n      userTotalStakes[msg.sender] -= stakeData.stakedAmount;\n      isStaker[msg.sender] = false;\n      stakeData.unstaked = true;\n      stakeAccountDetails[msg.sender] = stakeData;\n      emit claimedStakedTokens(msg.sender,stakeData.stakedAmount);\n    } \n    /**\n     * @dev  user can claim payouts in everyt seven days \n\n     */\n\n    function payOuts (uint256 id) public returns (bool) {\n        \n        interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];\n        require (OneMonth.amount >= 0 );\n        require (now >= OneMonth.time.add(100));//change it to one month for production use \n\n        uint256 preSaleCycle = getCycle(msg.sender, id);\n        require (preSaleCycle > 0);\n\n        uint256 onePercentOfInitialFund = OneMonth.amount.div(86400);\n        if(OneMonth.interestPayouts <= onePercentOfInitialFund.mul(preSaleCycle)) {\n            \n        uint256 tokenToSend = onePercentOfInitialFund.mul(preSaleCycle).sub(OneMonth.interestPayouts);\n        OneMonth.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);\n        require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend));\n        totalPoolRewards[msg.sender] += tokenToSend;\n        emit tokenRewardTransferred(msg.sender,tokenToSend);\n\n        }\n           \n    }\n        /**\n     * @dev  get cycle for payout \n\n     */\n    function getCycle(address userAddress, uint256 id) internal view returns (uint256){\n     \n        interestAccount memory OneMonth =  interestAccountDetails[userAddress][id];\n        require (OneMonth.amount >= 0 );\n\n      uint256 cycle = now.sub(OneMonth.timeperiod);\n    \n     if(cycle <= 21600)//21600 6 hours for testing \n     {\n         return 0;\n     }\n     else if (cycle > 21600)//21600 6 hours \n     {     \n    \n      uint256 secondsToHours = cycle.div(21600);//21600 6 hours\n      return secondsToHours;\n     \n     }\n\n    }    \n\n}\n",
   "sourcePath": "/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol",
   "ast": {
     "absolutePath": "/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol",
@@ -4890,7 +4890,7 @@
                             "name": "this",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3785,
+                            "referencedDeclaration": 3809,
                             "src": "6767:4:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -5625,7 +5625,7 @@
                             "name": "this",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3785,
+                            "referencedDeclaration": 3809,
                             "src": "7499:4:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -5915,7 +5915,7 @@
                                 "name": "this",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3785,
+                                "referencedDeclaration": 3809,
                                 "src": "7659:4:3",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -7068,7 +7068,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "9271:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -7358,7 +7358,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "9416:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -8513,7 +8513,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "8391:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -8803,7 +8803,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "8536:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -10100,7 +10100,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "11238:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -10390,7 +10390,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "11383:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -11545,7 +11545,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "10351:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -11835,7 +11835,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "10496:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -14883,7 +14883,7 @@
             "body": {
               "id": 3692,
               "nodeType": "Block",
-              "src": "13368:895:3",
+              "src": "13368:889:3",
               "statements": [
                 {
                   "assignments": [
@@ -16451,7 +16451,7 @@
               "src": "13361:6:3"
             },
             "scope": 3748,
-            "src": "13316:947:3",
+            "src": "13316:941:3",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
@@ -16460,7 +16460,7 @@
             "body": {
               "id": 3746,
               "nodeType": "Block",
-              "src": "14406:450:3",
+              "src": "14400:450:3",
               "statements": [
                 {
                   "assignments": [
@@ -16473,7 +16473,7 @@
                       "name": "OneMonth",
                       "nodeType": "VariableDeclaration",
                       "scope": 3746,
-                      "src": "14422:31:3",
+                      "src": "14416:31:3",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
@@ -16486,7 +16486,7 @@
                         "name": "interestAccount",
                         "nodeType": "UserDefinedTypeName",
                         "referencedDeclaration": 2843,
-                        "src": "14422:15:3",
+                        "src": "14416:15:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_interestAccount_$2843_storage_ptr",
                           "typeString": "struct SwanStake.interestAccount"
@@ -16508,7 +16508,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 2869,
-                        "src": "14457:22:3",
+                        "src": "14451:22:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_mapping$_t_uint256_$_t_struct$_interestAccount_$2843_storage_$_$",
                           "typeString": "mapping(address => mapping(uint256 => struct SwanStake.interestAccount storage ref))"
@@ -16522,7 +16522,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 3695,
-                        "src": "14480:11:3",
+                        "src": "14474:11:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -16533,7 +16533,7 @@
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "IndexAccess",
-                      "src": "14457:35:3",
+                      "src": "14451:35:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_interestAccount_$2843_storage_$",
                         "typeString": "mapping(uint256 => struct SwanStake.interestAccount storage ref)"
@@ -16547,7 +16547,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3697,
-                      "src": "14493:2:3",
+                      "src": "14487:2:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -16558,14 +16558,14 @@
                     "isPure": false,
                     "lValueRequested": false,
                     "nodeType": "IndexAccess",
-                    "src": "14457:39:3",
+                    "src": "14451:39:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_struct$_interestAccount_$2843_storage",
                       "typeString": "struct SwanStake.interestAccount storage ref"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "14422:74:3"
+                  "src": "14416:74:3"
                 },
                 {
                   "expression": {
@@ -16591,7 +16591,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 3703,
-                            "src": "14515:8:3",
+                            "src": "14509:8:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_struct$_interestAccount_$2843_memory_ptr",
                               "typeString": "struct SwanStake.interestAccount memory"
@@ -16605,7 +16605,7 @@
                           "memberName": "amount",
                           "nodeType": "MemberAccess",
                           "referencedDeclaration": 2834,
-                          "src": "14515:15:3",
+                          "src": "14509:15:3",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -16623,7 +16623,7 @@
                           "kind": "number",
                           "lValueRequested": false,
                           "nodeType": "Literal",
-                          "src": "14534:1:3",
+                          "src": "14528:1:3",
                           "subdenomination": null,
                           "typeDescriptions": {
                             "typeIdentifier": "t_rational_0_by_1",
@@ -16631,7 +16631,7 @@
                           },
                           "value": "0"
                         },
-                        "src": "14515:20:3",
+                        "src": "14509:20:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -16653,7 +16653,7 @@
                         3767
                       ],
                       "referencedDeclaration": 3766,
-                      "src": "14506:7:3",
+                      "src": "14500:7:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
@@ -16667,7 +16667,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "14506:31:3",
+                    "src": "14500:31:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -16675,7 +16675,7 @@
                   },
                   "id": 3716,
                   "nodeType": "ExpressionStatement",
-                  "src": "14506:31:3"
+                  "src": "14500:31:3"
                 },
                 {
                   "assignments": [
@@ -16688,7 +16688,7 @@
                       "name": "cycle",
                       "nodeType": "VariableDeclaration",
                       "scope": 3746,
-                      "src": "14546:13:3",
+                      "src": "14540:13:3",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -16699,7 +16699,7 @@
                         "id": 3717,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "14546:7:3",
+                        "src": "14540:7:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -16722,7 +16722,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 3703,
-                          "src": "14570:8:3",
+                          "src": "14564:8:3",
                           "typeDescriptions": {
                             "typeIdentifier": "t_struct$_interestAccount_$2843_memory_ptr",
                             "typeString": "struct SwanStake.interestAccount memory"
@@ -16736,7 +16736,7 @@
                         "memberName": "timeperiod",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 2842,
-                        "src": "14570:19:3",
+                        "src": "14564:19:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -16757,7 +16757,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 3765,
-                        "src": "14562:3:3",
+                        "src": "14556:3:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -16771,7 +16771,7 @@
                       "memberName": "sub",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 2742,
-                      "src": "14562:7:3",
+                      "src": "14556:7:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                         "typeString": "function (uint256,uint256) pure returns (uint256)"
@@ -16785,14 +16785,14 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "14562:28:3",
+                    "src": "14556:28:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "14546:44:3"
+                  "src": "14540:44:3"
                 },
                 {
                   "condition": {
@@ -16813,7 +16813,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3718,
-                      "src": "14605:5:3",
+                      "src": "14599:5:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -16831,7 +16831,7 @@
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "14614:5:3",
+                      "src": "14608:5:3",
                       "subdenomination": null,
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_21600_by_1",
@@ -16839,7 +16839,7 @@
                       },
                       "value": "21600"
                     },
-                    "src": "14605:14:3",
+                    "src": "14599:14:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -16864,7 +16864,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 3718,
-                        "src": "14696:5:3",
+                        "src": "14690:5:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -16882,7 +16882,7 @@
                         "kind": "number",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "14704:5:3",
+                        "src": "14698:5:3",
                         "subdenomination": null,
                         "typeDescriptions": {
                           "typeIdentifier": "t_rational_21600_by_1",
@@ -16890,7 +16890,7 @@
                         },
                         "value": "21600"
                       },
-                      "src": "14696:13:3",
+                      "src": "14690:13:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
@@ -16899,11 +16899,11 @@
                     "falseBody": null,
                     "id": 3744,
                     "nodeType": "IfStatement",
-                    "src": "14692:157:3",
+                    "src": "14686:157:3",
                     "trueBody": {
                       "id": 3743,
                       "nodeType": "Block",
-                      "src": "14732:117:3",
+                      "src": "14726:117:3",
                       "statements": [
                         {
                           "assignments": [
@@ -16916,7 +16916,7 @@
                               "name": "secondsToHours",
                               "nodeType": "VariableDeclaration",
                               "scope": 3743,
-                              "src": "14750:22:3",
+                              "src": "14744:22:3",
                               "stateVariable": false,
                               "storageLocation": "default",
                               "typeDescriptions": {
@@ -16927,7 +16927,7 @@
                                 "id": 3734,
                                 "name": "uint256",
                                 "nodeType": "ElementaryTypeName",
-                                "src": "14750:7:3",
+                                "src": "14744:7:3",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
@@ -16951,7 +16951,7 @@
                                 "kind": "number",
                                 "lValueRequested": false,
                                 "nodeType": "Literal",
-                                "src": "14785:5:3",
+                                "src": "14779:5:3",
                                 "subdenomination": null,
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_rational_21600_by_1",
@@ -16974,7 +16974,7 @@
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
                                 "referencedDeclaration": 3718,
-                                "src": "14775:5:3",
+                                "src": "14769:5:3",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
@@ -16988,7 +16988,7 @@
                               "memberName": "div",
                               "nodeType": "MemberAccess",
                               "referencedDeclaration": 2801,
-                              "src": "14775:9:3",
+                              "src": "14769:9:3",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                                 "typeString": "function (uint256,uint256) pure returns (uint256)"
@@ -17002,14 +17002,14 @@
                             "lValueRequested": false,
                             "names": [],
                             "nodeType": "FunctionCall",
-                            "src": "14775:16:3",
+                            "src": "14769:16:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             }
                           },
                           "nodeType": "VariableDeclarationStatement",
-                          "src": "14750:41:3"
+                          "src": "14744:41:3"
                         },
                         {
                           "expression": {
@@ -17019,7 +17019,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 3735,
-                            "src": "14821:14:3",
+                            "src": "14815:14:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
@@ -17028,18 +17028,18 @@
                           "functionReturnParameters": 3701,
                           "id": 3742,
                           "nodeType": "Return",
-                          "src": "14814:21:3"
+                          "src": "14808:21:3"
                         }
                       ]
                     }
                   },
                   "id": 3745,
                   "nodeType": "IfStatement",
-                  "src": "14602:247:3",
+                  "src": "14596:247:3",
                   "trueBody": {
                     "id": 3730,
                     "nodeType": "Block",
-                    "src": "14654:27:3",
+                    "src": "14648:27:3",
                     "statements": [
                       {
                         "expression": {
@@ -17052,7 +17052,7 @@
                           "kind": "number",
                           "lValueRequested": false,
                           "nodeType": "Literal",
-                          "src": "14672:1:3",
+                          "src": "14666:1:3",
                           "subdenomination": null,
                           "typeDescriptions": {
                             "typeIdentifier": "t_rational_0_by_1",
@@ -17063,7 +17063,7 @@
                         "functionReturnParameters": 3701,
                         "id": 3729,
                         "nodeType": "Return",
-                        "src": "14665:8:3"
+                        "src": "14659:8:3"
                       }
                     ]
                   }
@@ -17087,7 +17087,7 @@
                   "name": "userAddress",
                   "nodeType": "VariableDeclaration",
                   "scope": 3747,
-                  "src": "14342:19:3",
+                  "src": "14336:19:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -17098,7 +17098,7 @@
                     "id": 3694,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "14342:7:3",
+                    "src": "14336:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -17114,7 +17114,7 @@
                   "name": "id",
                   "nodeType": "VariableDeclaration",
                   "scope": 3747,
-                  "src": "14363:10:3",
+                  "src": "14357:10:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -17125,7 +17125,7 @@
                     "id": 3696,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "14363:7:3",
+                    "src": "14357:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -17135,7 +17135,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "14341:33:3"
+              "src": "14335:33:3"
             },
             "returnParameters": {
               "id": 3701,
@@ -17147,7 +17147,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 3747,
-                  "src": "14398:7:3",
+                  "src": "14392:7:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -17158,7 +17158,7 @@
                     "id": 3699,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "14398:7:3",
+                    "src": "14392:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -17168,20 +17168,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "14397:9:3"
+              "src": "14391:9:3"
             },
             "scope": 3748,
-            "src": "14324:532:3",
+            "src": "14318:532:3",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
         "scope": 3749,
-        "src": "4298:10565:3"
+        "src": "4298:10559:3"
       }
     ],
-    "src": "0:14864:3"
+    "src": "0:14858:3"
   },
   "legacyAST": {
     "absolutePath": "/home/zaryab/blockchain_begins/all_about_ethereum/quillHash_CODES/swan_smart_contracts/contracts/SwanStaking.sol",
@@ -21960,7 +21960,7 @@
                             "name": "this",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3785,
+                            "referencedDeclaration": 3809,
                             "src": "6767:4:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -22695,7 +22695,7 @@
                             "name": "this",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 3785,
+                            "referencedDeclaration": 3809,
                             "src": "7499:4:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -22985,7 +22985,7 @@
                                 "name": "this",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 3785,
+                                "referencedDeclaration": 3809,
                                 "src": "7659:4:3",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -24138,7 +24138,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "9271:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -24428,7 +24428,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "9416:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -25583,7 +25583,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "8391:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -25873,7 +25873,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "8536:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -27170,7 +27170,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "11238:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -27460,7 +27460,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "11383:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -28615,7 +28615,7 @@
                                   "name": "this",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
-                                  "referencedDeclaration": 3785,
+                                  "referencedDeclaration": 3809,
                                   "src": "10351:4:3",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -28905,7 +28905,7 @@
                                       "name": "this",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 3785,
+                                      "referencedDeclaration": 3809,
                                       "src": "10496:4:3",
                                       "typeDescriptions": {
                                         "typeIdentifier": "t_contract$_SwanStake_$3748",
@@ -31953,7 +31953,7 @@
             "body": {
               "id": 3692,
               "nodeType": "Block",
-              "src": "13368:895:3",
+              "src": "13368:889:3",
               "statements": [
                 {
                   "assignments": [
@@ -33521,7 +33521,7 @@
               "src": "13361:6:3"
             },
             "scope": 3748,
-            "src": "13316:947:3",
+            "src": "13316:941:3",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
@@ -33530,7 +33530,7 @@
             "body": {
               "id": 3746,
               "nodeType": "Block",
-              "src": "14406:450:3",
+              "src": "14400:450:3",
               "statements": [
                 {
                   "assignments": [
@@ -33543,7 +33543,7 @@
                       "name": "OneMonth",
                       "nodeType": "VariableDeclaration",
                       "scope": 3746,
-                      "src": "14422:31:3",
+                      "src": "14416:31:3",
                       "stateVariable": false,
                       "storageLocation": "memory",
                       "typeDescriptions": {
@@ -33556,7 +33556,7 @@
                         "name": "interestAccount",
                         "nodeType": "UserDefinedTypeName",
                         "referencedDeclaration": 2843,
-                        "src": "14422:15:3",
+                        "src": "14416:15:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_struct$_interestAccount_$2843_storage_ptr",
                           "typeString": "struct SwanStake.interestAccount"
@@ -33578,7 +33578,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 2869,
-                        "src": "14457:22:3",
+                        "src": "14451:22:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_mapping$_t_uint256_$_t_struct$_interestAccount_$2843_storage_$_$",
                           "typeString": "mapping(address => mapping(uint256 => struct SwanStake.interestAccount storage ref))"
@@ -33592,7 +33592,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 3695,
-                        "src": "14480:11:3",
+                        "src": "14474:11:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
                           "typeString": "address"
@@ -33603,7 +33603,7 @@
                       "isPure": false,
                       "lValueRequested": false,
                       "nodeType": "IndexAccess",
-                      "src": "14457:35:3",
+                      "src": "14451:35:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_uint256_$_t_struct$_interestAccount_$2843_storage_$",
                         "typeString": "mapping(uint256 => struct SwanStake.interestAccount storage ref)"
@@ -33617,7 +33617,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3697,
-                      "src": "14493:2:3",
+                      "src": "14487:2:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -33628,14 +33628,14 @@
                     "isPure": false,
                     "lValueRequested": false,
                     "nodeType": "IndexAccess",
-                    "src": "14457:39:3",
+                    "src": "14451:39:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_struct$_interestAccount_$2843_storage",
                       "typeString": "struct SwanStake.interestAccount storage ref"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "14422:74:3"
+                  "src": "14416:74:3"
                 },
                 {
                   "expression": {
@@ -33661,7 +33661,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 3703,
-                            "src": "14515:8:3",
+                            "src": "14509:8:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_struct$_interestAccount_$2843_memory_ptr",
                               "typeString": "struct SwanStake.interestAccount memory"
@@ -33675,7 +33675,7 @@
                           "memberName": "amount",
                           "nodeType": "MemberAccess",
                           "referencedDeclaration": 2834,
-                          "src": "14515:15:3",
+                          "src": "14509:15:3",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -33693,7 +33693,7 @@
                           "kind": "number",
                           "lValueRequested": false,
                           "nodeType": "Literal",
-                          "src": "14534:1:3",
+                          "src": "14528:1:3",
                           "subdenomination": null,
                           "typeDescriptions": {
                             "typeIdentifier": "t_rational_0_by_1",
@@ -33701,7 +33701,7 @@
                           },
                           "value": "0"
                         },
-                        "src": "14515:20:3",
+                        "src": "14509:20:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
@@ -33723,7 +33723,7 @@
                         3767
                       ],
                       "referencedDeclaration": 3766,
-                      "src": "14506:7:3",
+                      "src": "14500:7:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
@@ -33737,7 +33737,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "14506:31:3",
+                    "src": "14500:31:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -33745,7 +33745,7 @@
                   },
                   "id": 3716,
                   "nodeType": "ExpressionStatement",
-                  "src": "14506:31:3"
+                  "src": "14500:31:3"
                 },
                 {
                   "assignments": [
@@ -33758,7 +33758,7 @@
                       "name": "cycle",
                       "nodeType": "VariableDeclaration",
                       "scope": 3746,
-                      "src": "14546:13:3",
+                      "src": "14540:13:3",
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
@@ -33769,7 +33769,7 @@
                         "id": 3717,
                         "name": "uint256",
                         "nodeType": "ElementaryTypeName",
-                        "src": "14546:7:3",
+                        "src": "14540:7:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -33792,7 +33792,7 @@
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
                           "referencedDeclaration": 3703,
-                          "src": "14570:8:3",
+                          "src": "14564:8:3",
                           "typeDescriptions": {
                             "typeIdentifier": "t_struct$_interestAccount_$2843_memory_ptr",
                             "typeString": "struct SwanStake.interestAccount memory"
@@ -33806,7 +33806,7 @@
                         "memberName": "timeperiod",
                         "nodeType": "MemberAccess",
                         "referencedDeclaration": 2842,
-                        "src": "14570:19:3",
+                        "src": "14564:19:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -33827,7 +33827,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 3765,
-                        "src": "14562:3:3",
+                        "src": "14556:3:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -33841,7 +33841,7 @@
                       "memberName": "sub",
                       "nodeType": "MemberAccess",
                       "referencedDeclaration": 2742,
-                      "src": "14562:7:3",
+                      "src": "14556:7:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                         "typeString": "function (uint256,uint256) pure returns (uint256)"
@@ -33855,14 +33855,14 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "14562:28:3",
+                    "src": "14556:28:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
                   "nodeType": "VariableDeclarationStatement",
-                  "src": "14546:44:3"
+                  "src": "14540:44:3"
                 },
                 {
                   "condition": {
@@ -33883,7 +33883,7 @@
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3718,
-                      "src": "14605:5:3",
+                      "src": "14599:5:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
                         "typeString": "uint256"
@@ -33901,7 +33901,7 @@
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "14614:5:3",
+                      "src": "14608:5:3",
                       "subdenomination": null,
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_21600_by_1",
@@ -33909,7 +33909,7 @@
                       },
                       "value": "21600"
                     },
-                    "src": "14605:14:3",
+                    "src": "14599:14:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -33934,7 +33934,7 @@
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
                         "referencedDeclaration": 3718,
-                        "src": "14696:5:3",
+                        "src": "14690:5:3",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -33952,7 +33952,7 @@
                         "kind": "number",
                         "lValueRequested": false,
                         "nodeType": "Literal",
-                        "src": "14704:5:3",
+                        "src": "14698:5:3",
                         "subdenomination": null,
                         "typeDescriptions": {
                           "typeIdentifier": "t_rational_21600_by_1",
@@ -33960,7 +33960,7 @@
                         },
                         "value": "21600"
                       },
-                      "src": "14696:13:3",
+                      "src": "14690:13:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bool",
                         "typeString": "bool"
@@ -33969,11 +33969,11 @@
                     "falseBody": null,
                     "id": 3744,
                     "nodeType": "IfStatement",
-                    "src": "14692:157:3",
+                    "src": "14686:157:3",
                     "trueBody": {
                       "id": 3743,
                       "nodeType": "Block",
-                      "src": "14732:117:3",
+                      "src": "14726:117:3",
                       "statements": [
                         {
                           "assignments": [
@@ -33986,7 +33986,7 @@
                               "name": "secondsToHours",
                               "nodeType": "VariableDeclaration",
                               "scope": 3743,
-                              "src": "14750:22:3",
+                              "src": "14744:22:3",
                               "stateVariable": false,
                               "storageLocation": "default",
                               "typeDescriptions": {
@@ -33997,7 +33997,7 @@
                                 "id": 3734,
                                 "name": "uint256",
                                 "nodeType": "ElementaryTypeName",
-                                "src": "14750:7:3",
+                                "src": "14744:7:3",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
@@ -34021,7 +34021,7 @@
                                 "kind": "number",
                                 "lValueRequested": false,
                                 "nodeType": "Literal",
-                                "src": "14785:5:3",
+                                "src": "14779:5:3",
                                 "subdenomination": null,
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_rational_21600_by_1",
@@ -34044,7 +34044,7 @@
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
                                 "referencedDeclaration": 3718,
-                                "src": "14775:5:3",
+                                "src": "14769:5:3",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_uint256",
                                   "typeString": "uint256"
@@ -34058,7 +34058,7 @@
                               "memberName": "div",
                               "nodeType": "MemberAccess",
                               "referencedDeclaration": 2801,
-                              "src": "14775:9:3",
+                              "src": "14769:9:3",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
                                 "typeString": "function (uint256,uint256) pure returns (uint256)"
@@ -34072,14 +34072,14 @@
                             "lValueRequested": false,
                             "names": [],
                             "nodeType": "FunctionCall",
-                            "src": "14775:16:3",
+                            "src": "14769:16:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             }
                           },
                           "nodeType": "VariableDeclarationStatement",
-                          "src": "14750:41:3"
+                          "src": "14744:41:3"
                         },
                         {
                           "expression": {
@@ -34089,7 +34089,7 @@
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
                             "referencedDeclaration": 3735,
-                            "src": "14821:14:3",
+                            "src": "14815:14:3",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
@@ -34098,18 +34098,18 @@
                           "functionReturnParameters": 3701,
                           "id": 3742,
                           "nodeType": "Return",
-                          "src": "14814:21:3"
+                          "src": "14808:21:3"
                         }
                       ]
                     }
                   },
                   "id": 3745,
                   "nodeType": "IfStatement",
-                  "src": "14602:247:3",
+                  "src": "14596:247:3",
                   "trueBody": {
                     "id": 3730,
                     "nodeType": "Block",
-                    "src": "14654:27:3",
+                    "src": "14648:27:3",
                     "statements": [
                       {
                         "expression": {
@@ -34122,7 +34122,7 @@
                           "kind": "number",
                           "lValueRequested": false,
                           "nodeType": "Literal",
-                          "src": "14672:1:3",
+                          "src": "14666:1:3",
                           "subdenomination": null,
                           "typeDescriptions": {
                             "typeIdentifier": "t_rational_0_by_1",
@@ -34133,7 +34133,7 @@
                         "functionReturnParameters": 3701,
                         "id": 3729,
                         "nodeType": "Return",
-                        "src": "14665:8:3"
+                        "src": "14659:8:3"
                       }
                     ]
                   }
@@ -34157,7 +34157,7 @@
                   "name": "userAddress",
                   "nodeType": "VariableDeclaration",
                   "scope": 3747,
-                  "src": "14342:19:3",
+                  "src": "14336:19:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -34168,7 +34168,7 @@
                     "id": 3694,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "14342:7:3",
+                    "src": "14336:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -34184,7 +34184,7 @@
                   "name": "id",
                   "nodeType": "VariableDeclaration",
                   "scope": 3747,
-                  "src": "14363:10:3",
+                  "src": "14357:10:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -34195,7 +34195,7 @@
                     "id": 3696,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "14363:7:3",
+                    "src": "14357:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -34205,7 +34205,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "14341:33:3"
+              "src": "14335:33:3"
             },
             "returnParameters": {
               "id": 3701,
@@ -34217,7 +34217,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 3747,
-                  "src": "14398:7:3",
+                  "src": "14392:7:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -34228,7 +34228,7 @@
                     "id": 3699,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "14398:7:3",
+                    "src": "14392:7:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -34238,20 +34238,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "14397:9:3"
+              "src": "14391:9:3"
             },
             "scope": 3748,
-            "src": "14324:532:3",
+            "src": "14318:532:3",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "internal"
           }
         ],
         "scope": 3749,
-        "src": "4298:10565:3"
+        "src": "4298:10559:3"
       }
     ],
-    "src": "0:14864:3"
+    "src": "0:14858:3"
   },
   "compiler": {
     "name": "solc",
@@ -34259,7 +34259,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-10-27T06:31:19.691Z",
+  "updatedAt": "2020-10-27T06:36:58.811Z",
   "devdoc": {
     "methods": {}
   },
