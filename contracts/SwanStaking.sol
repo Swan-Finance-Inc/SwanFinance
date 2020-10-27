@@ -423,8 +423,7 @@ contract SwanStake is Pausable{
         emit tokenRewardTransferred(msg.sender,tokenToSend);
 
         }
-        
-        
+           
     }
         /**
      * @dev  get cycle for payout 
