@@ -454,7 +454,7 @@ contract Swan is ERC20 {
 
                name = "Swan Finance";
                symbol = "Swan";
-               _mint(address(this),50000000000 ether);
+               _mint(_owner,50000000000 ether);
 
     }
 
@@ -469,8 +469,7 @@ contract Swan is ERC20 {
     function transfer(address recipient, uint256 amount) public whenNotPaused returns (bool) {
 
         super._transfer(msg.sender, recipient, amount);
-
-
+        
         return true;
     }
 
