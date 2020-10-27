@@ -200,9 +200,16 @@ contract SwanStake is Pausable{
 
   /**
      * @dev emitted whenever user stakes tokens in the Stake Account
-     */
+  */
    
   event staked(address indexed _user,uint256 _amount,uint256 _lockupPeriod,uint256 _interest);
+   
+  /**
+     * @dev emitted whenever user stakes tokens in the Stake Account
+  **/
+
+  event claimedStakedTokens(address indexed _user,uint256 _amount);
+  
     /**
      * @dev emitted whenever user stakes tokens for One month LockUp period
      */
@@ -214,7 +221,7 @@ contract SwanStake is Pausable{
    /**
      * @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user
     */
-  event claimedTokensTransferred(address indexed _user,uint256 _amount);
+  event claimedInterestTokens(address indexed _user,uint256 _amount);
    /**
      * @dev emitted whenever weekly token rewards are transferred to the user.
     */
@@ -376,7 +383,7 @@ contract SwanStake is Pausable{
         require (now >= OneMonth.time.add(OneMonth.timeperiod * 1 minutes),"Deadline is not over");// will be chnanged to "months" time unit for production
         require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
         userTotalStakes[msg.sender] -= OneMonth.amount;
-        emit claimedTokensTransferred(msg.sender,OneMonth.amount);
+        emit claimedInterestTokens(msg.sender,OneMonth.amount);
         OneMonth.amount = 0;
     } 
     
@@ -390,7 +397,7 @@ contract SwanStake is Pausable{
       isStaker[msg.sender] = false;
       stakeData.unstaked = true;
       stakeAccountDetails[msg.sender] = stakeData;
-
+      emit claimedStakedTokens(msg.sender,stakeData.stakedAmount);
     } 
     /**
      * @dev  user can claim payouts in everyt seven days 
