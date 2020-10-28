@@ -438,22 +438,17 @@ contract Swan is ERC20 {
     uint8   public constant decimals = 18;
     
     
-    uint256 public reserveWalletTokens = 20000000000 ether;
-    uint256 public interestPayoutWallet = 10000000000 ether;
     uint256 public teamMemberHrWallet = 5000000000 ether;
-    uint256 public generalFundWallet = 1000000000 ether;
-    uint256 public tokenSaleWallet = 14000000000 ether;
 
     mapping (address => uint256) public teamTokensLeft;
     
-    address public contractAddress;
-    bool public contractSaleOver;
+    bool public contractSaleOver = false;
     uint256 public contractSaleOverTime;
 
     constructor(address _owner) public Owned(_owner) {
 
                name = "Swan Finance";
-               symbol = "Swan";
+               symbol = "SWAN";
                _mint(_owner,50000000000 ether);
 
     }
@@ -469,7 +464,8 @@ contract Swan is ERC20 {
     function transfer(address recipient, uint256 amount) public whenNotPaused returns (bool) {
 
         super._transfer(msg.sender, recipient, amount);
-        
+
+
         return true;
     }
 
@@ -492,53 +488,19 @@ contract Swan is ERC20 {
         return true;
     }
 
-   function sendTokenSaleWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
-       
-       require(tokenSaleWallet >= value, "token sale wallet has less tokens then value");
-       tokenSaleWallet = tokenSaleWallet.sub(value);
-       transfer(userAddress, value);
-       
-   } 
 
-
-   function sendGeneralFundWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
-       
-       require(generalFundWallet >= value , "General wallet has less tokens then value");
-       generalFundWallet = generalFundWallet.sub(value);
-       transfer(userAddress, value);
-       
-   } 
-
-
-   function sendReserveWalletTokens(address userAddress, uint256 value) public onlyOwner returns (bool) {
-       
-       require(reserveWalletTokens >= value , "Reserve wallet has less tokens then value");
-       reserveWalletTokens = reserveWalletTokens.sub(value);
-       transfer(userAddress, value);
-       
-   } 
-
-   function sendTeamMemberHrWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
+   function sendTeamMemberHrWallet(address userAddress, uint256 value) external onlyOwner returns (bool) {
        
        require(teamMemberHrWallet >= value , "Team and HR wallet has less tokens then value");
        teamMemberHrWallet = teamMemberHrWallet.sub(value);
        uint256 halfTokens = value.div(2);
-       teamTokensLeft[msg.sender] = halfTokens.add(teamTokensLeft[msg.sender]);
+       teamTokensLeft[userAddress] = halfTokens.add(teamTokensLeft[userAddress]);
        transfer(userAddress, halfTokens);
-       
+       transfer(address(this), halfTokens);       
    } 
 
 
-   function sendInterestPayoutWallet(address userAddress, uint256 value) public onlyOwner returns (bool) {
-       
-       require(interestPayoutWallet >= value, "InterestPayout wallet has less tokens then value");
-       interestPayoutWallet = interestPayoutWallet.sub(value);
-       transfer(userAddress, value);
-       
-   } 
-
-
-   function redeemTeamTokensLeft () public returns (bool) {
+   function redeemTeamTokensLeft () external returns (bool) {
        
        require(teamTokensLeft[msg.sender] > 0 , "Zero team tokens left");
        require(contractSaleOver && now > contractSaleOverTime.add(15552000), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
@@ -547,6 +509,13 @@ contract Swan is ERC20 {
        
    } 
 
+   function saleOverSet () external onlyOwner returns( bool) {
+       
+       require (!contractSaleOver);
+       contractSaleOver = true;
+       contractSaleOverTime = now;
+       
+   }
 
    function burn (uint256 amount) external returns (bool) {
        
@@ -554,7 +523,7 @@ contract Swan is ERC20 {
 
    } 
 
-   function transferAnyERC20Token(address tokenAddress, uint tokens) public whenNotPaused onlyOwner returns (bool success) {
+   function transferAnyERC20Token(address tokenAddress, uint tokens) external whenNotPaused onlyOwner returns (bool success) {
         require(tokenAddress != address(0));
         return ERC20(tokenAddress).transfer(owner, tokens);
     }}
