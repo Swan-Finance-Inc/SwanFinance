@@ -242,8 +242,6 @@ contract SwanStake is Pausable{
       *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) 
       *      User can earn comparatively more interest on Future stakes.
   **/
-
-  
   function stake(uint256 _amount) external returns(bool){
     require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");
     require(_amount >= 2000 ether, "Staked amount is less than $2000");
