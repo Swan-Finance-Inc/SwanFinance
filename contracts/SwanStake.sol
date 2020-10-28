@@ -242,16 +242,17 @@ contract SwanStake is Pausable{
       *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) 
       *      User can earn comparatively more interest on Future stakes.
   **/
+
+  
   function stake(uint256 _amount) external returns(bool){
     require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");
-    require(_amount >= 2000 ether, "Staked amount is less than $2000");
-
-    require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
-    uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
-    require (checkAllowance >= _amount,"User has not approved the contract yet.");
-    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
+    if(_amount >= 2000 ether){
+      require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
+      uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
+      require (checkAllowance >= _amount,"User has not approved the contract yet.");
+      require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
     
-    stakeAccountDetails[msg.sender] = StakeAccount(
+      stakeAccountDetails[msg.sender] = StakeAccount(
     {
       stakedAmount:_amount,
       time:now,
@@ -259,10 +260,29 @@ contract SwanStake is Pausable{
       unstaked:false
     });
     
-    isStaker[msg.sender] = true;
-    userTotalStakes[msg.sender] += _amount;
-    emit staked(msg.sender,_amount,4,14);
+      isStaker[msg.sender] = true;
+      userTotalStakes[msg.sender] += _amount;
+      emit staked(msg.sender,_amount,4,14);
+    }else{
+      require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
+      uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
+      require (checkAllowance >= _amount,"User has not approved the contract yet.");
+      require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
+    
+      stakeAccountDetails[msg.sender] = StakeAccount(
+    {
+      stakedAmount:_amount,
+      time:now,
+      interestRate:14,
+      unstaked:false
+    });
+    
+      userTotalStakes[msg.sender] += _amount;
+      emit staked(msg.sender,_amount,4,14); 
+    }
   }
+
+    
       /**
      * @dev  User can earn interest by staking for 1 month
 
@@ -421,7 +441,8 @@ contract SwanStake is Pausable{
         emit tokenRewardTransferred(msg.sender,tokenToSend);
 
         }
-           
+        
+        
     }
         /**
      * @dev  get cycle for payout 
