@@ -89,20 +89,13 @@ contract("SwanStaking", (accounts)=>{
 	**/
 
 	it("User should be able to Stake for 1 month LockUp period", async ()=>{
-		//Checking is User is STAKER
 		const bool_staker = await swanInstance.isStaker(accounts[1]);
-
-		// Checking User Stake Details update in Swan Stakng Contract
 		const stake = await swanInstance.stakeTokensOneMonth(1000, {from:accounts[1] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[1]);
-		
-		// Checking SwanStaking contract token balance change
-
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
 
-		//Checking sturct updation in the Staking contract
 		assert.equal(event._user,accounts[1],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "1","LockUpPeriod is not same");
@@ -169,8 +162,6 @@ contract("SwanStaking", (accounts)=>{
 
 		assert.equal(event._user,accounts[1],"User is not the same");
 		assert.equal(event._amount.toString(), "2000000000000000000000","Amount entered is not same")
-
-
 		assert.equal(bool_staker,false,"User is Staker even after Claiming Staked Tokens");
 		assert.equal(tokenBalanceAfterWithdrawl.toString(),"2000","User staked balance didn't decrease.")
 		assert.equal(totalStakedTokens.toString(), "2000","Total Staked tokens didn't decrease");
@@ -202,9 +193,7 @@ contract("SwanStaking", (accounts)=>{
 	})
 
 	it("User should be able to Withdraw 3 month Interest Earning tokens", async () => {
-		
 		const withdraw = await swanInstance.claimInterestTokens(1,{from:accounts[1]});
-
 		const tokenBalanceAfterWithdrawl = await swanInstance.userTotalStakes(accounts[1]);
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
@@ -212,11 +201,8 @@ contract("SwanStaking", (accounts)=>{
 
 		assert.equal(event._user,accounts[1],"User is not the same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not same")
-
 		assert.equal(tokenBalanceAfterWithdrawl.toString(),"0","User staked balance didn't decrease.")
 		assert.equal(totalStakedTokens.toString(), "0","Total Staked tokens didn't decrease");
- 
-
 	})
 });
 
