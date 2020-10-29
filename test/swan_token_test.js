@@ -1,6 +1,8 @@
 const ERC20 = artifacts.require("Swan")
 const SwanStakingContract = artifacts.require("SwanStake")
 
+const { time } = require('@openzeppelin/test-helpers');
+
 contract('ERC20', (accounts) =>{
 	let erc20Instance = null;
 	let swanInstance = null;
@@ -23,7 +25,7 @@ contract('ERC20', (accounts) =>{
 
 	it("Symbol should be Swan", async () => {
 		const symbol = await erc20Instance.symbol();
-		assert.equal(symbol,"Swan","Token symbol is not correct")
+		assert.equal(symbol,"SWAN","Token symbol is not correct")
 	})
 
 	it("Total Supply Should be 50000000000000000000000000000", async () => {
@@ -36,55 +38,10 @@ contract('ERC20', (accounts) =>{
 		assert.equal(totalTokens.toString(), '50000000000000000000000000000',"Tokens Minted doesn't match tokens owned by Contract")
 	});
 
-
-	it("sendTokenSaleWallet is transferring tokens as expected", async () => {
-		const beforeBalance = await erc20Instance.balanceOf(accounts[1]);
-		await erc20Instance.sendTokenSaleWallet(accounts[1],1000);
-		const afterBalance = await erc20Instance.balanceOf(accounts[1]);
-		const walletBalanceAfter = await erc20Instance.tokenSaleWallet();
-		const currentBalance  = afterBalance - beforeBalance;
-
-		assert.equal(currentBalance.toString(), "1000", "sendTokenSaleWallet function didn't transfer tokens as expected.")	
-		assert.equal(walletBalanceAfter.toString(), "13999999999999999999999999000","Wallet Balance didn't change")
-	});
-
-	it("sendGeneralFundWallet is transferring tokens as expected", async () => {
-		const beforeBalance = await erc20Instance.balanceOf(accounts[1]);
-		await erc20Instance.sendGeneralFundWallet(accounts[1],1000);
-		const afterBalance = await erc20Instance.balanceOf(accounts[1]);
-		const walletBalanceAfter = await erc20Instance.generalFundWallet();
-		const currentBalance  = afterBalance - beforeBalance;
-		
-		assert.equal(currentBalance.toString(), "1000", "sendGeneralFundWallet function didn't transfer tokens as expected.")	
-		assert.equal(walletBalanceAfter.toString(), "999999999999999999999999000","Wallet Balance didn't change")
-
-	});
-
-	it("sendReserveWalletTokens is transferring tokens as expected", async () => {
-		const beforeBalance = await erc20Instance.balanceOf(accounts[1]);
-		await erc20Instance.sendReserveWalletTokens(accounts[1],1000);
-		const afterBalance = await erc20Instance.balanceOf(accounts[1]);
-		const walletBalanceAfter = await erc20Instance.reserveWalletTokens();
-
-		const currentBalance  = afterBalance - beforeBalance;
-		assert.equal(currentBalance.toString(), "1000", "sendReserveWalletTokens function didn't transfer tokens as expected.")	
-		assert.equal(walletBalanceAfter.toString(), "19999999999999999999999999000","Wallet Balance didn't change")
-	});
-
-	it("sendInterestPayoutWallet is transferring tokens as expected", async () => {
-		const beforeBalance = await erc20Instance.balanceOf(accounts[1]);
-		await erc20Instance.sendInterestPayoutWallet(accounts[1],1000);
-		const afterBalance = await erc20Instance.balanceOf(accounts[1]);
-		const walletBalanceAfter = await erc20Instance.interestPayoutWallet();
-		const currentBalance  = afterBalance - beforeBalance;
-		assert.equal(currentBalance.toString(), "1000", "sendInterestPayoutWallet function didn't transfer tokens as expected.")	
-		assert.equal(walletBalanceAfter.toString(), "9999999999999999999999999000","Wallet Balance didn't change")
-	});
-
 	it("sendTeamMemberHrWallet function is transferring  tokens as expected", async () => {
 		const beforeBalance= await erc20Instance.balanceOf(accounts[1]);
 		await erc20Instance.sendTeamMemberHrWallet(accounts[1],1000)
-		const teamTokens = await erc20Instance.teamTokensLeft(accounts[0]);
+		const teamTokens = await erc20Instance.teamTokensLeft(accounts[1]);
 		const afterBalance = await erc20Instance.balanceOf(accounts[1]);
 		const walletBalanceAfter = await erc20Instance.teamMemberHrWallet();
 		const currentBalance = afterBalance - beforeBalance;
@@ -93,13 +50,35 @@ contract('ERC20', (accounts) =>{
 		assert.equal(teamTokens.toString(), "500","Team Tokens assigned is wrong")
 	});
 
+	it("saleOverSet function is working fine", async () => {
+		await erc20Instance.saleOverSet();
+		const bool_contractSaleOver = await erc20Instance.contractSaleOver();
+
+		assert.equal(bool_contractSaleOver,true,"Contract Sale over didn't switch to true")
+	});
+
 	it("Checked the Burnt function ", async () => {
 		const balanceBeforeBurn = await  erc20Instance.balanceOf(accounts[1]);
-		await erc20Instance.burn(1000,{from: accounts[1]});
+		await erc20Instance.burn(500,{from: accounts[1]});
 		const currentBalance = await erc20Instance.balanceOf(accounts[1]);
 		const currentSupply = await erc20Instance.totalSupply();
-		const checkBalance = balanceBeforeBurn - 1000;
+		const checkBalance = balanceBeforeBurn - 500;
 		assert.equal(currentBalance.toString(), checkBalance.toString(),"Burn function is not correct")
-		assert.equal(currentSupply.toString(), "49999999999999999999999999000","Total Supply didn't decrease");
+		assert.equal(currentSupply.toString(), "49999999999999999999999999500","Total Supply didn't decrease");
 	})
+
+	it("Increasing Time",async () => {
+		await time.increase(time.duration.minutes(260200));
+	})
+
+	it("Should be able to Redeem Team Tokens Left",async () => {
+
+		await erc20Instance.redeemTeamTokensLeft({ from:accounts[1] });
+		
+		const tokenLeft = await  erc20Instance.teamTokensLeft(accounts[1]);
+		const userBalance = await erc20Instance.balanceOf(accounts[1]);
+		// console.log(userBalance.toString());
+		assert.equal(tokenLeft.toString(),'0',"Token Left is not equal to 0");
+	});
+
 })
