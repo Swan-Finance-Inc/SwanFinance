@@ -84,4 +84,23 @@ contract('ERC20', (accounts) =>{
 
 	});
 
+	it("Should be able to PAUSE Token and check for Correctness", async () => {
+		await erc20Instance.pause({ from:accounts[0] });
+
+		try{
+		await erc20Instance.sendTeamMemberHrWallet(accounts[2],1000);
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+		await erc20Instance.unpause({from:accounts[0]})
+		await erc20Instance.sendTeamMemberHrWallet(accounts[2],1000);
+
+		const balanceOfUser = await  erc20Instance.balanceOf(accounts[2]);
+
+		assert.equal(balanceOfUser.toString(), "500","Recipient balance is not correct");
+
+
+	});
 })
