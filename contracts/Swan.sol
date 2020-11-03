@@ -465,7 +465,6 @@ contract Swan is ERC20 {
 
         super._transfer(msg.sender, recipient, amount);
 
-
         return true;
     }
 
@@ -501,11 +500,11 @@ contract Swan is ERC20 {
 
 
    function redeemTeamTokensLeft () external returns (bool) {
-       
        require(teamTokensLeft[msg.sender] > 0 , "Zero team tokens left");
        require(contractSaleOver && now > contractSaleOverTime.add(15552000), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
-       transfer(msg.sender, teamTokensLeft[msg.sender]);
+       uint256 tokensToSend = teamTokensLeft[msg.sender];
        teamTokensLeft[msg.sender] = 0;
+       super._transfer(address(this),msg.sender,tokensToSend);
        
    } 
 
