@@ -1,4 +1,3 @@
-
 pragma solidity 0.5.16;
 
 
@@ -488,7 +487,7 @@ contract Swan is ERC20 {
     }
 
 
-   function sendTeamMemberHrWallet(address userAddress, uint256 value) external onlyOwner returns (bool) {
+   function sendTeamMemberHrWallet(address userAddress, uint256 value) external whenNotPaused onlyOwner returns (bool) {
        
        require(teamMemberHrWallet >= value , "Team and HR wallet has less tokens then value");
        teamMemberHrWallet = teamMemberHrWallet.sub(value);
@@ -499,16 +498,18 @@ contract Swan is ERC20 {
    } 
 
 
-   function redeemTeamTokensLeft () external returns (bool) {
+
+   function redeemTeamTokensLeft () external whenNotPaused returns (bool) {
+       
        require(teamTokensLeft[msg.sender] > 0 , "Zero team tokens left");
-       require(contractSaleOver && now > contractSaleOverTime.add(15552000), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
-       uint256 tokensToSend = teamTokensLeft[msg.sender];
+       require(contractSaleOver && now > contractSaleOverTime.add(2 minutes), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
+       super._transfer(address(this), msg.sender, teamTokensLeft[msg.sender]);
        teamTokensLeft[msg.sender] = 0;
-       super._transfer(address(this),msg.sender,tokensToSend);
        
    } 
 
-   function saleOverSet () external onlyOwner returns( bool) {
+
+   function saleOverSet () external onlyOwner whenNotPaused returns( bool) {
        
        require (!contractSaleOver);
        contractSaleOver = true;
@@ -516,7 +517,7 @@ contract Swan is ERC20 {
        
    }
 
-   function burn (uint256 amount) external returns (bool) {
+   function burn (uint256 amount) external whenNotPaused returns (bool) {
        
        _burn(msg.sender, amount);
 

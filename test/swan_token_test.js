@@ -72,13 +72,16 @@ contract('ERC20', (accounts) =>{
 	})
 
 	it("Should be able to Redeem Team Tokens Left",async () => {
-
 		await erc20Instance.redeemTeamTokensLeft({ from:accounts[1] });
 		
 		const tokenLeft = await  erc20Instance.teamTokensLeft(accounts[1]);
 		const userBalance = await erc20Instance.balanceOf(accounts[1]);
-		// console.log(userBalance.toString());
+		const contractBalance = await erc20Instance.balanceOf(erc20Instance.address);
+
 		assert.equal(tokenLeft.toString(),'0',"Token Left is not equal to 0");
+		assert.equal(contractBalance.toString(), '0',"Contract Balance didn't decrease");
+		assert.equal(userBalance.toString(), '500',"User balance didn't increase");
+
 	});
 
 })
