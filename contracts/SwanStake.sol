@@ -358,16 +358,22 @@ contract SwanStake is Pausable{
     } 
     
 
-    function claimStakeTokens() public{
+  function claimStakeTokens() public{
       require(isStaker[msg.sender],"User is not a Staker");
+
       StakeAccount memory stakeData = stakeAccountDetails[msg.sender];
-      require (now >= stakeData.time.add(100),"Deadline NOT OVER"); //will be changed to 4 months for production use
-      require(ERC20(swanTokenAddress).transfer(msg.sender, stakeData.stakedAmount));
+      require (now >= stakeData.time.add(10368000),"Deadline NOT OVER"); //will be changed to 4 months for production use 
+      uint256 interestAmount = stakeData.stakedAmount.mul(64).div(100);
+      uint256 tokensToSend = stakeData.stakedAmount.add(interestAmount);
+      require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
+      
       userTotalStakes[msg.sender] -= stakeData.stakedAmount;
       isStaker[msg.sender] = false;
       stakeData.unstaked = true;
       stakeAccountDetails[msg.sender] = stakeData;
-      emit claimedStakedTokens(msg.sender,stakeData.stakedAmount);
+      totalPoolRewards[msg.sender] = interestAmount;
+     
+      emit claimedStakedTokens(msg.sender,tokensToSend);
     } 
     /**
      * @dev  user can claim payouts in everyt seven days 
