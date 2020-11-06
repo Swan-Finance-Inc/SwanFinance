@@ -207,7 +207,9 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		const interestGenerated = await swanInstance.totalPoolRewards(accounts[1]);
 		const userBalance = await erc20Instance.balanceOf(accounts[1]);
 		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
+		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[1],0);
 
+		assert.equal(boolWithdrawn[5],true,"User withdraw sign is still FALSE");
 		assert.equal(interestGenerated.toString(), "1280000000000000000160","Interest Generated is not Correct");
 		assert.equal(userBalance.toString(), "31279999999999999999160","Balance of user didn't increase");
 		assert.equal(userBalanceInContract.toString(), "1000","User Balance didn't decrease in Contract");
@@ -219,7 +221,9 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		const interestGenerated = await swanInstance.totalPoolRewards(accounts[1]);
 		const userBalance = await erc20Instance.balanceOf(accounts[1]);
 		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
+		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[1],1);
 
+		assert.equal(boolWithdrawn[5],true,"User withdraw sign is still FALSE");
 		assert.equal(interestGenerated.toString(), "1280000000000000000760","Interest Generated is not Correct");
 		assert.equal(userBalance.toString(), "31280000000000000000760","Balance of user didn't increase");
 		assert.equal(userBalanceInContract.toString(), "0","User Balance didn't decrease in Contract");
