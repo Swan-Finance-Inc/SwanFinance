@@ -41,7 +41,6 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		
 		const contractBalance = await erc20Instance.balanceOf(erc20Instance.address);
 
-		console.log(`contract Balance${contractBalance}`)
 		await erc20Instance.approve(swanInstance.address,approveAmount,{ from:accounts[1]} );
 		await erc20Instance.approve(swanInstance.address,approveAmount,{ from:accounts[2]} );
 	});
@@ -81,7 +80,7 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 	});
 
 /**
-		*Requirements for testing stakeTokensOneMonth Function
+		*Requirements for testing investing Functions
 		* Must increases Contract's Balance
 		* Must modify the struct
 		* Must deduct User balance of Tokens
@@ -182,12 +181,45 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		const interest = await swanInstance.totalPoolRewards(accounts[1]);
 		const userBalance = await erc20Instance.balanceOf(accounts[1]);
 		const isStaker = await swanInstance.isStaker(accounts[1]);
-		console.log(`userBalance-${userBalance}`);
 		
 		assert.equal(interest.toString(), "1280000000000000000000","Rewards not transferred to User");
 		assert.equal(isStaker,false,"User wasn't marked as Non Staker");
 		assert.equal(userBalance.toString(), "31279999999999999998000","User's Balance Didn't increase");
 	});
+
+	/**
+		*Requirements for testing Withdrawl Functions
+		* Must transfer invested amount
+		* Must transfer Interest Earned
+		* Must update the totalPoolRewards
+		* Must deduct user's total stakes in contract
+	**/
+
+
+	it("Users should be able to withdraw invested amounts after 1 month period", async()=>{
+		await swanInstance.claimInterestTokens(0, {from: accounts[1]});
+
+		const interestGenerated = await swanInstance.totalPoolRewards(accounts[1]);
+		const userBalance = await erc20Instance.balanceOf(accounts[1]);
+		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
+
+		assert.equal(interestGenerated.toString(), "1280000000000000000160","Interest Generated is not Correct");
+		assert.equal(userBalance.toString(), "31279999999999999999160","Balance of user didn't increase");
+		assert.equal(userBalanceInContract.toString(), "1000","User Balance didn't decrease in Contract");
+	});
+
+	it("Users should be able to withdraw invested amounts after 3 month period", async()=>{
+		await swanInstance.claimInterestTokens(1, {from: accounts[1]});
+
+		const interestGenerated = await swanInstance.totalPoolRewards(accounts[1]);
+		const userBalance = await erc20Instance.balanceOf(accounts[1]);
+		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
+
+		assert.equal(interestGenerated.toString(), "1280000000000000000760","Interest Generated is not Correct");
+		assert.equal(userBalance.toString(), "31280000000000000000760","Balance of user didn't increase");
+		assert.equal(userBalanceInContract.toString(), "0","User Balance didn't decrease in Contract");
+	});
 });
+
 
 
