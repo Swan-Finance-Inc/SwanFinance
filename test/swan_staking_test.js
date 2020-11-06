@@ -175,6 +175,11 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		assert.equal(totalStakedTokens.toString(), "402000000000000000004000","Staking Contract token balance did not update as expected")
 	})
 
+
+	it("Time should increase", async () => {
+		await time.increase(time.duration.minutes(10));
+	})
+
 	it('Stakers should be able to CLAIM their Staked Tokens with INTEREST', async () => {
 		await swanInstance.claimStakeTokens({from: accounts[1]});
 		
