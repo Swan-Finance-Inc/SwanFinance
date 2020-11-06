@@ -355,10 +355,10 @@ contract SwanStake is Pausable{
         uint256 totalInterest = OneMonth.interestRate.mul(OneMonth.timeperiod);
         uint256 interestAmount = OneMonth.amount.mul(totalInterest).div(100);
         uint256 tokensToSend = OneMonth.amount.add(interestAmount);
-        
+
         require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
         userTotalStakes[msg.sender] -= OneMonth.amount;
-         totalPoolRewards[msg.sender] = interestAmount;
+         totalPoolRewards[msg.sender] += interestAmount;
         emit claimedInterestTokens(msg.sender,tokensToSend);
         OneMonth.amount = 0;
     } 
@@ -377,7 +377,7 @@ contract SwanStake is Pausable{
       isStaker[msg.sender] = false;
       stakeData.unstaked = true;
       stakeAccountDetails[msg.sender] = stakeData;
-      totalPoolRewards[msg.sender] = interestAmount;
+      totalPoolRewards[msg.sender] += interestAmount;
      
       emit claimedStakedTokens(msg.sender,tokensToSend);
     } 
