@@ -83,6 +83,7 @@ it("User should be able to Transfer and Approve tokens", async () => {
 		* APY must be added correctly
 	**/
 
+
 	it("STAKERs should be able to Stake for 1 month LockUp period with High APY", async ()=>{
 
 		// Checking User Stake Details update in Swan Stakng Contract
