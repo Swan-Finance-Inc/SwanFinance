@@ -245,13 +245,14 @@ contract SwanStake is Pausable{
 
   
   function stake(uint256 _amount) external returns(bool){
-    require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");
-    if(_amount >= 2000 ether){
-      require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
-      uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
-      require (checkAllowance >= _amount,"User has not approved the contract yet.");
-      require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
+    require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");  
+    require (_amount >= 2000 ether,"Staking Amount is Less Than $2000");
     
+    require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
+    uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
+    require (checkAllowance >= _amount,"User has not approved the contract yet.");
+    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
+  
       stakeAccountDetails[msg.sender] = StakeAccount(
     {
       stakedAmount:_amount,
@@ -259,136 +260,87 @@ contract SwanStake is Pausable{
       interestRate:14,
       unstaked:false
     });
-    
       isStaker[msg.sender] = true;
       userTotalStakes[msg.sender] += _amount;
       emit staked(msg.sender,_amount,4,14);
-    }else{
-      require (ERC20(swanTokenAddress).balanceOf(msg.sender) >= _amount, "User doesn't have Enough Balance");
-      uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
-      require (checkAllowance >= _amount,"User has not approved the contract yet.");
-      require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
-    
-      stakeAccountDetails[msg.sender] = StakeAccount(
-    {
-      stakedAmount:_amount,
-      time:now,
-      interestRate:14,
-      unstaked:false
-    });
-    
-      userTotalStakes[msg.sender] += _amount;
-      emit staked(msg.sender,_amount,4,14); 
-    }
-  }
-
-    
+  }    
       /**
      * @dev  User can earn interest by staking for 1 month
 
      */
 
-  function stakeTokensOneMonth (uint256 amount)  external returns (bool) {
-      
-      if (isStaker[msg.sender]) {
-          
+
+  function stakeTokensOneMonth (uint256 amount)  external returns (bool) {   
        require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
        uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
        require (checkAllowance >= amount, 'allowance is wrong');
        require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');
        
        uint256 oneMonthNum = interestAccountNumber[msg.sender];
-       
-     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
-       {
+      if (isStaker[msg.sender]){
+       interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
+         {
+              amount: amount,
+              time: now,
+              interestRate : 16,
+              interestPayouts : 0,
+              timeperiod : 1
 
-            amount: amount,
-            time: now,
-            interestRate : 16,
-            interestPayouts : 0,
-            timeperiod : 1
+         });       
 
-       });       
-
-        userTotalStakes[msg.sender] += amount;
-        interestAccountNumber[msg.sender]++;
         emit oneMonthStaked(msg.sender,amount,1,16);
-      } else {
-          
-       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
-       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
-       require (checkAllowance >= amount, 'allowance is wrong');
-       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          
+      }else {
+         interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
+           {
+                amount: amount,
+                time: now,
+                interestRate : 12,
+                interestPayouts : 0,
+                timeperiod : 1
+           });  
+           emit oneMonthStaked(msg.sender,amount,1,12);     
+          }
 
-       uint256 oneMonthNum = interestAccountNumber[msg.sender];
-       
-     interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
-       {
-            amount: amount,
-            time: now,
-            interestRate : 12,
-            interestPayouts : 0,
-            timeperiod : 1
-       });       
-          userTotalStakes[msg.sender] += amount;
-          interestAccountNumber[msg.sender]++;
-          emit oneMonthStaked(msg.sender,amount,1,12);
-
-      }
+      userTotalStakes[msg.sender] += amount;
+      interestAccountNumber[msg.sender]++; 
   }  
-
     /**
      * @dev  User can earn interest by staking for 3 month
 
      */
   function stakeTokensThreeMonth (uint256 amount)  external returns (bool) {
-      
-      if (isStaker[msg.sender]){
-          
-       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
-       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
-       require (checkAllowance >= amount, 'allowance is wrong');
-       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');
-       uint256 oneMonthNum = interestAccountNumber[msg.sender];
-       
-        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
-       {
+        
+     require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
+     uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
+     require (checkAllowance >= amount, 'allowance is wrong');
+     require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');
+    
+     uint256 oneMonthNum = interestAccountNumber[msg.sender];
+    if (isStaker[msg.sender]){
+       interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
+         {
+              amount: amount,
+              time: now,
+              interestRate : 20,
+              interestPayouts : 0,
+              timeperiod : 3
+         });       
 
-            amount: amount,
-            time: now,
-            interestRate : 20,
-            interestPayouts : 0,
-            timeperiod : 3
-
-       });       
-        userTotalStakes[msg.sender] += amount;
-        interestAccountNumber[msg.sender]++;
-        emit threeMonthStaked(msg.sender,amount,3,20);
-          
-      } else {
-          
-       require(ERC20(swanTokenAddress).balanceOf(msg.sender) >= amount,'balance of a user is less then value');
-       uint256 checkAllowance = ERC20(swanTokenAddress).allowance(msg.sender, address(this)); 
-       require (checkAllowance >= amount, 'allowance is wrong');
-       require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');          
-
-              uint256 oneMonthNum = interestAccountNumber[msg.sender];
-       
-        interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
-       {
-
-            amount: amount,
-            time: now,
-            interestRate : 16,
-            interestPayouts : 0,
-            timeperiod : 3
-
-       });       
-          userTotalStakes[msg.sender] += amount;
-          interestAccountNumber[msg.sender]++;
-          emit threeMonthStaked(msg.sender,amount,3,16);
-      }
-    }
+        emit oneMonthStaked(msg.sender,amount,3,20);
+      }else {
+         interestAccountDetails[msg.sender][oneMonthNum ++] = interestAccount(
+           {
+              amount: amount,
+              time: now,
+              interestRate : 16,
+              interestPayouts : 0,
+              timeperiod : 3
+           });  
+           emit oneMonthStaked(msg.sender,amount,3,16);     
+          }
+      userTotalStakes[msg.sender] += amount;
+      interestAccountNumber[msg.sender]++; 
+  }  
 
     /**
      * @dev  claim tokens for 1 or 3 months from same function
