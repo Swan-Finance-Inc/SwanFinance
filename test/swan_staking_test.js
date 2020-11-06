@@ -26,16 +26,22 @@ contract("SwanStaking", (accounts)=>{
 		
 	});
 
-it("User should be able to Transfer and Approve tokens", async () => {
+it("Transferring Balance to User Accounts and Token Contract", async () => {
 		const transferAmount = new BN(30000000000000000000000);
 		const approveAmount = new BN(2500000000000000000000);
+		const contractAmount = new BN(400000000000000000000000);
 									
 
 		const beforeBalance = await erc20Instance.balanceOf(accounts[1]);
+		
 
 		await erc20Instance.transfer(accounts[1],transferAmount);
-		await erc20Instance.transfer(accounts[2],transferAmount);
+		await erc20Instance.transfer(accounts[2],2000);
+		await erc20Instance.transfer(swanInstance.address, contractAmount);
+		
+		const contractBalance = await erc20Instance.balanceOf(erc20Instance.address);
 
+		console.log(`contract Balance${contractBalance}`)
 		await erc20Instance.approve(swanInstance.address,approveAmount,{ from:accounts[1]} );
 		await erc20Instance.approve(swanInstance.address,approveAmount,{ from:accounts[2]} );
 	});
@@ -71,7 +77,7 @@ it("User should be able to Transfer and Approve tokens", async () => {
 		assert.equal(bool_beforeStake, false, "User assigned as Staker before Staking")
 		assert.equal(bool_afterStake,true,"User NOT assigned as Staker even after Staking")
 		assert.equal(BigInt(currentTokenBalance).toString(), event._amount.toString(), "User token staking details didn't update as expected");
-		assert.equal(totalStakedTokens.toString(), "2000000000000000000000","Staking Contract token balance did not update as expected");
+		assert.equal(totalStakedTokens.toString(), "402000000000000000000000","Staking Contract token balance did not update as expected");
 	});
 
 /**
@@ -101,7 +107,7 @@ it("User should be able to Transfer and Approve tokens", async () => {
 		assert.equal(event._lockupPeriod.toString(), "1","LockUpPeriod is not same");
 		assert.equal(event._interest.toString(), "16","APY not assigned currectly for 16%");	
 		assert.equal(tokenBalanceAfterStake.toString(), "2000000000000000001000", "User token staking details didn't update as expected");
-		assert.equal(totalStakedTokens.toString(), "2000000000000000001000","Staking Contract token balance did not update as expected")
+		assert.equal(totalStakedTokens.toString(), "402000000000000000001000","Staking Contract token balance did not update as expected")
 	})
 
 	it("Non-STAKERs should be able to Stake for 1 month LockUp period with Low APY", async ()=>{
@@ -122,7 +128,7 @@ it("User should be able to Transfer and Approve tokens", async () => {
 		assert.equal(event._interest.toString(), "12","APY not assigned currectly for 12%");	
 	
 		assert.equal(tokenBalanceAfterStake.toString(), "1000", "User token staking details didn't update as expected");
-		assert.equal(totalStakedTokens.toString(), "2000000000000000002000","Staking Contract token balance did not update as expected")
+		assert.equal(totalStakedTokens.toString(), "402000000000000000002000","Staking Contract token balance did not update as expected")
 	})
 
 	it("STAKERs should be able to Stake for 3 month LockUp period with High APY", async ()=>{
@@ -143,7 +149,7 @@ it("User should be able to Transfer and Approve tokens", async () => {
 		assert.equal(event._interest.toString(), "20","APY not assigned currectly for 16%");
 	
 		assert.equal(tokenBalanceAfterStake.toString(), "2000000000000000002000", "User token staking details didn't update as expected");
-		assert.equal(totalStakedTokens.toString(), "2000000000000000003000","Staking Contract token balance did not update as expected")
+		assert.equal(totalStakedTokens.toString(), "402000000000000000003000","Staking Contract token balance did not update as expected")
 	})
 
 
@@ -167,10 +173,21 @@ it("User should be able to Transfer and Approve tokens", async () => {
 		assert.equal(event._interest.toString(), "16","APY not assigned currectly for 12%");	
 
 		assert.equal(tokenBalanceAfterStake.toString(), "2000", "User token staking details didn't update as expected");
-		assert.equal(totalStakedTokens.toString(), "2000000000000000004000","Staking Contract token balance did not update as expected")
+		assert.equal(totalStakedTokens.toString(), "402000000000000000004000","Staking Contract token balance did not update as expected")
 	})
 
-
+	it('Stakers should be able to CLAIM their Staked Tokens with INTEREST', async () => {
+		await swanInstance.claimStakeTokens({from: accounts[1]});
+		
+		const interest = await swanInstance.totalPoolRewards(accounts[1]);
+		const userBalance = await erc20Instance.balanceOf(accounts[1]);
+		const isStaker = await swanInstance.isStaker(accounts[1]);
+		console.log(`userBalance-${userBalance}`);
+		
+		assert.equal(interest.toString(), "1280000000000000000000","Rewards not transferred to User");
+		assert.equal(isStaker,false,"User wasn't marked as Non Staker");
+		assert.equal(userBalance.toString(), "31279999999999999998000","User's Balance Didn't increase");
+	});
 });
 
 
