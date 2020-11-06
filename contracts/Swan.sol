@@ -286,7 +286,7 @@ contract ERC20 is IERC20, Pausable {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 value) public returns (bool) {
+    function approve(address spender, uint256 value) external returns (bool) {
         _approve(msg.sender, spender, value);
         return true;
     }
@@ -304,7 +304,7 @@ contract ERC20 is IERC20, Pausable {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) external returns (bool) {
         _approve(msg.sender, spender, _allowances[msg.sender][spender].add(addedValue));
         return true;
     }
@@ -323,7 +323,7 @@ contract ERC20 is IERC20, Pausable {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) external returns (bool) {
         _approve(msg.sender, spender, _allowances[msg.sender][spender].sub(subtractedValue));
         return true;
     }
@@ -464,6 +464,7 @@ contract Swan is ERC20 {
 
         super._transfer(msg.sender, recipient, amount);
 
+
         return true;
     }
 
@@ -479,7 +480,7 @@ contract Swan is ERC20 {
      * - the caller must have allowance for `sender`'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public whenNotPaused returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount) external whenNotPaused returns (bool) {
 
         super._transferFrom(sender, recipient, amount);
 
@@ -494,32 +495,33 @@ contract Swan is ERC20 {
        uint256 halfTokens = value.div(2);
        teamTokensLeft[userAddress] = halfTokens.add(teamTokensLeft[userAddress]);
        transfer(userAddress, halfTokens);
-       transfer(address(this), halfTokens);       
+       transfer(address(this), halfTokens);  
+       return true;            
    } 
-
 
 
    function redeemTeamTokensLeft () external whenNotPaused returns (bool) {
        
        require(teamTokensLeft[msg.sender] > 0 , "Zero team tokens left");
-       require(contractSaleOver && now > contractSaleOverTime.add(2 minutes), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
+       require(contractSaleOver && now > contractSaleOverTime.add(15552000), "Either sale is not over or 6 months not complete yet"); // 86400×30×6
        super._transfer(address(this), msg.sender, teamTokensLeft[msg.sender]);
        teamTokensLeft[msg.sender] = 0;
+       return true;
        
    } 
-
 
    function saleOverSet () external onlyOwner whenNotPaused returns( bool) {
        
        require (!contractSaleOver);
        contractSaleOver = true;
        contractSaleOverTime = now;
-       
+       return true;       
    }
 
    function burn (uint256 amount) external whenNotPaused returns (bool) {
        
        _burn(msg.sender, amount);
+              return true;
 
    } 
 
@@ -527,3 +529,4 @@ contract Swan is ERC20 {
         require(tokenAddress != address(0));
         return ERC20(tokenAddress).transfer(owner, tokens);
     }}
+
