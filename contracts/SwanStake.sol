@@ -351,9 +351,15 @@ contract SwanStake is Pausable{
         interestAccount memory OneMonth =  interestAccountDetails[msg.sender][id];
         require (OneMonth.amount >= 0 );
         require (now >= OneMonth.time.add(OneMonth.timeperiod * 1 minutes),"Deadline is not over");// will be chnanged to "months" time unit for production
-        require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
+
+        uint256 totalInterest = OneMonth.interestRate.mul(OneMonth.timeperiod);
+        uint256 interestAmount = OneMonth.amount.mul(totalInterest).div(100);
+        uint256 tokensToSend = OneMonth.amount.add(interestAmount);
+        
+        require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
         userTotalStakes[msg.sender] -= OneMonth.amount;
-        emit claimedInterestTokens(msg.sender,OneMonth.amount);
+         totalPoolRewards[msg.sender] = interestAmount;
+        emit claimedInterestTokens(msg.sender,tokensToSend);
         OneMonth.amount = 0;
     } 
     
@@ -362,7 +368,7 @@ contract SwanStake is Pausable{
       require(isStaker[msg.sender],"User is not a Staker");
 
       StakeAccount memory stakeData = stakeAccountDetails[msg.sender];
-      require (now >= stakeData.time.add(10368000),"Deadline NOT OVER"); //will be changed to 4 months for production use 
+      //require (now >= stakeData.time.add(10368000),"Deadline NOT OVER"); //will be changed to 4 months for production use 
       uint256 interestAmount = stakeData.stakedAmount.mul(64).div(100);
       uint256 tokensToSend = stakeData.stakedAmount.add(interestAmount);
       require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
