@@ -357,14 +357,9 @@ contract SwanStake is Pausable{
         require (OneMonth.amount > 0 );
         require (now >= OneMonth.time.add(OneMonth.timeperiod * 1 minutes),"Deadline is not over");// will be chnanged to "months" time unit for production
 
-        uint256 totalInterest = OneMonth.interestRate.mul(OneMonth.timeperiod);
-        uint256 interestAmount = OneMonth.amount.mul(totalInterest).div(100);
-        uint256 tokensToSend = OneMonth.amount.add(interestAmount);
-
-        require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
+        require(ERC20(swanTokenAddress).transfer(msg.sender, OneMonth.amount));
         userTotalStakes[msg.sender] -= OneMonth.amount;
-         totalPoolRewards[msg.sender] += interestAmount;
-        emit claimedInterestTokens(msg.sender,tokensToSend);
+        emit claimedInterestTokens(msg.sender,OneMonth.amount);
         OneMonth.withdrawn = true;
         interestAccountDetails[msg.sender][id] = OneMonth;
 
