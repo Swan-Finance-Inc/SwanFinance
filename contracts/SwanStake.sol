@@ -371,7 +371,7 @@ contract SwanStake is Pausable{
 
       StakeAccount memory stakeData = stakeAccountDetails[msg.sender];
       require (now >= stakeData.time.add(6),"Deadline NOT OVER"); // 10368000 will be changed to 4 months for production use 
-      uint256 interestAmount = stakeData.stakedAmount.mul(64).div(100);
+      uint256 interestAmount = stakeData.stakedAmount.mul(14).div(100);
       uint256 tokensToSend = stakeData.stakedAmount.add(interestAmount);
       require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
       
