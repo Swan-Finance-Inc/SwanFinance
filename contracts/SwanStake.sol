@@ -201,41 +201,26 @@ contract SwanStake is Pausable{
   mapping(address => mapping (uint256 => InterestAccount)) public InterestAccountDetails;
 
 
-  /**
-     * @dev emitted whenever user stakes tokens in the Stake Account
-  */
-   
+  //  @dev emitted whenever user stakes tokens in the Stake Account
   event staked(address indexed _user,uint256 _amount,uint256 _lockupPeriod,uint256 _interest);
-   
-  /**
-     * @dev emitted whenever user stakes tokens in the Stake Account
-  **/
-
+  // @dev emitted whenever user stakes tokens in the Stake Account
   event claimedStakedTokens(address indexed _user,uint256 _amount);
   
-    /**
-     * @dev emitted whenever user stakes tokens for One month LockUp period
-     */
+   // @dev emitted whenever user stakes tokens for One month LockUp period
   event oneMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);
-   /**
-     * @dev emitted whenever user stakes tokens for Three month LockUp period
-    */
+   // @dev emitted whenever user stakes tokens for Three month LockUp period
+    
   event threeMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);
-   /**
-     * @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user
-    */
+   // @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user
   event claimedInterestTokens(address indexed _user,uint256 _amount);
-   /**
-     * @dev emitted whenever weekly token rewards are transferred to the user.
-    */
+  
+    // @dev emitted whenever weekly token rewards are transferred to the user.
+   
   event tokenRewardTransferred(address indexed _user,uint256 _amount);
+    // @dev returns the total amount of SWAN tokens staked in this contract
+ 
 
-
-event Test(uint256 leftTime);
-  /**
-      * @dev returns the total amount of SWAN tokens staked in this contract
-  **/
-
+  // @dev returns the current tokenBalance of the Stake Contract
   function totalStakedTokens() external view returns(uint256){
       return ERC20(swanTokenAddress).balanceOf(address(this));
   }
