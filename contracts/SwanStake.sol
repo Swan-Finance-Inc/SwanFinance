@@ -344,7 +344,7 @@ contract SwanStake is Pausable{
     function claimInterestTokens(uint256 id) external whenNotPaused{
         InterestAccount memory interestData =  InterestAccountDetails[msg.sender][id];
         require (interestData.amount > 0 );
-        require (now >= interestData.time.add(interestData.timeperiod.mul(2629746)),"Deadline is not over"); // will be chnanged to "months" time unit for production
+        require (now >= interestData.time.add(interestData.timeperiod.mul(2629746)),"Deadline is not over"); // 2,629,746 seconds = 1 month
       
         uint256 interestAmount = interestData.amount.mul(interestData.interestRate).div(100);
         uint256 remainingInterest = interestAmount.sub(totalPoolRewards[msg.sender][id]);
