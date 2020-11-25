@@ -21,7 +21,7 @@ contract Owned {
     }
 
     modifier onlyOwner {
-        require(msg.sender == owner);
+        require(msg.sender == owner,"Caller is Not the OWNER");
         _;
     }
 
@@ -30,7 +30,7 @@ contract Owned {
         newOwner = _newOwner;
     }
     function acceptOwnership() external {
-        require(msg.sender == newOwner);
+        require(msg.sender == newOwner,"Caller is not the selected Owner");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
         newOwner = address(0);
@@ -44,12 +44,12 @@ contract Pausable is Owned {
     bool public paused = false;
 
     modifier whenNotPaused() {
-      require(!paused);
+      require(!paused,"Contract is Paused");
       _;
     }
 
     modifier whenPaused() {
-      require(paused);
+      require(paused,"Contract is Not Paused");
       _;
     }
 
@@ -326,26 +326,24 @@ contract SwanStake is Pausable{
      *  @dev  allows users to claim their invested tokens for 1 or 3 months from same function
      *        calculates the remaining interest to be transferred to the user
      *        transfers the invested amount as well as the remaining interest to the user.
-     *         updates the user's staked balance to ZERO
-     * 
+     *        updates the user's staked balance to ZERO
      */
     function claimInterestTokens(uint256 id) external whenNotPaused{
         InterestAccount memory interestData =  InterestAccountDetails[msg.sender][id];
-        require (interestData.amount > 0 );
         require (now >= interestData.time.add(interestData.timeperiod.mul(2629746)),"Deadline is not over"); // 2,629,746 seconds = 1 month
+        require (interestData.amount > 0,"Invested Amount is ZERO");
       
         uint256 interestAmount = interestData.amount.mul(interestData.interestRate).div(100);
         uint256 remainingInterest = interestAmount.sub(totalPoolRewards[msg.sender][id]);
         uint256 tokensToSend = interestData.amount.add(remainingInterest);
         
-        require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
+        require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),"Token Transfer Failed");
         userTotalStakes[msg.sender] -= interestData.amount;
         interestData.withdrawn = true;
         interestData.amount = 0;
         InterestAccountDetails[msg.sender][id] = interestData;
         emit claimedInterestTokens(msg.sender,tokensToSend);
     } 
-    
    /**
      *  @dev  allows users to claim their staked tokens for 4 months
      *        calculates the total interest to be transferred to the user after 4 months
@@ -360,7 +358,7 @@ contract SwanStake is Pausable{
       require (now >= stakeData.time.add(10518984),"LockUp Period NOT OVER Yet"); // 10,518,984 seconds = 4 months 
       uint256 interestAmount = stakeData.stakedAmount.mul(14).div(100);
       uint256 tokensToSend = stakeData.stakedAmount.add(interestAmount);
-      require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend));
+      require(ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),"Token Transfer Failed");
       
       userTotalStakes[msg.sender] -= stakeData.stakedAmount;
       isStaker[msg.sender] = false;
@@ -391,7 +389,7 @@ contract SwanStake is Pausable{
         uint256 tokenToSend = onePercentOfInitialFund.mul(preSaleCycle).sub(interestData.interestPayouts);
         require(tokenToSend.add(totalPoolRewards[msg.sender][id]) <= interestAmount,"Total Interest has already been given out");
         interestData.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);
-        require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend));
+        require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend),"Token Transfer Failed");
         totalPoolRewards[msg.sender][id] += tokenToSend;
         emit tokenRewardTransferred(msg.sender,tokenToSend);
         return true;
