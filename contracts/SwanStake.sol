@@ -321,7 +321,6 @@ contract SwanStake is Pausable{
       InterestAccountNumber[msg.sender] = InterestAccountNumber[msg.sender].add(1); 
       return true;
   }  
-
     /**
      *  @param id - the interestAccount id 
      *  @dev  allows users to claim their invested tokens for 1 or 3 months from same function
