@@ -1,6 +1,6 @@
 pragma solidity 0.5.16;
 
-contract ERC20 {
+interface ERC20 {
 
     function transferFrom (address,address, uint256) external returns (bool);
     function balanceOf(address) external view returns (uint256);
