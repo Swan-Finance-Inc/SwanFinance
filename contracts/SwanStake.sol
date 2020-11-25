@@ -160,28 +160,21 @@ library SafeMath {
 contract SwanStake is Pausable{
 
     using SafeMath for uint256;
-
     address public swanTokenAddress;
 
-    /**
-     * @dev address of a token contrac swan 
-     */
     constructor(address swanToken) public Owned(msg.sender) {
-
     swanTokenAddress = swanToken;
   }
-
-  // Includes all the necessary details about the User's initial $2000 stake.
+  // @dev Stores STAKE ACCOUNT details of the USER
     struct StakeAccount{
       uint256 stakedAmount;
       uint256 time;
       uint256 interestRate;
       bool unstaked;
     }
-// Includes details about further major or minor stakes by a user in order to earn interest
+  // @dev Stores INTEREST ACCOUNT details of the USER
     struct InterestAccount 
     {
-
     uint256 amount;
     uint256 time;
     uint256 interestRate;
@@ -190,7 +183,6 @@ contract SwanStake is Pausable{
     bool withdrawn;
     }
 
-  // isStaker is TRUE for those addresses which have staked $2000 worth tokens.
   mapping(address => bool) public isStaker;
   mapping(address => uint256) public userTotalStakes;
   mapping (address => uint256) public InterestAccountNumber;
@@ -220,7 +212,6 @@ contract SwanStake is Pausable{
   function totalStakedTokens() external view returns(uint256){
       return ERC20(swanTokenAddress).balanceOf(address(this));
   }
-   
    /**
       * @param _amount - the amount user wants to stake
       * @dev allows the user to stake the initial $2000 worth of SWAN tokens
@@ -271,7 +262,6 @@ contract SwanStake is Pausable{
               interestPayouts : 0,
               timeperiod : 1,
               withdrawn : false
-
          });       
         emit oneMonthStaked(msg.sender,amount,1,16);
       }else {
@@ -314,7 +304,6 @@ contract SwanStake is Pausable{
               timeperiod : 3,
               withdrawn : false
          });       
-
         emit threeMonthStaked(msg.sender,amount,3,20);
       }else {
          InterestAccountDetails[msg.sender][threeMonthNum] = InterestAccount(
@@ -326,7 +315,7 @@ contract SwanStake is Pausable{
               timeperiod : 3,
               withdrawn : false
            });  
-           emit threeMonthStaked(msg.sender,amount,3,6);     
+        emit threeMonthStaked(msg.sender,amount,3,16);     
           }
       userTotalStakes[msg.sender] += amount;
       InterestAccountNumber[msg.sender] = InterestAccountNumber[msg.sender].add(1); 
@@ -411,7 +400,7 @@ contract SwanStake is Pausable{
     }
    /**
      *  @param userAddress,id - takes caller's address and interstAccount 
-     *  @dev  gets cycle for weekly payouts 
+     *  @dev  returns the cycle for weekly payouts 
      */
     function getCycle(address userAddress, uint256 id) internal returns (uint256){
      
