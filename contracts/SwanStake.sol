@@ -164,6 +164,7 @@ contract SwanStake is Pausable{
     uint256 public currentPrice;
 
     constructor(address swanToken) public Owned(msg.sender) {
+    require(swanToken != address(0), "Token address cannot be zero");
     swanTokenAddress = swanToken;
     currentPrice = 1 ether;
   }
