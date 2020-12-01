@@ -161,9 +161,11 @@ contract SwanStake is Pausable{
 
     using SafeMath for uint256;
     address public swanTokenAddress;
+    uint256 public currentPrice;
 
     constructor(address swanToken) public Owned(msg.sender) {
     swanTokenAddress = swanToken;
+    currentPrice = 1 ether;
   }
   // @notice Stores STAKE ACCOUNT details of the USER
     struct StakeAccount{
@@ -211,6 +213,13 @@ contract SwanStake is Pausable{
   function totalStakedTokens() external view returns(uint256){
       return ERC20(swanTokenAddress).balanceOf(address(this));
   }
+  
+  // @notice owner can set the current price of Swan Token
+  function setPrice(uint256 _newPrice) external onlyOwner returns(bool){
+      require(_newPrice > 0,"Invalid Price");
+      currentPrice = _newPrice;
+      return true;
+  }
    /**
       * @param _amount - the amount user wants to stake
       * @dev allows the user to stake the initial $2000 worth of SWAN tokens
@@ -219,7 +228,7 @@ contract SwanStake is Pausable{
   **/
   function stake(uint256 _amount) external whenNotPaused returns(bool){
     require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");  
-    require (_amount >= 2000 ether,"Staking Amount is Less Than $2000");
+    require (_amount >= currentPrice.mul(2000),"Staking Amount is Less Than $2000");
     
     require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
   
@@ -275,8 +284,6 @@ contract SwanStake is Pausable{
 
            });
            emit OneMonthStaked(msg.sender,amount,duration,16); 
-        }else{
-            return false;
         }
       }else{
         if(duration == 3){
@@ -303,9 +310,7 @@ contract SwanStake is Pausable{
 
            }); 
           emit OneMonthStaked(msg.sender,amount,duration,12);
-      }else{
-          return false;
-      }   
+      }
     }
     userTotalStakes[msg.sender] += amount;
     interestAccountNumber[msg.sender] = interestAccountNumber[msg.sender].add(1);
