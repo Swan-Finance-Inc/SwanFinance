@@ -91,16 +91,13 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
 	it("STAKERs should be able to Stake for 1 month LockUp period with High APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
 		const stake = await swanInstance.earnInterest(1000,1,{from:accounts[1] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[1]);
 		
-		// Checking SwanStaking contract token balance change
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
 
-		//Checking sturct updation in the Staking contract
 		assert.equal(event._user,accounts[1],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "1","LockUpPeriod is not same");
@@ -111,16 +108,13 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
 	it("Non-STAKERs should be able to Stake for 1 month LockUp period with Low APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
 		const stake = await swanInstance.earnInterest(1000,1,{from:accounts[2] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[2]);
 		
-		// Checking SwanStaking contract token balance change
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
 
-		//Checking sturct updation in the Staking contract
 		assert.equal(event._user,accounts[2],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "1","LockUpPeriod is not same");
@@ -132,16 +126,12 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
 	it("STAKERs should be able to Stake for 3 month LockUp period with High APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
 		const stake = await swanInstance.earnInterest(1000,3,{from:accounts[1] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[1]);
 		
-		// Checking SwanStaking contract token balance change
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 		const event = stake.logs[0].args
-		//Updating time to check withdrawl functions	
-
-		//Checking sturct updation in the Staking contract
+		
 		assert.equal(event._user,accounts[1],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "3","LockUpPeriod is not same");
@@ -154,18 +144,13 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
     it("Non-STAKERs should be able to Stake for 3 month LockUp period with Low APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
 		const stake = await swanInstance.earnInterest(1000,3, {from:accounts[2] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[2]);
 		
-		// Checking SwanStaking contract token balance change
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
 
-		//Updating time to check withdrawl functions	
-
-		//Checking sturct updation in the Staking contract
 		assert.equal(event._user,accounts[2],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "3","LockUpPeriod is not same");
