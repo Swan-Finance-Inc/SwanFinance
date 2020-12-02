@@ -408,10 +408,9 @@ contract SwanStake is Pausable{
       uint256 secondsToHours = cycle.div(21600);//21600 6 hours
       return secondsToHours;
     }
-
   }
 
-  function getUserStakedAmount(address userAddress) external returns (uint256) {
+  function getUserStakedAmount(address userAddress) external view returns (uint256) {
     return userTotalStakes[userAddress];
   }
 }
