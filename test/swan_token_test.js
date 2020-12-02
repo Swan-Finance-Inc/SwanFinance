@@ -58,7 +58,7 @@ contract('ERC20', (accounts) =>{
 	});
 
 	it("Checked the Burnt function ", async () => {
-		const balanceBeforeBurn = await  erc20Instance.balanceOf(accounts[1]);
+		const balanceBeforeBurn = await erc20Instance.balanceOf(accounts[1]);
 		await erc20Instance.burn(500,{from: accounts[1]});
 		const currentBalance = await erc20Instance.balanceOf(accounts[1]);
 		const currentSupply = await erc20Instance.totalSupply();

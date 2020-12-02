@@ -393,7 +393,7 @@ contract SwanStake is Pausable{
   }
 
   /**
-    * @dev  get cycle for payout 
+    * @dev  get cycle for payout
 
     */
   function getCycle(address userAddress, uint256 id) internal view returns (uint256){

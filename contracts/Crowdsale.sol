@@ -252,16 +252,12 @@ contract Crowdsale is Pausable {
     * @dev fallback function ***DO NOT OVERRIDE***
     */
     function () external payable {
-    
      if(msg.sender != owner){
-
-        buyTokens(msg.sender); 
-
+        buyTokens(msg.sender);
      }
      else{
      revert();
      }
-     
     }
 
     /**

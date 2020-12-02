@@ -14,9 +14,9 @@ contract Owned {
       _;
   }
 
-    function transferOwnership(address _newOwner) external onlyOwner {
-      require(newOwner != address(0), "Invalid Address: New owner is the zero address");
-      newOwner = _newOwner;
+  function transferOwnership(address _newOwner) external onlyOwner {
+    require(newOwner != address(0), "Invalid Address: New owner is the zero address");
+    newOwner = _newOwner;
   }
 
   function acceptOwnership() public {
