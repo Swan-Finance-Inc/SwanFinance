@@ -196,17 +196,17 @@ contract SwanStake is Pausable{
 
 
   //  @dev emitted whenever user stakes tokens in the Stake Account
-  event staked(address indexed _user,uint256 _amount,uint256 _lockupPeriod,uint256 _interest);
+  event staked(address indexed _user, uint256 _amount, uint256 _lockupPeriod, uint256 _interest);
   // @dev emitted whenever user stakes tokens in the Stake Account
-  event ClaimedStakedTokens(address indexed _user,uint256 _amount);
+  event ClaimedStakedTokens(address indexed _user, uint256 _amount);
    // @dev emitted whenever user stakes tokens for One month LockUp period
-  event OneMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);
+  event OneMonthStaked(address indexed _user, uint256 _amount, uint256 _lockupPeriod, uint256 _interest);
    // @dev emitted whenever user stakes tokens for Three month LockUp period
-  event ThreeMonthStaked(address indexed _user,uint256 _amount,uint256 _lockupPeriod, uint256 _interest);
+  event ThreeMonthStaked(address indexed _user, uint256 _amount, uint256 _lockupPeriod, uint256 _interest);
    // @dev emitted whenever user's staked tokens are successfully unstaked and trasnferred back to the user
-  event ClaimedInterestTokens(address indexed _user,uint256 _amount);
+  event ClaimedInterestTokens(address indexed _user, uint256 _amount);
     // @dev emitted whenever weekly token rewards are transferred to the user.
-  event TokenRewardTransferred(address indexed _user,uint256 _amount);
+  event TokenRewardTransferred(address indexed _user, uint256 _amount);
 
 
   // @dev returns the current tokenBalance of the Stake Contract
@@ -220,17 +220,17 @@ contract SwanStake is Pausable{
     currentPrice = _newPrice;
     return true;
   }
-   /**
-      * @param _amount - the amount user wants to stake
-      * @dev allows the user to stake the initial $2000 worth of SWAN tokens
-      *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) 
-      *      User can earn comparatively more interest on Future stakes by calling this function
-  **/
+  /**
+    * @param _amount - the amount user wants to stake
+    * @dev allows the user to stake the initial $2000 worth of SWAN tokens
+    *      Lists the user as a valid Staker.(by adding True in the isStaker mapping) 
+    *      User can earn comparatively more interest on Future stakes by calling this function
+    **/
   function stake(uint256 _amount) external whenNotPaused returns(bool){
-    require(!isStaker[msg.sender],"Previous Staked Amount is not Withdrawn yet");  
-    require (_amount >= currentPrice.mul(2000),"Staking Amount is Less Than $2000");
+    require(!isStaker[msg.sender], "Previous Staked Amount is not Withdrawn yet");  
+    require (_amount >= currentPrice.mul(2000), "Staking Amount is Less Than $2000");
 
-    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),_amount),"Token Transfer Failed");
+    require(ERC20(swanTokenAddress).transferFrom(msg.sender, address(this), _amount),"Token Transfer Failed");
 
     stakeAccountDetails[msg.sender] = StakeAccount({
       stakedAmount:_amount,
@@ -238,9 +238,10 @@ contract SwanStake is Pausable{
       interestRate:14,
       unstaked:false
     });
+
     isStaker[msg.sender] = true;
     userTotalStakes[msg.sender] += _amount;
-    emit staked(msg.sender,_amount,4,14);
+    emit staked(msg.sender, _amount, 4, 14);
     return true;
   }
   /**
@@ -250,38 +251,36 @@ contract SwanStake is Pausable{
    *  @return true or false based on the function execution
   */
 
-  function earnInterest(uint256 amount,uint256 duration) external whenNotPaused returns(bool){
-    require (amount>0,"Amount can not be equal to ZERO");
-    require (duration>0,"Duration can not be Zero");
+  function earnInterest(uint256 amount, uint256 duration) external whenNotPaused returns(bool){
+    require (amount > 0, "Amount can not be equal to ZERO");
+    require (duration > 0, "Duration can not be Zero");
 
-    require(ERC20(swanTokenAddress).transferFrom(msg.sender,address(this),amount),'transfer From failed');
+    require(ERC20(swanTokenAddress).transferFrom(msg.sender, address(this), amount), 'transfer From failed');
 
     uint256 oneMonthNum = interestAccountNumber[msg.sender].add(1);
     if(isStaker[msg.sender]){
       if (duration == 3) {
         interestAccountDetails[msg.sender][oneMonthNum] = InterestAccount({
-            amount: amount,
-            time: now,
-            interestRate : 20,
-            interestPayouts : 0,
-            timeperiod : duration,
-            withdrawn : false
+          amount: amount,
+          time: now,
+          interestRate : 20,
+          interestPayouts : 0,
+          timeperiod : duration,
+          withdrawn : false
         });
         emit ThreeMonthStaked(msg.sender, amount, duration, 20);
       } else if(duration == 1) {
-        interestAccountDetails[msg.sender][oneMonthNum] = InterestAccount(
-          {
-              amount: amount,
-              time: now,
-              interestRate : 16,
-              interestPayouts : 0,
-              timeperiod : duration,
-              withdrawn : false
-
+        interestAccountDetails[msg.sender][oneMonthNum] = InterestAccount({
+            amount: amount,
+            time: now,
+            interestRate : 16,
+            interestPayouts : 0,
+            timeperiod : duration,
+            withdrawn : false
           });
           emit OneMonthStaked(msg.sender, amount, duration, 16); 
       }
-    }else {
+    } else {
       if( duration == 3) {
         interestAccountDetails[msg.sender][oneMonthNum] = InterestAccount({
           amount: amount,
@@ -292,14 +291,14 @@ contract SwanStake is Pausable{
           withdrawn : false
         });
         emit ThreeMonthStaked(msg.sender, amount, duration,16);
-      }else if(duration == 1){
+      } else if(duration == 1) {
         interestAccountDetails[msg.sender][oneMonthNum] = InterestAccount({
-            amount: amount,
-            time: now,
-            interestRate : 12,
-            interestPayouts : 0,
-            timeperiod : duration,
-            withdrawn : false
+          amount: amount,
+          time: now,
+          interestRate : 12,
+          interestPayouts : 0,
+          timeperiod : duration,
+          withdrawn : false
         });
         emit OneMonthStaked(msg.sender, amount, duration, 12);
       }
@@ -336,7 +335,7 @@ contract SwanStake is Pausable{
     *        calculates the total interest to be transferred to the user after 4 months
     *        transfers the staked amount as well as the remaining interest to the user.
     *        marks the user as NON STAKER.
-    * 
+    *
     */
   function claimStakeTokens() external whenNotPaused{
     require(isStaker[msg.sender],"User is not a Staker");
@@ -362,19 +361,19 @@ contract SwanStake is Pausable{
     */
   function payOuts (uint256 id) external returns(bool) {
     InterestAccount memory interestData =  interestAccountDetails[msg.sender][id];
-    require (now <= interestData.time.add(interestData.timeperiod.mul(2629746)),"Reward Timeline is Over");// 2,629,746 seconds = 1 month
+    require (now <= interestData.time.add(interestData.timeperiod.mul(2629746)), "Reward Timeline is Over");// 2,629,746 seconds = 1 month
     require(!interestData.withdrawn,"Amount Has already Been Withdrawn");
 
     uint256 preSaleCycle = getCycle(msg.sender, id);
-    require (preSaleCycle > 0,"Cycle is not complete");
+    require (preSaleCycle > 0, "Cycle is not complete");
 
     uint256 interestAmount = interestData.amount.mul(interestData.interestRate).div(100);
     uint256 onePercentOfInitialFund = interestAmount.div(interestData.timeperiod.mul(4));
-    if(interestData.interestPayouts <= onePercentOfInitialFund.mul(preSaleCycle)) {   
+    if(interestData.interestPayouts <= onePercentOfInitialFund.mul(preSaleCycle)) {
       uint256 tokenToSend = onePercentOfInitialFund.mul(preSaleCycle).sub(interestData.interestPayouts);
       require(tokenToSend.add(totalPoolRewards[msg.sender][id]) <= interestAmount,"Total Interest has already been given out");
       interestData.interestPayouts = onePercentOfInitialFund.mul(preSaleCycle);
-      require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend),"Token Transfer Failed");
+      require(ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend), "Token Transfer Failed");
       totalPoolRewards[msg.sender][id] += tokenToSend;
       emit TokenRewardTransferred(msg.sender,tokenToSend);
       return true;
@@ -387,18 +386,21 @@ contract SwanStake is Pausable{
   */
   function getCycle(address userAddress, uint256 id) internal returns (uint256){
     InterestAccount memory interestData =  interestAccountDetails[userAddress][id];
-    require (interestData.amount > 0,"Amount Withdrawn Already");
+    require (interestData.amount > 0, "Amount Withdrawn Already");
+
     uint256 cycle;
+
     if(checkCycle[userAddress][id]){
-        cycle = now.sub(lastPayoutCall[userAddress][id]);
-    }else{
-        cycle = now.sub(interestData.time);
-        checkCycle[userAddress][id] = true;
+      cycle = now.sub(lastPayoutCall[userAddress][id]);
+    } else {
+      cycle = now.sub(interestData.time);
+      checkCycle[userAddress][id] = true;
     }
+
     if(cycle <= 21600) { //21600 6 hours for testing
       return 0;
     } else if (cycle > 21600) { //21600 6 hours
-      require(now.sub(lastPayoutCall[userAddress][id]) >= 21600,"Cannot Call Before 6 hours");
+      require(now.sub(lastPayoutCall[userAddress][id]) >= 21600, "Cannot Call Before 6 hours");
       uint256 secondsToHours = cycle.div(21600);//21600 6 hours
       lastPayoutCall[userAddress][id] = now;
       return secondsToHours;
