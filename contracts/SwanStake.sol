@@ -260,10 +260,10 @@ contract SwanStake is Pausable{
     userTotalStakes[msg.sender] += _amount;
     emit staked(msg.sender, _amount, 4, 14);
   }
-      /**
-     * @dev  User can earn interest by staking for 1 month
+  /**
+  * @dev  User can earn interest by staking for 1 month
 
-     */
+  */
 
 
   function stakeTokensOneMonth (uint256 amount)  external whenNotPaused returns (bool) {
@@ -411,7 +411,7 @@ contract SwanStake is Pausable{
 
   }
 
-  function getUserStackedAmount(address userAddress) external returns (uint256) {
+  function getUserStakedAmount(address userAddress) external returns (uint256) {
     return userTotalStakes[userAddress];
   }
 }
