@@ -1,4 +1,5 @@
-pragma solidity 0.5.16;
+pragma solidity ^0.5.16;
+
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Address.sol";
@@ -63,7 +64,7 @@ contract SwanEarn is Owned{
 
     depositorMap[msg.sender].deposits[_tokenAddress].numOfDeposited ++;
     depositorMap[msg.sender].deposits[_tokenAddress].depositItems.push(DepositItem({
-      index: depositorMap[msg.sender].numOfDeposited - 1;
+      index: depositorMap[msg.sender].numOfDeposited - 1,
       amount: _amount,
       depositTime: block.timestamp,
       lastInterestClaimedTime: block.timestamp,
@@ -75,8 +76,8 @@ contract SwanEarn is Owned{
     emit deposit(msg.sender, _tokenAddress, _amount, _depositPeriod, _interestRate, block.timestamp);
   }
 
-  function claimInterestToken(address _tokenAddress, uint256 _index) external {;
-    require(depositorMap[msg.sender].isDepositor, "You should Deposit first!")
+  function claimInterestToken(address _tokenAddress, uint256 _index) external {
+    require(depositorMap[msg.sender].isDepositor, "You should Deposit first!");
     require(depositorMap[msg.sender].deposits[_tokenAddress].numOfDeposited > _index, "You should Deposit first!");
 
     DepositItem memory depositItem = depositorMap[msg.sender].deposits[_tokenAddress].depositItems[_index];
@@ -84,10 +85,10 @@ contract SwanEarn is Owned{
     // Check if the deposit period is expired.
     uint256 timeLimit = block.time;
     if(timeLimit > depositItem.expireTime) {
-      timeLimit = depositItem.expireTime
+      timeLimit = depositItem.expireTime;
     }
 
-    uint256 numOfWeeks = SafeMath.div(SafeMath.sub(timeLimit - depositItem.lastInterestClaimedTime), 604800) // Passed weeks
+    uint256 numOfWeeks = SafeMath.div(SafeMath.sub(timeLimit - depositItem.lastInterestClaimedTime), 604800); // Passed weeks
     require(numOfWeeks > 0, "You should wait at least 1 week!");
     uint256 interestAmount = SafeMath.mul(SafeMath.div(SafeMath.mul(depositItem.amount, depositItem.interestRate), 100), numOfWeeks);
 

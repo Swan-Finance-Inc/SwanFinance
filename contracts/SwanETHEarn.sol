@@ -1,4 +1,5 @@
-pragma solidity 0.5.16;
+pragma solidity ^0.5.16;
+
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Address.sol";
@@ -61,7 +62,7 @@ contract SwanEarn is Owned{
 
     depositorMap[msg.sender].numOfDeposited ++;
     depositorMap[msg.sender].depositItems.push(DepositItem({
-      index: depositorMap[msg.sender].numOfDeposited - 1;
+      index: depositorMap[msg.sender].numOfDeposited-1,
       amount: msg.value,
       depositTime: block.timestamp,
       lastInterestClaimedTime: block.timestamp,
@@ -73,8 +74,8 @@ contract SwanEarn is Owned{
     emit deposit(msg.sender, msg.value, _depositPeriod, _interestRate, block.timestamp);
   }
 
-  function claimInterestETH(uint256 _index) external {;
-    require(depositorMap[msg.sender].isDepositor, "You should deposit first!")
+  function claimInterestETH(uint256 _index) external {
+    require(depositorMap[msg.sender].isDepositor, "You should deposit first!");
     require(depositorMap[msg.sender].numOfDeposited > _index, "You should deposit first!");
 
     DepositItem memory depositItem = depositorMap[msg.sender].depositItems[_index];
@@ -82,15 +83,15 @@ contract SwanEarn is Owned{
     // Check if the deposit period is expired.
     uint256 timeLimit = block.time;
     if(timeLimit > depositItem.expireTime) {
-      timeLimit = depositItem.expireTime
+      timeLimit = depositItem.expireTime;
     }
 
-    uint256 numOfWeeks = SafeMath.div(SafeMath.sub(timeLimit - depositItem.lastInterestClaimedTime), 604800) // Passed weeks
+    uint256 numOfWeeks = SafeMath.div(SafeMath.sub(timeLimit - depositItem.lastInterestClaimedTime), 604800); // Passed weeks
     require(numOfWeeks > 0, "You should wait at least 1 week!");
     uint256 interestAmount = SafeMath.mul(SafeMath.div(SafeMath.mul(depositItem.amount, depositItem.interestRate), 100), numOfWeeks);
 
-    require(balanceOf(address(this)) >= interestAmount, "No enough balance in contract!")
-    address(this).transfer(interestAmount)
+    require(balanceOf(address(this)) >= interestAmount, "No enough balance in contract!");
+    address(this).transfer(interestAmount);
 
     depositItem.lastInterestClaimedTime = SafeMath.add(depositItem.lastInterestClaimedTime, SafeMath.mul(604800, numOfWeeks));
     depositorMap[msg.sender].depositItems[_index] = depositItem;
@@ -103,7 +104,7 @@ contract SwanEarn is Owned{
     claimInterestETH(_index);
     DepositItem memory depositItem = depositorMap[msg.sender].depositItems[_index];
 
-    require(balanceOf(address(this)) >= depositItem.amount, "No enough balance in contract!")
+    require(balanceOf(address(this)) >= depositItem.amount, "No enough balance in contract!");
     address(this).transfer(depositItem.amount);
     // After successful withdraw remove the deposit item.
     for(uint i = _index; i < depositorMap[msg.sender].depositItems.length - 1;i ++) {
