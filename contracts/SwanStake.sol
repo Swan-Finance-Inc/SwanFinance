@@ -424,7 +424,6 @@ contract SwanStake is Pausable{
   }
 
 
-
 }
 
 
