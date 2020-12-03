@@ -38,6 +38,19 @@ contract('ERC20', (accounts) =>{
 		assert.equal(totalTokens.toString(), '50000000000000000000000000000',"Tokens Minted doesn't match tokens owned by Contract")
 	});
 
+	it("sendTeamMemberHrWallet function should not work when Contract is Paused", async () => {
+		await erc20Instance.pause({ from:accounts[0] });
+
+		try{
+			await erc20Instance.sendTeamMemberHrWallet(accounts[1],1000)
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+		await erc20Instance.unpause({from:accounts[0]})
+	});
+
 	it("sendTeamMemberHrWallet function is transferring  tokens as expected", async () => {
 		const beforeBalance= await erc20Instance.balanceOf(accounts[1]);
 		await erc20Instance.sendTeamMemberHrWallet(accounts[1],1000)
@@ -57,6 +70,19 @@ contract('ERC20', (accounts) =>{
 		assert.equal(bool_contractSaleOver,true,"Contract Sale over didn't switch to true")
 	});
 
+	it("Burn function should not work when Contract is Paused", async () => {
+		await erc20Instance.pause({ from:accounts[0] });
+
+		try{
+			await erc20Instance.burn(500,{from: accounts[1]});
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+		await erc20Instance.unpause({from:accounts[0]})
+	});
+
 	it("Checked the Burnt function ", async () => {
 		const balanceBeforeBurn = await erc20Instance.balanceOf(accounts[1]);
 		await erc20Instance.burn(500,{from: accounts[1]});
@@ -71,6 +97,19 @@ contract('ERC20', (accounts) =>{
 		await time.increase(time.duration.minutes(260200));
 	})
 
+	it("redeemTeamTokensLeft function should not work when Contract is Paused", async () => {
+		await erc20Instance.pause({ from:accounts[0] });
+
+		try{
+			await erc20Instance.redeemTeamTokensLeft({ from:accounts[1] });
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+		await erc20Instance.unpause({from:accounts[0]})
+	});
+	
 	it("Should be able to Redeem Team Tokens Left",async () => {
 		await erc20Instance.redeemTeamTokensLeft({ from:accounts[1] });
 		
