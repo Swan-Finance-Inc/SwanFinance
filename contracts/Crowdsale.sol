@@ -1,4 +1,3 @@
-
 pragma solidity 0.5.16;
 
 contract SwanToken {
@@ -203,9 +202,6 @@ contract Crowdsale is Pausable {
 
   bool public crowdSaleStarted = false;
 
-  // Amount of wei raised
-  uint256 public totalRaisedInCents;
-  
   enum Stages {CrowdSaleNotStarted, Pause, PrivateSaleStart,PrivateSaleEnd, PreSaleStart, PreSaleEnd, CrowdSaleRoundOneStart,CrowdSaleRoundOneEnd, CrowdSaleRoundTwoStart, CrowdSaleRoundTwoEnd, CrowdSaleRoundThreeStart, CrowdSaleRoundThreeEnd, CrowdSaleRoundFourStart, CrowdSaleRoundFourEnd}
 
   Stages currentStage;
@@ -587,13 +583,5 @@ contract Crowdsale is Pausable {
         
     }
 
-    function isSoftCapReached() public view returns(bool){
-        if(totalRaisedInCents >= softCap){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    
+
 }
