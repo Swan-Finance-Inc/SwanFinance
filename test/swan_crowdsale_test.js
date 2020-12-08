@@ -64,6 +64,45 @@ contract("Swan Crowdsale", (accounts)=>{
 		}
 	})
 
+
+	// it("User should be able to Buy Swan Tokens",async () =>{
+	// 	const ethValue = new BN(6000000000000000000);
+	// 	const user1_balance_before = await erc20Instance.balanceOf(accounts[1]);
+		
+	// 	await crowdsaleInstance.startPrivateSale({from:accounts[0]});
+	// 	const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+	// 	console.log(boolCheck)
+	// 	console.log(user1_balance_before.toString())
+	// 	const buyToken = await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
+
+	// 	// const user1_balance_after = erc20Instance.balanceOf(accounts[1]);
+
+	// 	// console.log(user1_balance_after.toString())
+	// 	//assert.equal(user1_balance_before.toString(),"0","Balance is not zero");
+	// 	// assert.equal(user1_balance_after.toString(),"")
+	// });
+
+	// it("User should NOT be able to Buy Swan Tokens if Contract is Paused",async () =>{
+	// 	try{
+	// 	await crowdsaleInstance.pause({from:accounts[1]});
+	// 	//await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
+	// 	}catch(error){
+	// 		const invalidOpcode = error.message.search("revert") >= 0 
+	// 		assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+	// 	}
+	// 	await crowdsaleInstance.restartSale();
+
+	// })
+
+	it("User should NOT be able to Buy Swan Tokens if he/she is not WhiteListed Investor",async () =>{
+		try{
+		await crowdsaleInstance.buyTokens(accounts[6],{from:accounts[6],value:web3.utils.toWei('6','Ether')});
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+	})
 	it("Owner should be able to Start A Private Sale",async () =>{
 		const bool_SaleStarted_before = await crowdsaleInstance.crowdSaleStarted();
 
@@ -229,42 +268,6 @@ contract("Swan Crowdsale", (accounts)=>{
 
 		const currentStage = await crowdsaleInstance.getStage();
 		assert.equal(currentStage,"CrowdSale Round Four End","Current Stage is not Right")
-	})
-
-	// it("User should be able to Buy Swan Tokens",async () =>{
-	// 	const ethValue = new BN(6000000000000000000);
-	// 	//const user1_balance_before = erc20Instance.balanceOf(accounts[1]);
-
-	// 	await crowdsaleInstance.startPrivateSale({from:accounts[0]});
-	// 	const buyToken = await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
-
-	// 	const user1_balance_after = erc20Instance.balanceOf(accounts[1]);
-
-	// 	console.log(user1_balance_after.toString())
-	// 	//assert.equal(user1_balance_before.toString(),"0","Balance is not zero");
-	// 	// assert.equal(user1_balance_after.toString(),"")
-	// });
-
-	it("User should NOT be able to Buy Swan Tokens if Contract is Paused",async () =>{
-		try{
-		await crowdsaleInstance.pause();
-		await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
-		}catch(error){
-			const invalidOpcode = error.message.search("revert") >= 0 
-			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
-		}
-		await crowdsaleInstance.restartSale();
-
-	})
-
-	it("User should NOT be able to Buy Swan Tokens if he/she is not WhiteListed Investor",async () =>{
-		try{
-		await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[6],value:web3.utils.toWei('6','Ether')});
-		}catch(error){
-			const invalidOpcode = error.message.search("revert") >= 0 
-			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
-		}
-
 	})
 
 });
