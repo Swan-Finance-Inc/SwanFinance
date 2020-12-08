@@ -245,13 +245,28 @@ contract("Swan Crowdsale", (accounts)=>{
 	// 	// assert.equal(user1_balance_after.toString(),"")
 	// });
 
-	// it("User should NOT be able to Buy Swan Tokens if Contract is Paused",async () =>{
-		
-	// })
+	it("User should NOT be able to Buy Swan Tokens if Contract is Paused",async () =>{
+		try{
+		await crowdsaleInstance.pause();
+		await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+		await crowdsaleInstance.restartSale();
 
-	it("User should NOT be able to Buy Swan Tokens Before CrowdSale Starts",async () =>{
-		
 	})
+
+	it("User should NOT be able to Buy Swan Tokens if he/she is not WhiteListed Investor",async () =>{
+		try{
+		await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[6],value:web3.utils.toWei('6','Ether')});
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+	})
+
 });
 
 
