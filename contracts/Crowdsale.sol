@@ -289,7 +289,7 @@ contract Crowdsale is Pausable {
     function restartSale() public onlyOwner {
       require(currentStage == Stages.Pause,"currentStage is not PAUSE");
       currentStage=previousStage;
-        Paused = false;
+      Paused = false;
     }
 
     function startPrivateSale() public onlyOwner {
