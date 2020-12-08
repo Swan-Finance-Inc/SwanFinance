@@ -30,15 +30,13 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		const transferAmount = new BN(30000000000000000000000);
 		const approveAmount = new BN(2500000000000000000000);
 		const contractAmount = new BN(400000000000000000000000);
-									
 
 		const beforeBalance = await erc20Instance.balanceOf(accounts[1]);
-		
 
 		await erc20Instance.transfer(accounts[1],transferAmount);
 		await erc20Instance.transfer(accounts[2],2000);
 		await erc20Instance.transfer(swanInstance.address, contractAmount);
-		
+
 		const contractBalance = await erc20Instance.balanceOf(erc20Instance.address);
 
 		await erc20Instance.approve(swanInstance.address,approveAmount,{ from:accounts[1]} );
@@ -91,16 +89,14 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
 	it("STAKERs should be able to Stake for 1 month LockUp period with High APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
-		const stake = await swanInstance.stakeTokensOneMonth(1000, {from:accounts[1] });
+		const stake = await swanInstance.earnInterest(1000,1,{from:accounts[1] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[1]);
 		
-		// Checking SwanStaking contract token balance change
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
 
-		//Checking sturct updation in the Staking contract
+		assert.equal(event._proposalId.toString(),"1","ProposalId was not assigned correctly")
 		assert.equal(event._user,accounts[1],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "1","LockUpPeriod is not same");
@@ -111,42 +107,37 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
 	it("Non-STAKERs should be able to Stake for 1 month LockUp period with Low APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
-		const stake = await swanInstance.stakeTokensOneMonth(1000, {from:accounts[2] });
+		const stake = await swanInstance.earnInterest(1000,1,{from:accounts[2] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[2]);
-		
-		// Checking SwanStaking contract token balance change
+
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
 
-		//Checking sturct updation in the Staking contract
+		assert.equal(event._proposalId.toString(),"1","ProposalId was not assigned correctly")
 		assert.equal(event._user,accounts[2],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "1","LockUpPeriod is not same");
 		assert.equal(event._interest.toString(), "12","APY not assigned currectly for 12%");	
-	
+
 		assert.equal(tokenBalanceAfterStake.toString(), "1000", "User token staking details didn't update as expected");
 		assert.equal(totalStakedTokens.toString(), "402000000000000000002000","Staking Contract token balance did not update as expected")
 	})
 
 	it("STAKERs should be able to Stake for 3 month LockUp period with High APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
-		const stake = await swanInstance.stakeTokensThreeMonth(1000, {from:accounts[1] });
+		const stake = await swanInstance.earnInterest(1000,3,{from:accounts[1] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[1]);
-		
-		// Checking SwanStaking contract token balance change
+
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 		const event = stake.logs[0].args
-		//Updating time to check withdrawl functions	
 
-		//Checking sturct updation in the Staking contract
+		assert.equal(event._proposalId.toString(),"2","ProposalId was not assigned correctly")
 		assert.equal(event._user,accounts[1],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "3","LockUpPeriod is not same");
 		assert.equal(event._interest.toString(), "20","APY not assigned currectly for 16%");
-	
+
 		assert.equal(tokenBalanceAfterStake.toString(), "2000000000000000002000", "User token staking details didn't update as expected");
 		assert.equal(totalStakedTokens.toString(), "402000000000000000003000","Staking Contract token balance did not update as expected")
 	})
@@ -154,18 +145,13 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 
     it("Non-STAKERs should be able to Stake for 3 month LockUp period with Low APY", async ()=>{
 
-		// Checking User Stake Details update in Swan Stakng Contract
-		const stake = await swanInstance.stakeTokensThreeMonth(1000, {from:accounts[2] });
+		const stake = await swanInstance.earnInterest(1000,3, {from:accounts[2] });
 		const tokenBalanceAfterStake = await swanInstance.userTotalStakes(accounts[2]);
-		
-		// Checking SwanStaking contract token balance change
+
 		const totalStakedTokens = await swanInstance.totalStakedTokens();
 
 		const event = stake.logs[0].args
-
-		//Updating time to check withdrawl functions	
-
-		//Checking sturct updation in the Staking contract
+		assert.equal(event._proposalId.toString(),"2","ProposalId was not assigned correctly")
 		assert.equal(event._user,accounts[2],"User address is not Same");
 		assert.equal(event._amount.toString(), "1000","Amount entered is not Same");
 		assert.equal(event._lockupPeriod.toString(), "3","LockUpPeriod is not same");
@@ -175,58 +161,139 @@ it("Transferring Balance to User Accounts and Token Contract", async () => {
 		assert.equal(totalStakedTokens.toString(), "402000000000000000004000","Staking Contract token balance did not update as expected")
 	})
 
-
+	// Increasing time to 1 second more than 6 hours
 	it("Time should increase", async () => {
-		await time.increase(time.duration.minutes(10));
+		await time.increase(time.duration.seconds(21601));
+		const interest = await swanInstance.totalPoolRewards(accounts[1],1);
+	});
+
+	it("Staker should get weekly claims for 1 month investments", async () =>{
+		await swanInstance.payOuts(1,{from:accounts[1]});
+		const interest = await swanInstance.totalPoolRewards(accounts[1],1);
+		
+		assert.equal(interest.toString(),"40","Interest was not assigned correctly")
 	})
 
-	it('Stakers should be able to CLAIM their Staked Tokens with INTEREST', async () => {
-		await swanInstance.claimStakeTokens({from: accounts[1]});
+
+	it("Non-STAKERs should get weekly claims for 1 month investments", async () =>{
+		await swanInstance.payOuts(1,{from:accounts[2]});
+		const interest = await swanInstance.totalPoolRewards(accounts[2],1);
 		
-		const interest = await swanInstance.totalPoolRewards(accounts[1]);
-		const userBalance = await erc20Instance.balanceOf(accounts[1]);
-		const isStaker = await swanInstance.isStaker(accounts[1]);
+		assert.equal(interest.toString(),"30","Interest was not assigned correctly")
+	})
+
+	it("Staker should get weekly claims for 3 month investments", async () =>{
+		await swanInstance.payOuts(2,{from:accounts[1]});
+		const interest = await swanInstance.totalPoolRewards(accounts[1],2);
 		
-		assert.equal(interest.toString(), "1280000000000000000000","Rewards not transferred to User");
-		assert.equal(isStaker,false,"User wasn't marked as Non Staker");
-		assert.equal(userBalance.toString(), "31279999999999999998000","User's Balance Didn't increase");
+		assert.equal(interest.toString(),"16","Interest was not assigned correctly")
+	})
+
+	it("Non-STAKERs should get weekly claims for 3 month investments", async () =>{
+		await swanInstance.payOuts(2,{from:accounts[2]});
+		const interest = await swanInstance.totalPoolRewards(accounts[2],2);
+		assert.equal(interest.toString(),"13","Interest was not assigned correctly")
+	})
+
+// // 	/**
+// // 		*Requirements for testing Withdrawl Functions
+// // 		* Must transfer invested amount
+// // 		* Must transfer Interest Earned
+// // 		* Must update the totalPoolRewards
+// // 		* Must deduct user's total stakes in contract
+// // 	**/
+
+	// Time increased to 1 month
+	it("Time should increase", async () => {
+		await time.increase(time.duration.seconds(2629749));
+		const interest = await swanInstance.totalPoolRewards(accounts[1],1);
+
 	});
 
-	/**
-		*Requirements for testing Withdrawl Functions
-		* Must transfer invested amount
-		* Must transfer Interest Earned
-		* Must update the totalPoolRewards
-		* Must deduct user's total stakes in contract
-	**/
+	it("Stakers should be able to withdraw invested amounts after 1 month period", async()=>{
+		const claimedInterest = await swanInstance.claimInterestTokens(1, {from: accounts[1]});
 
-
-	it("Users should be able to withdraw invested amounts after 1 month period", async()=>{
-		await swanInstance.claimInterestTokens(0, {from: accounts[1]});
-
-		const interestGenerated = await swanInstance.totalPoolRewards(accounts[1]);
-		const userBalance = await erc20Instance.balanceOf(accounts[1]);
-		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
-		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[1],0);
-
-		assert.equal(boolWithdrawn[5],true,"User withdraw sign is still FALSE");
-		assert.equal(interestGenerated.toString(), "1280000000000000000160","Interest Generated is not Correct");
-		assert.equal(userBalance.toString(), "31279999999999999999160","Balance of user didn't increase");
-		assert.equal(userBalanceInContract.toString(), "1000","User Balance didn't decrease in Contract");
-	});
-
-	it("Users should be able to withdraw invested amounts after 3 month period", async()=>{
-		await swanInstance.claimInterestTokens(1, {from: accounts[1]});
-
-		const interestGenerated = await swanInstance.totalPoolRewards(accounts[1]);
 		const userBalance = await erc20Instance.balanceOf(accounts[1]);
 		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
 		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[1],1);
+		const interest = await swanInstance.totalPoolRewards(accounts[1],1);
+		
+		const event = claimedInterest.logs[0].args;
 
-		assert.equal(boolWithdrawn[5],true,"User withdraw sign is still FALSE");
-		assert.equal(interestGenerated.toString(), "1280000000000000000760","Interest Generated is not Correct");
-		assert.equal(userBalance.toString(), "31280000000000000000760","Balance of user didn't increase");
+		assert.equal(event._amount.toString(),"1120","Token sent to user is not right")
+		assert.equal(interest.toString(),"40","Interest was not assigned correctly")
+		assert.equal(boolWithdrawn[6],true,"User withdraw sign is still FALSE");
+		assert.equal(userBalance.toString(), "27999999999999999999176","Balance of user didn't increase");
+		assert.equal(userBalanceInContract.toString(), "2000000000000000001000","User Balance didn't decrease in Contract");
+	});
+		it("Non-STAKERs should be able to withdraw invested amounts after 1 month period", async()=>{
+		const claimedInterest = await swanInstance.claimInterestTokens(1, {from: accounts[2]});
+
+		const userBalance = await erc20Instance.balanceOf(accounts[2]);
+		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[2]);
+		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[2],1);
+		const interest = await swanInstance.totalPoolRewards(accounts[2],1);
+		
+		const event = claimedInterest.logs[0].args;
+
+		assert.equal(event._amount.toString(),"1090","Token sent to user is not right")
+		assert.equal(interest.toString(),"30","Interest was not assigned correctly")
+		assert.equal(boolWithdrawn[6],true,"User withdraw sign is still FALSE");
+		assert.equal(userBalance.toString(), "1133","Balance of user didn't increase");
+		assert.equal(userBalanceInContract.toString(), "1000","User Balance didn't decrease in Contract");
+	});
+
+	// Time increased to 4 month
+	it("Time should increase", async () => {
+		await time.increase(time.duration.seconds(10518988));
+		const interest = await swanInstance.totalPoolRewards(accounts[1],1);
+
+	});
+
+	it("Stakers should be able to withdraw invested amounts after 3 month period", async()=>{
+		const claimedInterest = await swanInstance.claimInterestTokens(2, {from: accounts[1]});
+
+		const userBalance = await erc20Instance.balanceOf(accounts[1]);
+		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[1]);
+		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[1],2);
+		const interest = await swanInstance.totalPoolRewards(accounts[1],2);
+		
+		const event = claimedInterest.logs[0].args;
+
+		assert.equal(event._amount.toString(),"1184","Token sent to user is not right")
+		assert.equal(interest.toString(),"16","Interest was not assigned correctly")
+		assert.equal(boolWithdrawn[6],true,"User withdraw sign is still FALSE");
+		assert.equal(userBalance.toString(), "28000000000000000000360","Balance of user didn't increase");
+		assert.equal(userBalanceInContract.toString(), "2000000000000000000000","User Balance didn't decrease in Contract");
+	});
+
+
+
+	it("Non-STAKERs should be able to withdraw invested amounts after 3 month period", async()=>{
+		const claimedInterest = await swanInstance.claimInterestTokens(2, {from: accounts[2]});
+
+		const userBalance = await erc20Instance.balanceOf(accounts[2]);
+		const userBalanceInContract = await swanInstance.userTotalStakes(accounts[2]);
+		const boolWithdrawn = await swanInstance.interestAccountDetails(accounts[2],2);
+		const interest = await swanInstance.totalPoolRewards(accounts[2],2);
+		
+		const event = claimedInterest.logs[0].args;
+
+		assert.equal(event._amount.toString(),"1147","Token sent to user is not right")
+		assert.equal(interest.toString(),"13","Interest was not assigned correctly")
+		assert.equal(boolWithdrawn[6],true,"User withdraw sign is still FALSE");
+		assert.equal(userBalance.toString(), "2280","Balance of user didn't increase");
 		assert.equal(userBalanceInContract.toString(), "0","User Balance didn't decrease in Contract");
+	});
+
+	it('Stakers should be able to CLAIM their Staked Tokens with INTEREST', async () => {
+		await swanInstance.claimStakeTokens({from: accounts[1]});
+
+		const userBalance = await erc20Instance.balanceOf(accounts[1]);
+		const isStaker = await swanInstance.isStaker(accounts[1]);
+
+		assert.equal(isStaker,false,"User wasn't marked as Non Staker");
+		assert.equal(userBalance.toString(), "30280000000000000000360","User's Balance Didn't increase");
 	});
 });
 
