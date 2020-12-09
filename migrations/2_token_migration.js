@@ -1,6 +1,6 @@
 const SwanToken = artifacts.require("Swan");
 
 module.exports = async (deployer,network,accounts) =>{
-	let token = deployer.deploy(SwanToken,accounts[0]);
+	let token = deployer.deploy(SwanToken);
 
 };
