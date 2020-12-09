@@ -154,8 +154,9 @@ library SafeMath {
 
 }
 
+
 contract Crowdsale is Pausable { 
-  
+
   using SafeMath for uint256;
   uint256 public ethPrice; // 1 Ether price in USD cents.
 
@@ -194,7 +195,7 @@ contract Crowdsale is Pausable {
   uint256 public constant bonusPercentRoudThree = 5;
   uint256 public constant bonusPercentRoudFour = 0;  
 
-// user limit
+  // user limit
 
   uint256 public constant minimumInvestment = 50000;
   uint256 public constant maximumInvestment = 20000000;
@@ -569,7 +570,7 @@ contract Crowdsale is Pausable {
       }
     
       return totalTokens;
-    }
+  }
     
     /**
     * @dev finalize the crowdsale.After finalizing ,tokens transfer can be done.
@@ -579,6 +580,4 @@ contract Crowdsale is Pausable {
     //     require(token.finalize());
         
     // }
-
-
 }
