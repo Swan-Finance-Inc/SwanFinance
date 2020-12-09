@@ -266,7 +266,6 @@ contract Crowdsale is Pausable {
         ethPrice = _ethPriceInCents; //ethPrice in cents
         currentStage = Stages.CrowdSaleNotStarted;
     }
-
     /**
      * @dev fallback function ***DO NOT OVERRIDE***
      */
