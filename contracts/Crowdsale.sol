@@ -260,6 +260,11 @@ contract Crowdsale is Pausable {
     function getSwanTokenBalance() public view returns(uint256){
       return Swan(token).balanceOf(address(this));
     }
+
+    function getTotalWeiRaised() external view returns(uint256){
+      return totalWeiRaised;
+    }
+    
     /**
     * @dev whitelist addresses of investors.
     * @param addrs ,array of addresses of investors to be whitelisted
@@ -418,8 +423,7 @@ contract Crowdsale is Pausable {
     _validateTokenCapLimits(usdCents);
 
     _processPurchase(_beneficiary,tokens);
-
-    totalWeiRaised.add(weiAmount);
+    totalWeiRaised = totalWeiRaised.add(msg.value);
     wallet.transfer(msg.value);
 
     emit TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
