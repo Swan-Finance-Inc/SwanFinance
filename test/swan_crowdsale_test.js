@@ -149,7 +149,7 @@ contract("Swan Crowdsale", accounts => {
 
   it("User should NOT be able to Buy Swan Tokens if Contract is Paused", async () => {
     try {
-      await crowdsaleInstance.pause({ from: accounts[0] });
+      await crowdsaleInstance._pause({ from: accounts[0] });
       await crowdsaleInstance.buyTokens(accounts[1], {
         from: accounts[1],
         value: web3.utils.toWei("6", "Ether")
@@ -235,11 +235,11 @@ contract("Swan Crowdsale", accounts => {
 
   it("Owner should be able to Pause the CrowdSale Contract", async () => {
     const bool_SaleStarted_before = await crowdsaleInstance.crowdSaleStarted();
-    await crowdsaleInstance.pause();
+    await crowdsaleInstance._pause();
 
     const bool_SaleStarted_after = await crowdsaleInstance.crowdSaleStarted();
     const currentStage = await crowdsaleInstance.getStage();
-    const bool_pause = await crowdsaleInstance.Paused();
+    const bool_pause = await crowdsaleInstance._Paused();
 
     assert.equal(currentStage, "paused", "Current Stage is not correct");
     assert.equal(bool_pause, true, "Pause is false");
@@ -249,7 +249,7 @@ contract("Swan Crowdsale", accounts => {
 
   it("Only Owner should be able to Pause the CrowdSale Contract", async () => {
     try {
-      await crowdsaleInstance.pause();
+      await crowdsaleInstance._pause();
     } catch (error) {
       const invalidOpcode = error.message.search("revert") >= 0;
       assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
@@ -259,7 +259,7 @@ contract("Swan Crowdsale", accounts => {
   it("Owner should be able to Restart the the CrowdSale", async () => {
     await crowdsaleInstance.restartSale();
     const currentStage = await crowdsaleInstance.getStage();
-    const bool_pause = await crowdsaleInstance.Paused();
+    const bool_pause = await crowdsaleInstance._Paused();
 
     assert.equal(
       currentStage,
