@@ -1,10 +1,13 @@
 pragma solidity 0.5.16;
 
-interface Swan {
+
+//import "@openzeppelin/contracts/ownership/Ownable.sol";
+// import "@openzeppelin/contracts/math/SafeMath.sol";
+// import "@openzeppelin/contracts/lifecycle/Pausable.sol";
+
+interface Swan{
     function transfer (address, uint256) external returns (bool);
-    // function burnTokensForSale() external returns (bool);
-    // function saleTransfer(address,uint256,bool) external returns (bool);
-    // function finalize() external returns (bool);
+    function balanceOf(address) external view returns (uint256);
 }
 
 contract Owned {
@@ -166,6 +169,7 @@ contract Crowdsale is Pausable {
   uint256 public constant softCap = 500000000; // in cents 
 
   //total tokens for sale 
+  uint256 public totalWeiRaised;
   uint256 public tokensForSale = 140000000000 ether;
 
   // tokens sold in each round of sale 
@@ -183,7 +187,6 @@ contract Crowdsale is Pausable {
   uint256 public constant crowdSaleRoundTwoLimit = 2200000000;
   uint256 public constant crowdSaleRoundThreeLimit = 2100000000;
   uint256 public constant crowdSaleRoundFourLimit = 2500000000;
-
   
   // Address where funds are collected
   address  payable public  wallet;
@@ -196,7 +199,6 @@ contract Crowdsale is Pausable {
   uint256 public constant bonusPercentRoudFour = 0;  
 
   // user limit
-
   uint256 public constant minimumInvestment = 50000;
   uint256 public constant maximumInvestment = 20000000;
   uint256 public constant tokensInOneDollar = 1000;
@@ -236,31 +238,28 @@ contract Crowdsale is Pausable {
     *  @param _ethPriceInCents ether price in cents
     */
     constructor(address _newOwner, address payable _wallet, Swan _token,uint256 _ethPriceInCents) Owned(_newOwner) public {
-
         wallet = _wallet;
         owner = _newOwner;
         token = _token;
         ethPrice = _ethPriceInCents; //ethPrice in cents
         currentStage = Stages.CrowdSaleNotStarted;
-
     }
     
     /**
     * @dev fallback function ***DO NOT OVERRIDE***
     */
     function () external payable {
-    
      if(msg.sender != owner){
-
         buyTokens(msg.sender); 
-
      }
      else{
-     revert();
+     revert("This is the error");
      }
      
     }
-
+    function getSwanTokenBalance() public view returns(uint256){
+      return Swan(token).balanceOf(address(this));
+    }
     /**
     * @dev whitelist addresses of investors.
     * @param addrs ,array of addresses of investors to be whitelisted
@@ -420,6 +419,7 @@ contract Crowdsale is Pausable {
 
     _processPurchase(_beneficiary,tokens);
 
+    totalWeiRaised.add(weiAmount);
     wallet.transfer(msg.value);
 
     emit TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
@@ -429,17 +429,14 @@ contract Crowdsale is Pausable {
    * @dev Validation of an incoming purchase. Use require statemens to revert state when conditions are not met. Use super to concatenate validations.
    * @param _usdCents Value in usdincents involved in the purchase
    */
-   function _preValidatePurchase(uint256 _usdCents) internal view { 
-
-       require(_usdCents >= minimumInvestment && _usdCents <= maximumInvestment,"_preValidatePurchase failed");
-
+   function _preValidatePurchase(uint256 _usdCents) internal pure { 
+      require(_usdCents >= minimumInvestment && _usdCents <= maximumInvestment,"_preValidatePurchase failed");
     }
     
     /**
     * @dev Validation of the capped restrictions.
     * @param _tokenValue amount
     */
-
     function _validateTokenCapLimits(uint256 _tokenValue) internal {
      
     if (currentStage == Stages.PrivateSaleStart) {
@@ -487,26 +484,14 @@ contract Crowdsale is Pausable {
     else { revert("No active Sale");}
 
    }
-   
-   /**
-   * @dev Source of tokens. Override this method to modify the way in which the crowdsale ultimately gets and sends its tokens.
-   * @param _beneficiary Address performing the token purchase
-   * @param _tokenAmount Number of tokens to be emitted
-   */
-   function _deliverTokens(address _beneficiary, uint256 _tokenAmount) internal {
-       require(token.transfer(_beneficiary, _tokenAmount),"Transfer Failed");    
-   }
-
    /**
    * @dev Executed when a purchase has been validated and is ready to be executed. Not necessarily emits/sends tokens.
    * @param _beneficiary Address receiving the tokens
    * @param _tokenAmount Number of tokens to be purchased
    */
    function _processPurchase(address _beneficiary, uint256 _tokenAmount) internal {
-    _deliverTokens(_beneficiary, _tokenAmount);
+    require(token.transfer(_beneficiary, _tokenAmount),"Transfer Failed");
    }
-  
-
     /**
     * @param _usdCents Value in usd cents to be converted into tokens
     * @return Number of tokens that can be purchased with the specified _usdCents
@@ -568,16 +553,19 @@ contract Crowdsale is Pausable {
          totalTokens = bonusTokens.add(actualTokens);         
 
       }
-    
       return totalTokens;
   }
     
     /**
     * @dev finalize the crowdsale.After finalizing ,tokens transfer can be done.
     */
-    // function finalizeSale() public  onlyOwner {
-    //     require(currentStage == Stages.CrowdSaleRoundFourEnd);
-    //     require(token.finalize());
-        
-    // }
+    function finalizeSale() public  onlyOwner {
+        require(currentStage == Stages.CrowdSaleRoundFourEnd,"CrowdSaleRoundFour didn't end yet");
+        uint256 availableTokens = getSwanTokenBalance();
+        if(availableTokens > 0){
+          require(token.transfer(owner, availableTokens),"Transfer Failed");
+        }else{
+          revert("Zero Tokens Left in Contract");
+        }
+    }
 }
