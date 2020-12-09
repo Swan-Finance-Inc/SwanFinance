@@ -24,7 +24,7 @@ contract("Swan Crowdsale", (accounts)=>{
 		const walletAddress = await crowdsaleInstance.wallet();
 		const ethPrice = await crowdsaleInstance.ethPrice();
 		const currentStage = await crowdsaleInstance.getStage();
-		
+
 		await erc20Instance.transfer(crowdsaleInstance.address,value);
 
 		assert.equal(tokenAddress, erc20Instance.address,"Addresses are not same");
@@ -33,6 +33,8 @@ contract("Swan Crowdsale", (accounts)=>{
 		assert.equal(ethPrice.toString(), "10000","EthPrice is not correc");
 		assert.equal(currentStage, "CrowdSale Not Started","Stage is not Correct");
 	});
+
+	// WHITELISTING OF INVESTORS 
 
 	it("Owner should be able to Add WhiteListed Users",async () =>{
 		const checkApprovalForUser1_before = await crowdsaleInstance.whitelistedContributors(accounts[1]);
@@ -64,45 +66,8 @@ contract("Swan Crowdsale", (accounts)=>{
 		}
 	})
 
+	// INITIATING PRIVATE SALE
 
-	// it("User should be able to Buy Swan Tokens",async () =>{
-	// 	const ethValue = new BN(6000000000000000000);
-	// 	const user1_balance_before = await erc20Instance.balanceOf(accounts[1]);
-		
-	// 	await crowdsaleInstance.startPrivateSale({from:accounts[0]});
-	// 	const boolCheck = await crowdsaleInstance.crowdSaleStarted();
-	// 	console.log(boolCheck)
-	// 	console.log(user1_balance_before.toString())
-	// 	const buyToken = await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
-
-	// 	// const user1_balance_after = erc20Instance.balanceOf(accounts[1]);
-
-	// 	// console.log(user1_balance_after.toString())
-	// 	//assert.equal(user1_balance_before.toString(),"0","Balance is not zero");
-	// 	// assert.equal(user1_balance_after.toString(),"")
-	// });
-
-	// it("User should NOT be able to Buy Swan Tokens if Contract is Paused",async () =>{
-	// 	try{
-	// 	await crowdsaleInstance.pause({from:accounts[1]});
-	// 	//await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
-	// 	}catch(error){
-	// 		const invalidOpcode = error.message.search("revert") >= 0 
-	// 		assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
-	// 	}
-	// 	await crowdsaleInstance.restartSale();
-
-	// })
-
-	it("User should NOT be able to Buy Swan Tokens if he/she is not WhiteListed Investor",async () =>{
-		try{
-		await crowdsaleInstance.buyTokens(accounts[6],{from:accounts[6],value:web3.utils.toWei('6','Ether')});
-		}catch(error){
-			const invalidOpcode = error.message.search("revert") >= 0 
-			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
-		}
-
-	})
 	it("Owner should be able to Start A Private Sale",async () =>{
 		const bool_SaleStarted_before = await crowdsaleInstance.crowdSaleStarted();
 
@@ -114,6 +79,52 @@ contract("Swan Crowdsale", (accounts)=>{
 		assert.equal(bool_SaleStarted_after,true,"Sale didn't start");
 		assert.equal(currentStage,"Private Sale Start","Current Stage is not correct");
 	})
+
+	//	TOKEN PURCHASE FUNCTIONS
+
+	it("User should be able to Buy Swan Tokens",async () =>{
+		const currentStage = await crowdsaleInstance.getStage();
+		const user1_balance_before = await erc20Instance.balanceOf(accounts[1]);
+		const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+		await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
+		const user1_balance_after = await  erc20Instance.balanceOf(accounts[1]);
+		const totalWeiRaised = await crowdsaleInstance.getTotalWeiRaised();
+
+		assert.equal(totalWeiRaised.toString(),"6000000000000000000","Total Wei Raised is not correctly assigned")
+		assert.equal(currentStage,"Private Sale Start","Current Stage is Wrong")
+		assert.equal(boolCheck,true,"CrowdSale is not started")
+		assert.equal(user1_balance_before.toString(),"0","Balance is not zero");
+		assert.equal(user1_balance_after.toString(),"750000","User didn't receive Swan Token")
+	});
+
+	it("User should NOT be able to Buy Swan Tokens if Contract is Paused",async () =>{
+		try{
+		await crowdsaleInstance.pause({from:accounts[0]});
+		await crowdsaleInstance.buyTokens(accounts[1],{from:accounts[1],value:web3.utils.toWei('6','Ether')});
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+		await crowdsaleInstance.restartSale();
+	
+	})
+
+	it("User should NOT be able to Buy Swan Tokens if he/she is not WhiteListed Investor",async () =>{
+		try{
+		await crowdsaleInstance.buyTokens(accounts[6],{from:accounts[6],value:web3.utils.toWei('6','Ether')});
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+
+	})
+
+
+	it("Private Sale Tokens should be updated",async () =>{
+		const privateTokenSold = await crowdsaleInstance.privateSaletokenSold();
+		assert.equal(privateTokenSold.toString(),"60000","Private Tokens Sold variable didn't update as expected")
+	})
+
 
 	it("Owner should be able to End A Private Sale",async () =>{
 		const bool_SaleStarted_before = await crowdsaleInstance.crowdSaleStarted();
@@ -183,7 +194,6 @@ contract("Swan Crowdsale", (accounts)=>{
 		const currentStage = await crowdsaleInstance.getStage();
 		const bool_pause = await crowdsaleInstance.Paused();
 
-		console.log(currentStage)
 		assert.equal(currentStage,"Private Sale End","Current Stage is not correct");
 		assert.equal(bool_pause,false,"Pause is true")
 	})
@@ -196,8 +206,6 @@ contract("Swan Crowdsale", (accounts)=>{
 			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
 		}
 	})
-
-
 
 	it("Owner should be able to Start Pre Sale",async () =>{
 		await crowdsaleInstance.startPreSale();
@@ -269,6 +277,32 @@ contract("Swan Crowdsale", (accounts)=>{
 		const currentStage = await crowdsaleInstance.getStage();
 		assert.equal(currentStage,"CrowdSale Round Four End","Current Stage is not Right")
 	})
+
+	it("Remaing Swan Tokens should be refundable to Owner",async () =>{
+		const contractBalance_before = await erc20Instance.balanceOf(crowdsaleInstance.address);
+		const ownerBalance_before = await erc20Instance.balanceOf(accounts[0]);
+		
+		await crowdsaleInstance.finalizeSale();
+
+		const contractBalance_after = await erc20Instance.balanceOf(crowdsaleInstance.address);
+		const ownerBalance_after = await erc20Instance.balanceOf(accounts[0]);
+
+		assert.equal(contractBalance_before.toString(),"29999999999999999250000","Contract Balance is not right");
+		assert.equal(ownerBalance_before.toString(),"49999970000000000000000000000","Owner Balance is not right");
+		assert.equal(contractBalance_after.toString(),"0","Contract After Balance is not right");
+		assert.equal(ownerBalance_after.toString(),"49999999999999999999999250000","Owner AfterBalance is not right");
+
+	});
+
+	it("Only Owner should be able to Finalize the Sale",async () =>{
+		try{
+		await crowdsaleInstance.finalizeSale();
+		}catch(error){
+			const invalidOpcode = error.message.search("revert") >= 0 
+			assert(invalidOpcode,"Expected revert, got '"+ error +"' instead");
+		}
+	})
+
 
 });
 
