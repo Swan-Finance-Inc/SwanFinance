@@ -536,7 +536,6 @@ contract Crowdsale is Pausable {
          bonusTokens = bonusUSD.mul(tokensInOneDollar);
          actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
          totalTokens = bonusTokens.add(actualTokens);         
-
       }
       return totalTokens;
   }
