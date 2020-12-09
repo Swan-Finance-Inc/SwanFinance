@@ -162,7 +162,7 @@ contract Crowdsale is Pausable {
   Swan public token;
 
   uint256 public hardCap = 0; 
-  uint256 public softCap = 500000000; // in cents 
+  uint256 public constant softCap = 500000000; // in cents 
 
   //total tokens for sale 
   uint256 public tokensForSale = 140000000000 ether;
@@ -176,29 +176,29 @@ contract Crowdsale is Pausable {
   uint256 public crowdSaleRoundFour = 0;
 
   // tokenSoldLimit in rounds
-  uint256 public privateSaletokenLimit = 2500000000;
-  uint256 public preSaleTokensLimit = 2400000000;
-  uint256 public crowdSaleRoundOneLimit = 2300000000;
-  uint256 public crowdSaleRoundTwoLimit = 2200000000;
-  uint256 public crowdSaleRoundThreeLimit = 2100000000;
-  uint256 public crowdSaleRoundFourLimit = 2500000000;
+  uint256 public constant privateSaletokenLimit = 2500000000;
+  uint256 public constant preSaleTokensLimit = 2400000000;
+  uint256 public constant crowdSaleRoundOneLimit = 2300000000;
+  uint256 public constant crowdSaleRoundTwoLimit = 2200000000;
+  uint256 public constant crowdSaleRoundThreeLimit = 2100000000;
+  uint256 public constant crowdSaleRoundFourLimit = 2500000000;
 
   
   // Address where funds are collected
   address  payable public  wallet;
 
-  uint256 public bonusPercentPrivateSale  = 25;
-  uint256 public bonusPercentPreSale = 20;
-  uint256 public bonusPercentRoudOne = 15;
-  uint256 public bonusPercentRoudTwo = 10;
-  uint256 public bonusPercentRoudThree = 5;
-  uint256 public bonusPercentRoudFour = 0;  
+  uint256 public constant bonusPercentPrivateSale  = 25;
+  uint256 public constant bonusPercentPreSale = 20;
+  uint256 public constant bonusPercentRoudOne = 15;
+  uint256 public constant bonusPercentRoudTwo = 10;
+  uint256 public constant bonusPercentRoudThree = 5;
+  uint256 public constant bonusPercentRoudFour = 0;  
 
 // user limit
 
-  uint256 public minimumInvestment = 50000;
-  uint256 public maximumInvestment = 20000000;
-  uint256 public tokensInOneDollar = 1000;
+  uint256 public constant minimumInvestment = 50000;
+  uint256 public constant maximumInvestment = 20000000;
+  uint256 public constant tokensInOneDollar = 1000;
 
   bool public crowdSaleStarted = false;
 
@@ -265,7 +265,7 @@ contract Crowdsale is Pausable {
     * @param addrs ,array of addresses of investors to be whitelisted
     * Note:= Array length must be less than 200.
     */
-    function authorizeKyc(address[] memory addrs) public onlyOwner returns (bool success) {
+    function authorizeKyc(address[] calldata addrs) external onlyOwner returns (bool success) {
         uint arrayLength = addrs.length;
         for (uint x = 0; x < arrayLength; x++) 
         {
@@ -278,7 +278,7 @@ contract Crowdsale is Pausable {
     * @dev calling this function will pause the sale
     */
     
-    function pause() public onlyOwner {
+    function pause() external onlyOwner {
       require(!Paused,"contract is already Paused");
       require(crowdSaleStarted,"Crowdsale already started");
       previousStage=currentStage;
@@ -286,96 +286,96 @@ contract Crowdsale is Pausable {
       Paused = true;
     }
   
-    function restartSale() public onlyOwner {
+    function restartSale() external onlyOwner {
       require(currentStage == Stages.Pause,"currentStage is not PAUSE");
       currentStage=previousStage;
       Paused = false;
     }
 
-    function startPrivateSale() public onlyOwner {
+    function startPrivateSale() external onlyOwner {
       require(!crowdSaleStarted,"Crowdsale Already Started");
       crowdSaleStarted = true;
       currentStage = Stages.PrivateSaleStart;
     }
 
-    function endPrivateSale() public onlyOwner {
+    function endPrivateSale() external onlyOwner {
 
       require(currentStage == Stages.PrivateSaleStart,"Crowdsale didn't Start yet");
       currentStage = Stages.PrivateSaleEnd;
 
     }
 
-    function startPreSale() public onlyOwner {
+    function startPreSale() external onlyOwner {
 
     require(currentStage == Stages.PrivateSaleEnd,"Private Sale Didn't end yet");
     currentStage = Stages.PreSaleStart;
    
     }
 
-    function endPreSale() public onlyOwner {
+    function endPreSale() external onlyOwner {
 
     require(currentStage == Stages.PreSaleStart,"Pre Sale didn't Start yet");
     currentStage = Stages.PreSaleEnd;
    
     }
 
-    function startCrowdSaleRoundOne() public onlyOwner {
+    function startCrowdSaleRoundOne() external onlyOwner {
 
     require(currentStage == Stages.PreSaleEnd,"Pre Sale Didn't end yet");
     currentStage = Stages.CrowdSaleRoundOneStart;
 
     }
 
-    function endCrowdSaleRoundOne() public onlyOwner {
+    function endCrowdSaleRoundOne() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundOneStart,"CrowdSaleRoundOne Didn't start yet");
     currentStage = Stages.CrowdSaleRoundOneEnd;
 
     }
 
-    function startCrowdSaleRoundTwo() public onlyOwner {
+    function startCrowdSaleRoundTwo() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundOneEnd,"CrowdSaleRoundOne Didn't end yet");
     currentStage = Stages.CrowdSaleRoundTwoStart;
 
     }
 
-    function endCrowdSaleRoundTwo() public onlyOwner {
+    function endCrowdSaleRoundTwo() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundTwoStart,"CrowdSaleRoundTwo Didn't start yet");
     currentStage = Stages.CrowdSaleRoundTwoEnd;
 
     }
 
-    function startCrowdSaleRoundThree() public onlyOwner {
+    function startCrowdSaleRoundThree() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundTwoEnd,"CrowdSaleRoundTwo Didn't end yet");
     currentStage = Stages.CrowdSaleRoundThreeStart;
 
     }
 
-    function endCrowdSaleRoundThree() public onlyOwner {
+    function endCrowdSaleRoundThree() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundThreeStart,"CrowdSaleRoundThree Didn't start yet");
     currentStage = Stages.CrowdSaleRoundThreeEnd;
 
     }
 
-    function startCrowdSaleRoundFour() public onlyOwner {
+    function startCrowdSaleRoundFour() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundThreeEnd,"CrowdSaleRoundThree Didn't end yet");
     currentStage = Stages.CrowdSaleRoundFourStart;
 
     }
 
-    function endCrowdSaleRoundFour() public onlyOwner {
+    function endCrowdSaleRoundFour() external onlyOwner {
 
     require(currentStage == Stages.CrowdSaleRoundFourStart,"CrowdSaleRoundFour Didn't start yet");
     currentStage = Stages.CrowdSaleRoundFourEnd;
 
     }
 
-    function getStage() public view returns (string memory) {
+    function getStage() external view returns (string memory) {
     if (currentStage == Stages.PrivateSaleStart) return 'Private Sale Start';
     else if (currentStage == Stages.PrivateSaleEnd) return 'Private Sale End';
     else if (currentStage == Stages.PreSaleStart) return 'Presale Started';
@@ -396,7 +396,7 @@ contract Crowdsale is Pausable {
    * @dev sets the value of ether price in cents.Can be called only by the owner account.
    * @param _ethPriceInCents price in cents .
    */
-   function setEthPriceInCents(uint _ethPriceInCents) onlyOwner public returns(bool) {
+   function setEthPriceInCents(uint _ethPriceInCents) onlyOwner external returns(bool) {
         ethPrice = _ethPriceInCents;
         return true;
     }
