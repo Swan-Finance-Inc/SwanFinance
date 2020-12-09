@@ -1,63 +1,8 @@
 pragma solidity 0.5.16;
 
-contract Owned {
-    address public owner;
-    address public newOwner;
-
-    event OwnershipTransferred(address indexed from, address indexed _to);
-
-    constructor(address _owner) public {
-        owner = _owner;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner);
-        _;
-    }
-
-    function transferOwnership(address _newOwner) external onlyOwner {
-        require(
-            newOwner != address(0),
-            "Invalid Address: New owner is the zero address"
-        );
-        newOwner = _newOwner;
-    }
-
-    function acceptOwnership() public {
-        require(msg.sender == newOwner);
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
-        newOwner = address(0);
-    }
-}
-
-contract Pausable is Owned {
-    event Pause();
-    event Unpause();
-
-    bool public paused = false;
-
-    modifier whenNotPaused() {
-        require(!paused);
-        _;
-    }
-
-    modifier whenPaused() {
-        require(paused);
-        _;
-    }
-
-    function pause() public onlyOwner whenNotPaused {
-        paused = true;
-        emit Pause();
-    }
-
-    function unpause() public onlyOwner whenPaused {
-        paused = false;
-        emit Unpause();
-    }
-}
-
+import "@openzeppelin/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/lifecycle/Pausable.sol";
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP. Does not include
  * the optional functions; to access them see `ERC20Detailed`.
@@ -146,97 +91,6 @@ interface IERC20 {
     );
 }
 
-// File: openzeppelin-solidity/contracts/math/SafeMath.sol
-
-/**
- * @dev Wrappers over Solidity's arithmetic operations with added overflow
- * checks.
- *
- * Arithmetic operations in Solidity wrap on overflow. This can easily result
- * in bugs, because programmers usually assume that an overflow raises an
- * error, which is the standard behavior in high level programming languages.
- * `SafeMath` restores this intuition by reverting the transaction when an
- * operation overflows.
- *
- * Using this library instead of the unchecked operations eliminates an entire
- * class of bugs, so it's recommended to use it always.
- */
-library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     * - Addition cannot overflow.
-     */
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        require(b <= a, "SafeMath: subtraction overflow");
-        uint256 c = a - b;
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     * - Multiplication cannot overflow.
-     */
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Solidity only automatically asserts when dividing by 0
-        require(b > 0, "SafeMath: division by zero");
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
-    }
-}
 
 // File: openzeppelin-solidity/contracts/token/ERC20/ERC20.sol
 
@@ -263,7 +117,7 @@ library SafeMath {
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See `IERC20.approve`.
  */
-contract ERC20 is IERC20, Pausable {
+contract ERC20 is IERC20, Pausable,Ownable{
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
@@ -487,10 +341,10 @@ contract Swan is ERC20 {
     bool public contractSaleOver = false;
     uint256 public contractSaleOverTime;
 
-    constructor(address _owner) public Owned(_owner) {
+    constructor() public Ownable() {
         name = "Swan Finance";
         symbol = "SWAN";
-        _mint(_owner, 50000000000 ether);
+        _mint(owner(), 50000000000 ether);
     }
 
     /**
@@ -583,6 +437,6 @@ contract Swan is ERC20 {
         returns (bool success)
     {
         require(tokenAddress != address(0));
-        return ERC20(tokenAddress).transfer(owner, tokens);
+        return ERC20(tokenAddress).transfer(owner(), tokens);
     }
 }

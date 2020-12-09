@@ -1,8 +1,8 @@
 pragma solidity 0.5.16;
 
-//import "@openzeppelin/contracts/ownership/Ownable.sol";
-// import "@openzeppelin/contracts/math/SafeMath.sol";
-// import "@openzeppelin/contracts/lifecycle/Pausable.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/lifecycle/Pausable.sol";
 
 interface Swan {
     function transfer(address, uint256) external returns (bool);
@@ -10,155 +10,8 @@ interface Swan {
     function balanceOf(address) external view returns (uint256);
 }
 
-contract Owned {
-    address public owner;
-    address public newOwner;
 
-    event OwnershipTransferred(address indexed from, address indexed _to);
-
-    constructor(address _owner) public {
-        owner = _owner;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner, "Caller is Not the OWNER");
-        _;
-    }
-
-    function transferOwnership(address newOwnerAddress) external onlyOwner {
-        require(
-            newOwnerAddress != address(0),
-            "Invalid Address: New owner is the zero address"
-        );
-        newOwner = newOwnerAddress;
-    }
-
-    function acceptOwnership() external {
-        require(msg.sender == newOwner, "Caller is not the selected Owner");
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
-        newOwner = address(0);
-    }
-}
-
-contract Pausable is Owned {
-    event Pause();
-    event Unpause();
-
-    bool public paused = false;
-
-    modifier whenNotPaused() {
-        require(!paused, "Contract is Paused");
-        _;
-    }
-
-    modifier whenPaused() {
-        require(paused, "Contract is Not Paused");
-        _;
-    }
-
-    function pause() external onlyOwner whenNotPaused {
-        paused = true;
-        emit Pause();
-    }
-
-    function unpause() external onlyOwner whenPaused {
-        paused = false;
-        emit Unpause();
-    }
-}
-
-/**
- * @dev Wrappers over Solidity's arithmetic operations with added overflow
- * checks.
- *
- * Arithmetic operations in Solidity wrap on overflow. This can easily result
- * in bugs, because programmers usually assume that an overflow raises an
- * error, which is the standard behavior in high level programming languages.
- * `SafeMath` restores this intuition by reverting the transaction when an
- * operation overflows.
- *
- * Using this library instead of the unchecked operations eliminates an entire
- * class of bugs, so it's recommended to use it always.
- */
-library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     * - Addition cannot overflow.
-     */
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        require(b <= a, "SafeMath: subtraction overflow");
-        uint256 c = a - b;
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     * - Multiplication cannot overflow.
-     */
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Solidity only automatically asserts when dividing by 0
-        require(b > 0, "SafeMath: division by zero");
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
-    }
-}
-
-contract Crowdsale is Pausable {
+contract Crowdsale is Pausable,Ownable{
     using SafeMath for uint256;
     uint256 public ethPrice; // 1 Ether price in USD cents.
 
@@ -195,7 +48,7 @@ contract Crowdsale is Pausable {
     uint256 public constant bonusPercentRoudOne = 15;
     uint256 public constant bonusPercentRoudTwo = 10;
     uint256 public constant bonusPercentRoudThree = 5;
-    uint256 public constant bonusPercentRoudFour;
+    uint256 public constant bonusPercentRoudFour = 0;
 
     // user limit
     uint256 public constant minimumInvestment = 50000;
@@ -223,7 +76,7 @@ contract Crowdsale is Pausable {
 
     Stages currentStage;
     Stages previousStage;
-    bool public Paused;
+    bool public _Paused;
 
     // adreess vs state mapping (1 for exists , zero default);
     mapping(address => bool) public whitelistedContributors;
@@ -249,19 +102,16 @@ contract Crowdsale is Pausable {
 
     /**
      *@dev initializes the crowdsale contract
-     * @param _newOwner Address who has special power to change the ether price in cents according to the market price
      * @param _wallet Address where collected funds will be forwarded to
      * @param _token Address of the token being sold
      *  @param _ethPriceInCents ether price in cents
      */
     constructor(
-        address _newOwner,
         address payable _wallet,
         Swan _token,
         uint256 _ethPriceInCents
-    ) public Owned(_newOwner) {
+    ) public Ownable() {
         wallet = _wallet;
-        owner = _newOwner;
         token = _token;
         ethPrice = _ethPriceInCents; //ethPrice in cents
         currentStage = Stages.CrowdSaleNotStarted;
@@ -270,7 +120,7 @@ contract Crowdsale is Pausable {
      * @dev fallback function ***DO NOT OVERRIDE***
      */
     function() external payable {
-        require(msg.sender != owner, "Caller is Owner itself");
+        require(msg.sender != owner(), "Caller is Owner itself");
         buyTokens(msg.sender);
     }
 
@@ -305,18 +155,18 @@ contract Crowdsale is Pausable {
      * @dev calling this function will pause the sale
      */
 
-    function pause() external onlyOwner {
-        require(!Paused, "contract is already Paused");
+    function _pause() external onlyOwner {
+        require(!_Paused, "contract is already Paused");
         require(crowdSaleStarted, "Crowdsale did not start yet");
         previousStage = currentStage;
         currentStage = Stages.Pause;
-        Paused = true;
+        _Paused = true;
     }
 
     function restartSale() external onlyOwner {
         require(currentStage == Stages.Pause, "currentStage is not PAUSE");
         currentStage = previousStage;
-        Paused = false;
+        _Paused = false;
     }
 
     function startPrivateSale() external onlyOwner {
@@ -455,7 +305,7 @@ contract Crowdsale is Pausable {
      * @param _beneficiary Address performing the token purchase
      */
     function buyTokens(address _beneficiary)
-        external
+        public
         payable
         CrowdsaleStarted
         whenNotPaused
@@ -464,7 +314,7 @@ contract Crowdsale is Pausable {
             whitelistedContributors[_beneficiary] == true,
             "Not a whitelistedInvestor"
         );
-        require(!Paused, "Contract is Paused");
+        require(!_Paused, "Contract is Paused");
         uint256 weiAmount = msg.value;
         uint256 usdCents = weiAmount.mul(ethPrice).div(1 ether);
 
@@ -609,6 +459,6 @@ contract Crowdsale is Pausable {
         );
         uint256 availableTokens = getSwanTokenBalance();
         require(availableTokens > 0, "No Tokens Left in Contract");
-        require(token.transfer(owner, availableTokens), "Transfer Failed");
+        require(token.transfer(owner(), availableTokens), "Transfer Failed");
     }
 }

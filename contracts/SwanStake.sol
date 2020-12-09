@@ -1,5 +1,9 @@
 pragma solidity 0.5.16;
 
+import "@openzeppelin/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/lifecycle/Pausable.sol";
+
 interface ERC20 {
     function transferFrom(
         address,
@@ -14,161 +18,13 @@ interface ERC20 {
     function transfer(address, uint256) external returns (bool);
 }
 
-contract Owned {
-    address public owner;
-    address public newOwner;
-
-    event OwnershipTransferred(address indexed from, address indexed _to);
-
-    constructor(address _owner) public {
-        owner = _owner;
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner, "Caller is Not the OWNER");
-        _;
-    }
-
-    function transferOwnership(address newOwnerAddress) external onlyOwner {
-        require(
-            newOwnerAddress != address(0),
-            "Invalid Address: New owner is the zero address"
-        );
-        newOwner = newOwnerAddress;
-    }
-
-    function acceptOwnership() external {
-        require(msg.sender == newOwner, "Caller is not the selected Owner");
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
-        newOwner = address(0);
-    }
-}
-
-contract Pausable is Owned {
-    event Pause();
-    event Unpause();
-
-    bool public paused = false;
-
-    modifier whenNotPaused() {
-        require(!paused, "Contract is Paused");
-        _;
-    }
-
-    modifier whenPaused() {
-        require(paused, "Contract is Not Paused");
-        _;
-    }
-
-    function pause() external onlyOwner whenNotPaused {
-        paused = true;
-        emit Pause();
-    }
-
-    function unpause() external onlyOwner whenPaused {
-        paused = false;
-        emit Unpause();
-    }
-}
-
-/**
- * @dev Wrappers over Solidity's arithmetic operations with added overflow
- * checks.
- *
- * Arithmetic operations in Solidity wrap on overflow. This can easily result
- * in bugs, because programmers usually assume that an overflow raises an
- * error, which is the standard behavior in high level programming languages.
- * `SafeMath` restores this intuition by reverting the transaction when an
- * operation overflows.
- *
- * Using this library instead of the unchecked operations eliminates an entire
- * class of bugs, so it's recommended to use it always.
- */
-library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     * - Addition cannot overflow.
-     */
-    function add(uint256 a, uint256 b) internal pure returns (uint256) {
-        uint256 c = a + b;
-        require(c >= a, "SafeMath: addition overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     * - Subtraction cannot overflow.
-     */
-    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-        require(b <= a, "SafeMath: subtraction overflow");
-        uint256 c = a - b;
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     * - Multiplication cannot overflow.
-     */
-    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
-        // benefit is lost if 'b' is also tested.
-        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
-        if (a == 0) {
-            return 0;
-        }
-
-        uint256 c = a * b;
-        require(c / a == b, "SafeMath: multiplication overflow");
-
-        return c;
-    }
-
-    /**
-     * @dev Returns the integer division of two unsigned integers. Reverts on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     * - The divisor cannot be zero.
-     */
-    function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Solidity only automatically asserts when dividing by 0
-        require(b > 0, "SafeMath: division by zero");
-        uint256 c = a / b;
-        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
-
-        return c;
-    }
-}
-
 ///@title Swan Staking Contract
-contract SwanStake is Pausable {
+contract SwanStake is Pausable, Ownable {
     using SafeMath for uint256;
     address public swanTokenAddress;
     uint256 public currentPrice;
 
-    constructor(address swanToken) public Owned(msg.sender) {
+    constructor(address swanToken) public Ownable() {
         require(
             swanToken != address(0),
             "Token Address cannot be a Zero Address"
@@ -191,6 +47,7 @@ contract SwanStake is Pausable {
         uint256 interestRate;
         uint256 interestPayouts;
         uint256 timeperiod;
+        uint256 proposalId;
         bool withdrawn;
     }
 
@@ -215,6 +72,7 @@ contract SwanStake is Pausable {
     event ClaimedStakedTokens(address indexed _user, uint256 _amount);
     // @dev emitted whenever user stakes tokens for One month LockUp period
     event OneMonthStaked(
+        uint256 _proposalId,
         address indexed _user,
         uint256 _amount,
         uint256 _lockupPeriod,
@@ -222,6 +80,7 @@ contract SwanStake is Pausable {
     );
     // @dev emitted whenever user stakes tokens for Three month LockUp period
     event ThreeMonthStaked(
+        uint256 _proposalId,
         address indexed _user,
         uint256 _amount,
         uint256 _lockupPeriod,
@@ -314,9 +173,16 @@ contract SwanStake is Pausable {
                     interestRate: 20,
                     interestPayouts: 0,
                     timeperiod: duration,
+                    proposalId: oneMonthNum,
                     withdrawn: false
                 });
-                emit ThreeMonthStaked(msg.sender, amount, duration, 20);
+                emit ThreeMonthStaked(
+                    oneMonthNum,
+                    msg.sender,
+                    amount,
+                    duration,
+                    20
+                );
             } else if (duration == 1) {
                 interestAccountDetails[msg.sender][
                     oneMonthNum
@@ -326,9 +192,16 @@ contract SwanStake is Pausable {
                     interestRate: 16,
                     interestPayouts: 0,
                     timeperiod: duration,
+                    proposalId: oneMonthNum,
                     withdrawn: false
                 });
-                emit OneMonthStaked(msg.sender, amount, duration, 16);
+                emit OneMonthStaked(
+                    oneMonthNum,
+                    msg.sender,
+                    amount,
+                    duration,
+                    16
+                );
             }
         } else {
             if (duration == 3) {
@@ -340,9 +213,16 @@ contract SwanStake is Pausable {
                     interestRate: 16,
                     interestPayouts: 0,
                     timeperiod: duration,
+                    proposalId: oneMonthNum,
                     withdrawn: false
                 });
-                emit ThreeMonthStaked(msg.sender, amount, duration, 16);
+                emit ThreeMonthStaked(
+                    oneMonthNum,
+                    msg.sender,
+                    amount,
+                    duration,
+                    16
+                );
             } else if (duration == 1) {
                 interestAccountDetails[msg.sender][
                     oneMonthNum
@@ -352,9 +232,16 @@ contract SwanStake is Pausable {
                     interestRate: 12,
                     interestPayouts: 0,
                     timeperiod: duration,
+                    proposalId: oneMonthNum,
                     withdrawn: false
                 });
-                emit OneMonthStaked(msg.sender, amount, duration, 12);
+                emit OneMonthStaked(
+                    oneMonthNum,
+                    msg.sender,
+                    amount,
+                    duration,
+                    12
+                );
             }
         }
         userTotalStakes[msg.sender] += amount;
