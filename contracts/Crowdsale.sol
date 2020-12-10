@@ -421,30 +421,27 @@ contract Crowdsale is Pausable,Ownable{
             actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
             totalTokens = bonusTokens.add(actualTokens);
         } else if (currentStage == Stages.PreSaleStart) {
-            bonusUSD = (_usdCents.div(100)).mul(25).div(100);
+            bonusUSD = (_usdCents.div(100)).mul(20).div(100);
             bonusTokens = bonusUSD.mul(tokensInOneDollar);
             actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
             totalTokens = bonusTokens.add(actualTokens);
         } else if (currentStage == Stages.CrowdSaleRoundOneStart) {
-            bonusUSD = (_usdCents.div(100)).mul(25).div(100);
+            bonusUSD = (_usdCents.div(100)).mul(15).div(100);
             bonusTokens = bonusUSD.mul(tokensInOneDollar);
             actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
             totalTokens = bonusTokens.add(actualTokens);
         } else if (currentStage == Stages.CrowdSaleRoundTwoStart) {
-            bonusUSD = (_usdCents.div(100)).mul(25).div(100);
+            bonusUSD = (_usdCents.div(100)).mul(10).div(100);
             bonusTokens = bonusUSD.mul(tokensInOneDollar);
             actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
             totalTokens = bonusTokens.add(actualTokens);
         } else if (currentStage == Stages.CrowdSaleRoundThreeStart) {
-            bonusUSD = (_usdCents.div(100)).mul(25).div(100);
+            bonusUSD = (_usdCents.div(100)).mul(5).div(100);
             bonusTokens = bonusUSD.mul(tokensInOneDollar);
             actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
             totalTokens = bonusTokens.add(actualTokens);
         } else if (currentStage == Stages.CrowdSaleRoundFourStart) {
-            bonusUSD = (_usdCents.div(100)).mul(25).div(100);
-            bonusTokens = bonusUSD.mul(tokensInOneDollar);
-            actualTokens = _usdCents.div(100).mul(tokensInOneDollar);
-            totalTokens = bonusTokens.add(actualTokens);
+            totalTokens = _usdCents;
         }
         return totalTokens;
     }
