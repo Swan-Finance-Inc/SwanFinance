@@ -17,14 +17,11 @@ contract("Swan Crowdsale", accounts => {
   });
 
   it("Crowdsale constructor should be initialized properly", async () => {
-    const value = new BN(30000000000000000000000);
     const tokenAddress = await crowdsaleInstance.token();
     const ownerAddress = await crowdsaleInstance.owner();
     const walletAddress = await crowdsaleInstance.wallet();
     const ethPrice = await crowdsaleInstance.ethPrice();
     const currentStage = await crowdsaleInstance.getStage();
-
-    await erc20Instance.transfer(crowdsaleInstance.address, value);
 
     assert.equal(tokenAddress, erc20Instance.address, "Addresses are not same");
     assert.equal(ownerAddress, accounts[0], "Owner address is not correct");
@@ -32,6 +29,11 @@ contract("Swan Crowdsale", accounts => {
     assert.equal(ethPrice.toString(), "10000", "EthPrice is not correc");
     assert.equal(currentStage, "CrowdSale Not Started", "Stage is not Correct");
   });
+
+  it("Owner should be able to Transfer 30000000000000000000000 Swan Tokens to Crowdsale Contract",async()=>{
+      const value = new BN(30000000000000000000000);
+      await erc20Instance.transfer(crowdsaleInstance.address, value);
+  })
 
   // WHITELISTING OF INVESTORS
 
@@ -487,49 +489,49 @@ contract("Swan Crowdsale", accounts => {
 
   // Finalizing the SALE
 
-  // it("Remaing Swan Tokens should be refundable to Owner", async () => {
-  //   const contractBalance_before = await erc20Instance.balanceOf(
-  //     crowdsaleInstance.address
-  //   );
-  //   const ownerBalance_before = await erc20Instance.balanceOf(accounts[0]);
+  it("Remaing Swan Tokens should be refundable to Owner", async () => {
+    const contractBalance_before = await erc20Instance.balanceOf(
+      crowdsaleInstance.address
+    );
+    const ownerBalance_before = await erc20Instance.balanceOf(accounts[0]);
 
-  //   await crowdsaleInstance.finalizeSale();
+    await crowdsaleInstance.finalizeSale();
 
-  //   const contractBalance_after = await erc20Instance.balanceOf(
-  //     crowdsaleInstance.address
-  //   );
-  //   const ownerBalance_after = await erc20Instance.balanceOf(accounts[0]);
+    const contractBalance_after = await erc20Instance.balanceOf(
+      crowdsaleInstance.address
+    );
+    const ownerBalance_after = await erc20Instance.balanceOf(accounts[0]);
 
-  //   assert.equal(
-  //     contractBalance_before.toString(),
-  //     "29999999999999999250000",
-  //     "Contract Balance is not right"
-  //   );
-  //   assert.equal(
-  //     ownerBalance_before.toString(),
-  //     "49999970000000000000000000000",
-  //     "Owner Balance is not right"
-  //   );
-  //   assert.equal(
-  //     contractBalance_after.toString(),
-  //     "0",
-  //     "Contract After Balance is not right"
-  //   );
-  //   assert.equal(
-  //     ownerBalance_after.toString(),
-  //     "49999999999999999999999250000",
-  //     "Owner AfterBalance is not right"
-  //   );
-  // });
+    assert.equal(
+      contractBalance_before.toString(),
+      "29999999999999996490000",
+      "Contract Balance is not right"
+    );
+    assert.equal(
+      ownerBalance_before.toString(),
+      "49999970000000000000000000000",
+      "Owner Balance is not right"
+    );
+    assert.equal(
+      contractBalance_after.toString(),
+      "0",
+      "Contract After Balance is not right"
+    );
+    assert.equal(
+      ownerBalance_after.toString(),
+      "49999999999999999999996490000",
+      "Owner AfterBalance is not right"
+    );
+  });
 
-  // it("Only Owner should be able to Finalize the Sale", async () => {
-  //   try {
-  //     await crowdsaleInstance.finalizeSale();
-  //   } catch (error) {
-  //     const invalidOpcode = error.message.search("revert") >= 0;
-  //     assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
-  //   }
-  // });
+  it("Only Owner should be able to Finalize the Sale", async () => {
+    try {
+      await crowdsaleInstance.finalizeSale();
+    } catch (error) {
+      const invalidOpcode = error.message.search("revert") >= 0;
+      assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
+    }
+  });
 
   // Owner Setting the Ether Price
   it("Owner should be able to Set Ether Price", async () => {
