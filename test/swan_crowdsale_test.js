@@ -46,7 +46,7 @@ contract("Swan Crowdsale", accounts => {
       accounts[3]
     );
 
-    const userArray = [accounts[1], accounts[2], accounts[3]];
+    const userArray = [accounts[1], accounts[2], accounts[3],accounts[4],accounts[5],accounts[6]];
     await crowdsaleInstance.authorizeKyc(userArray);
 
     const checkApprovalForUser1_after = await crowdsaleInstance.whitelistedContributors(
@@ -121,7 +121,7 @@ contract("Swan Crowdsale", accounts => {
 
   //	TOKEN PURCHASE FUNCTIONS
 
-  it("User should be able to Buy Swan Tokens", async () => {
+  it("User should be able to Buy Swan Tokens at Private Sale Stage", async () => {
     const currentStage = await crowdsaleInstance.getStage();
     const user1_balance_before = await erc20Instance.balanceOf(accounts[1]);
     const boolCheck = await crowdsaleInstance.crowdSaleStarted();
@@ -163,8 +163,8 @@ contract("Swan Crowdsale", accounts => {
 
   it("User should NOT be able to Buy Swan Tokens if he/she is not WhiteListed Investor", async () => {
     try {
-      await crowdsaleInstance.buyTokens(accounts[6], {
-        from: accounts[6],
+      await crowdsaleInstance.buyTokens(accounts[8], {
+        from: accounts[8],
         value: web3.utils.toWei("6", "Ether")
       });
     } catch (error) {
@@ -201,32 +201,6 @@ contract("Swan Crowdsale", accounts => {
   it("Only Owner should be able to Start A Private Sale", async () => {
     try {
       await crowdsaleInstance.startPrivateSale();
-    } catch (error) {
-      const invalidOpcode = error.message.search("revert") >= 0;
-      assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
-    }
-  });
-
-  it("Owner should be able to Set Ether Price", async () => {
-    const currentPrice_before = await crowdsaleInstance.ethPrice();
-    await crowdsaleInstance.setEthPriceInCents(10000);
-    const currentPrice_after = await crowdsaleInstance.ethPrice();
-
-    assert.equal(
-      currentPrice_before.toString(),
-      "10000",
-      "Before Price is not correct"
-    );
-    assert.equal(
-      currentPrice_after.toString(),
-      "10000",
-      "After Price is not right"
-    );
-  });
-
-  it("Only Owner should be able to Set Ether Price", async () => {
-    try {
-      await crowdsaleInstance.setEthPriceInCents(10000);
     } catch (error) {
       const invalidOpcode = error.message.search("revert") >= 0;
       assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
@@ -285,6 +259,33 @@ contract("Swan Crowdsale", accounts => {
     assert.equal(currentStage, "Presale Started", "Current Stage is not Right");
   });
 
+  it("User should be able to Buy Swan Tokens at Presale Stage", async () => {
+    const currentStage = await crowdsaleInstance.getStage();
+    const user1_balance_before = await erc20Instance.balanceOf(accounts[2]);
+    const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+    await crowdsaleInstance.buyTokens(accounts[2], {
+      from: accounts[2],
+      value: web3.utils.toWei("6", "Ether")
+    });
+    const user1_balance_after = await erc20Instance.balanceOf(accounts[2]);
+    const totalWeiRaised = await crowdsaleInstance.getTotalWeiRaised();
+
+    assert.equal(
+      totalWeiRaised.toString(),
+      "12000000000000000000",
+      "Total Wei Raised is not correctly assigned"
+    );
+    assert.equal(currentStage, "Presale Started", "Current Stage is Wrong");
+    assert.equal(boolCheck, true, "CrowdSale is not started");
+    assert.equal(user1_balance_before.toString(), "0", "Balance is not zero");
+    assert.equal(
+      user1_balance_after.toString(),
+      "720000",
+      "User didn't receive Swan Token"
+    );
+  });
+
+
   it("Owner should be able to End Pre Sale", async () => {
     await crowdsaleInstance.endPreSale();
 
@@ -302,6 +303,33 @@ contract("Swan Crowdsale", accounts => {
       "Current Stage is not Right"
     );
   });
+
+  it("User should be able to Buy Swan Tokens at CrowdSaleRoundOne Stage", async () => {
+    const currentStage = await crowdsaleInstance.getStage();
+    const user1_balance_before = await erc20Instance.balanceOf(accounts[3]);
+    const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+    await crowdsaleInstance.buyTokens(accounts[3], {
+      from: accounts[3],
+      value: web3.utils.toWei("6", "Ether")
+    });
+    const user1_balance_after = await erc20Instance.balanceOf(accounts[3]);
+    const totalWeiRaised = await crowdsaleInstance.getTotalWeiRaised();
+
+    assert.equal(
+      totalWeiRaised.toString(),
+      "18000000000000000000",
+      "Total Wei Raised is not correctly assigned"
+    );
+    assert.equal(currentStage, "CrowdSale Round One Started", "Current Stage is Wrong");
+    assert.equal(boolCheck, true, "CrowdSale is not started");
+    assert.equal(user1_balance_before.toString(), "0", "Balance is not zero");
+    assert.equal(
+      user1_balance_after.toString(),
+      "690000",
+      "User didn't receive Swan Token"
+    );
+  });
+
 
   it("Owner should be able to End CrowdSaleRoundOne", async () => {
     await crowdsaleInstance.endCrowdSaleRoundOne();
@@ -322,6 +350,32 @@ contract("Swan Crowdsale", accounts => {
       currentStage,
       "CrowdSale Round Two Started",
       "Current Stage is not Right"
+    );
+  });
+
+  it("User should be able to Buy Swan Tokens at CrowdSaleRoundTwo Stage", async () => {
+    const currentStage = await crowdsaleInstance.getStage();
+    const user1_balance_before = await erc20Instance.balanceOf(accounts[4]);
+    const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+    await crowdsaleInstance.buyTokens(accounts[4], {
+      from: accounts[4],
+      value: web3.utils.toWei("6", "Ether")
+    });
+    const user1_balance_after = await erc20Instance.balanceOf(accounts[4]);
+    const totalWeiRaised = await crowdsaleInstance.getTotalWeiRaised();
+
+    assert.equal(
+      totalWeiRaised.toString(),
+      "24000000000000000000",
+      "Total Wei Raised is not correctly assigned"
+    );
+    assert.equal(currentStage, "CrowdSale Round Two Started", "Current Stage is Wrong");
+    assert.equal(boolCheck, true, "CrowdSale is not started");
+    assert.equal(user1_balance_before.toString(), "0", "Balance is not zero");
+    assert.equal(
+      user1_balance_after.toString(),
+      "660000",
+      "User didn't receive Swan Token"
     );
   });
 
@@ -347,6 +401,32 @@ contract("Swan Crowdsale", accounts => {
     );
   });
 
+  it("User should be able to Buy Swan Tokens at CrowdSaleRoundThree Stage", async () => {
+    const currentStage = await crowdsaleInstance.getStage();
+    const user1_balance_before = await erc20Instance.balanceOf(accounts[5]);
+    const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+    await crowdsaleInstance.buyTokens(accounts[5], {
+      from: accounts[5],
+      value: web3.utils.toWei("6", "Ether")
+    });
+    const user1_balance_after = await erc20Instance.balanceOf(accounts[5]);
+    const totalWeiRaised = await crowdsaleInstance.getTotalWeiRaised();
+
+    assert.equal(
+      totalWeiRaised.toString(),
+      "30000000000000000000",
+      "Total Wei Raised is not correctly assigned"
+    );
+    assert.equal(currentStage, "CrowdSale Round Three Started", "Current Stage is Wrong");
+    assert.equal(boolCheck, true, "CrowdSale is not started");
+    assert.equal(user1_balance_before.toString(), "0", "Balance is not zero");
+    assert.equal(
+      user1_balance_after.toString(),
+      "630000",
+      "User didn't receive Swan Token"
+    );
+  });
+
   it("Owner should be able to End CrowdSaleRoundThree", async () => {
     await crowdsaleInstance.endCrowdSaleRoundThree();
 
@@ -369,6 +449,31 @@ contract("Swan Crowdsale", accounts => {
     );
   });
 
+  it("User should be able to Buy Swan Tokens at CrowdSaleRoundThree Stage", async () => {
+    const currentStage = await crowdsaleInstance.getStage();
+    const user1_balance_before = await erc20Instance.balanceOf(accounts[6]);
+    const boolCheck = await crowdsaleInstance.crowdSaleStarted();
+    await crowdsaleInstance.buyTokens(accounts[6], {
+      from: accounts[6],
+      value: web3.utils.toWei("6", "Ether")
+    });
+    const user1_balance_after = await erc20Instance.balanceOf(accounts[6]);
+    const totalWeiRaised = await crowdsaleInstance.getTotalWeiRaised();
+
+    assert.equal(
+      totalWeiRaised.toString(),
+      "36000000000000000000",
+      "Total Wei Raised is not correctly assigned"
+    );
+    assert.equal(currentStage, "CrowdSale Round Four Started", "Current Stage is Wrong");
+    assert.equal(boolCheck, true, "CrowdSale is not started");
+    assert.equal(user1_balance_before.toString(), "0", "Balance is not zero");
+    assert.equal(
+      user1_balance_after.toString(),
+      "60000",
+      "User didn't receive Swan Token"
+    );
+  });
   it("Owner should be able to End CrowdSaleRoundFour", async () => {
     await crowdsaleInstance.endCrowdSaleRoundFour();
 
@@ -380,44 +485,73 @@ contract("Swan Crowdsale", accounts => {
     );
   });
 
-  it("Remaing Swan Tokens should be refundable to Owner", async () => {
-    const contractBalance_before = await erc20Instance.balanceOf(
-      crowdsaleInstance.address
-    );
-    const ownerBalance_before = await erc20Instance.balanceOf(accounts[0]);
+  // Finalizing the SALE
 
-    await crowdsaleInstance.finalizeSale();
+  // it("Remaing Swan Tokens should be refundable to Owner", async () => {
+  //   const contractBalance_before = await erc20Instance.balanceOf(
+  //     crowdsaleInstance.address
+  //   );
+  //   const ownerBalance_before = await erc20Instance.balanceOf(accounts[0]);
 
-    const contractBalance_after = await erc20Instance.balanceOf(
-      crowdsaleInstance.address
-    );
-    const ownerBalance_after = await erc20Instance.balanceOf(accounts[0]);
+  //   await crowdsaleInstance.finalizeSale();
+
+  //   const contractBalance_after = await erc20Instance.balanceOf(
+  //     crowdsaleInstance.address
+  //   );
+  //   const ownerBalance_after = await erc20Instance.balanceOf(accounts[0]);
+
+  //   assert.equal(
+  //     contractBalance_before.toString(),
+  //     "29999999999999999250000",
+  //     "Contract Balance is not right"
+  //   );
+  //   assert.equal(
+  //     ownerBalance_before.toString(),
+  //     "49999970000000000000000000000",
+  //     "Owner Balance is not right"
+  //   );
+  //   assert.equal(
+  //     contractBalance_after.toString(),
+  //     "0",
+  //     "Contract After Balance is not right"
+  //   );
+  //   assert.equal(
+  //     ownerBalance_after.toString(),
+  //     "49999999999999999999999250000",
+  //     "Owner AfterBalance is not right"
+  //   );
+  // });
+
+  // it("Only Owner should be able to Finalize the Sale", async () => {
+  //   try {
+  //     await crowdsaleInstance.finalizeSale();
+  //   } catch (error) {
+  //     const invalidOpcode = error.message.search("revert") >= 0;
+  //     assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
+  //   }
+  // });
+
+  // Owner Setting the Ether Price
+  it("Owner should be able to Set Ether Price", async () => {
+    const currentPrice_before = await crowdsaleInstance.ethPrice();
+    await crowdsaleInstance.setEthPriceInCents(10000);
+    const currentPrice_after = await crowdsaleInstance.ethPrice();
 
     assert.equal(
-      contractBalance_before.toString(),
-      "29999999999999999250000",
-      "Contract Balance is not right"
+      currentPrice_before.toString(),
+      "10000",
+      "Before Price is not correct"
     );
     assert.equal(
-      ownerBalance_before.toString(),
-      "49999970000000000000000000000",
-      "Owner Balance is not right"
-    );
-    assert.equal(
-      contractBalance_after.toString(),
-      "0",
-      "Contract After Balance is not right"
-    );
-    assert.equal(
-      ownerBalance_after.toString(),
-      "49999999999999999999999250000",
-      "Owner AfterBalance is not right"
+      currentPrice_after.toString(),
+      "10000",
+      "After Price is not right"
     );
   });
 
-  it("Only Owner should be able to Finalize the Sale", async () => {
+  it("Only Owner should be able to Set Ether Price", async () => {
     try {
-      await crowdsaleInstance.finalizeSale();
+      await crowdsaleInstance.setEthPriceInCents(10000);
     } catch (error) {
       const invalidOpcode = error.message.search("revert") >= 0;
       assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
