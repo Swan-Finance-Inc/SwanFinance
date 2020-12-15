@@ -90,36 +90,38 @@ contract("Swan ERC20 Token", accounts => {
     );
   });
 
-  it("Burn function should not work when Contract is Paused", async () => {
-    await erc20Instance.pause({ from: accounts[0] });
+  // Burn Feature Removed
 
-    try {
-      await erc20Instance.burn(500, { from: accounts[1] });
-    } catch (error) {
-      const invalidOpcode = error.message.search("revert") >= 0;
-      assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
-    }
+  // it("Burn function should not work when Contract is Paused", async () => {
+  //   await erc20Instance.pause({ from: accounts[0] });
 
-    await erc20Instance.unpause({ from: accounts[0] });
-  });
+  //   try {
+  //     await erc20Instance.burn(500, { from: accounts[1] });
+  //   } catch (error) {
+  //     const invalidOpcode = error.message.search("revert") >= 0;
+  //     assert(invalidOpcode, "Expected revert, got '" + error + "' instead");
+  //   }
 
-  it("Checked the Burnt function ", async () => {
-    const balanceBeforeBurn = await erc20Instance.balanceOf(accounts[1]);
-    await erc20Instance.burn(500, { from: accounts[1] });
-    const currentBalance = await erc20Instance.balanceOf(accounts[1]);
-    const currentSupply = await erc20Instance.totalSupply();
-    const checkBalance = balanceBeforeBurn - 500;
-    assert.equal(
-      currentBalance.toString(),
-      checkBalance.toString(),
-      "Burn function is not correct"
-    );
-    assert.equal(
-      currentSupply.toString(),
-      "49999999999999999999999999500",
-      "Total Supply didn't decrease"
-    );
-  });
+  //   await erc20Instance.unpause({ from: accounts[0] });
+  // });
+
+  // it("Checked the Burnt function ", async () => {
+  //   const balanceBeforeBurn = await erc20Instance.balanceOf(accounts[1]);
+  //   await erc20Instance.burn(500, { from: accounts[1] });
+  //   const currentBalance = await erc20Instance.balanceOf(accounts[1]);
+  //   const currentSupply = await erc20Instance.totalSupply();
+  //   const checkBalance = balanceBeforeBurn - 500;
+  //   assert.equal(
+  //     currentBalance.toString(),
+  //     checkBalance.toString(),
+  //     "Burn function is not correct"
+  //   );
+  //   assert.equal(
+  //     currentSupply.toString(),
+  //     "49999999999999999999999999500",
+  //     "Total Supply didn't decrease"
+  //   );
+  // });
 
   it("Increasing Time", async () => {
     await time.increase(time.duration.minutes(260200));
@@ -153,7 +155,7 @@ contract("Swan ERC20 Token", accounts => {
       "0",
       "Contract Balance didn't decrease"
     );
-    assert.equal(userBalance.toString(), "500", "User balance didn't increase");
+    assert.equal(userBalance.toString(), "1000", "User balance didn't increase");
   });
 
   it("Should be able to PAUSE Token and check for Correctness", async () => {
