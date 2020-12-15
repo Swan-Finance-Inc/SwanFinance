@@ -133,7 +133,7 @@ contract SwanStake is Pausable, Ownable {
             unstaked: false
         });
         isStaker[msg.sender] = true;
-        userTotalStakes[msg.sender] += _amount;
+        userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(_amount);
         emit staked(msg.sender, _amount, 4, 14);
         return true;
     }
@@ -244,7 +244,7 @@ contract SwanStake is Pausable, Ownable {
                 );
             }
         }
-        userTotalStakes[msg.sender] += amount;
+        userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(amount);
         interestAccountNumber[msg.sender] = interestAccountNumber[msg.sender]
             .add(1);
         return true;
@@ -276,7 +276,7 @@ contract SwanStake is Pausable, Ownable {
             ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),
             "Token Transfer Failed"
         );
-        userTotalStakes[msg.sender] -= interestData.amount;
+        userTotalStakes[msg.sender] = userTotalStakes[msg.sender].sub(interestData.amount);
         interestData.withdrawn = true;
         interestData.amount = 0;
         interestAccountDetails[msg.sender][id] = interestData;
@@ -305,7 +305,7 @@ contract SwanStake is Pausable, Ownable {
             "Token Transfer Failed"
         );
 
-        userTotalStakes[msg.sender] -= stakeData.stakedAmount;
+        userTotalStakes[msg.sender] = userTotalStakes[msg.sender].sub(stakeData.stakedAmount);
         isStaker[msg.sender] = false;
         stakeData.unstaked = true;
         stakeAccountDetails[msg.sender] = stakeData;
@@ -357,7 +357,7 @@ contract SwanStake is Pausable, Ownable {
                 ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend),
                 "Token Transfer Failed"
             );
-            totalPoolRewards[msg.sender][id] += tokenToSend;
+            totalPoolRewards[msg.sender][id] = totalPoolRewards[msg.sender][id].add(tokenToSend);
             emit TokenRewardTransferred(msg.sender, tokenToSend);
             return true;
         }
