@@ -314,18 +314,4 @@ contract Swan is ERC20 {
         return true;
     }
 
-    function burn(uint256 amount) external whenNotPaused returns (bool) {
-        _burn(msg.sender, amount);
-        return true;
-    }
-
-    function transferAnyERC20Token(address tokenAddress, uint256 tokens)
-        external
-        whenNotPaused
-        onlyOwner
-        returns (bool success)
-    {
-        require(tokenAddress != address(0));
-        return ERC20(tokenAddress).transfer(owner(), tokens);
-    }
 }

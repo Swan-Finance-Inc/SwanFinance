@@ -311,7 +311,7 @@ contract Crowdsale is Pausable,Ownable{
         whenNotPaused
     {
         require(
-            whitelistedContributors[_beneficiary] == true,
+            whitelistedContributors[_beneficiary],
             "Not a whitelistedInvestor"
         );
         require(!_Paused, "Contract is Paused");
