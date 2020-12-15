@@ -317,9 +317,10 @@ contract Crowdsale is Pausable,Ownable{
         require(!_Paused, "Contract is Paused");
         uint256 weiAmount = msg.value;
         uint256 usdCents = weiAmount.mul(ethPrice).div(1 ether);
-
-        _preValidatePurchase(usdCents);
-
+        require(
+            usdCents >= minimumInvestment && usdCents <= maximumInvestment,
+            "_preValidatePurchase failed"
+        );
         uint256 tokens = _getTokenAmount(usdCents);
 
         _validateTokenCapLimits(usdCents);
@@ -329,17 +330,6 @@ contract Crowdsale is Pausable,Ownable{
         wallet.transfer(msg.value);
 
         emit TokenPurchase(msg.sender, _beneficiary, weiAmount, tokens);
-    }
-
-    /**
-     * @dev Validation of an incoming purchase. Use require statemens to revert state when conditions are not met. Use super to concatenate validations.
-     * @param _usdCents Value in usdincents involved in the purchase
-     */
-    function _preValidatePurchase(uint256 _usdCents) internal pure {
-        require(
-            _usdCents >= minimumInvestment && _usdCents <= maximumInvestment,
-            "_preValidatePurchase failed"
-        );
     }
 
     /**

@@ -117,6 +117,15 @@ contract SwanStake is Pausable, Ownable {
             "Staking Amount is Less Than $2000"
         );
 
+        stakeAccountDetails[msg.sender] = StakeAccount({
+            stakedAmount: _amount,
+            time: now,
+            interestRate: 14,
+            unstaked: false
+        });
+        isStaker[msg.sender] = true;
+        userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(_amount);
+
         require(
             ERC20(swanTokenAddress).transferFrom(
                 msg.sender,
@@ -126,14 +135,6 @@ contract SwanStake is Pausable, Ownable {
             "Token Transfer Failed"
         );
 
-        stakeAccountDetails[msg.sender] = StakeAccount({
-            stakedAmount: _amount,
-            time: now,
-            interestRate: 14,
-            unstaked: false
-        });
-        isStaker[msg.sender] = true;
-        userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(_amount);
         emit staked(msg.sender, _amount, 4, 14);
         return true;
     }
@@ -152,15 +153,6 @@ contract SwanStake is Pausable, Ownable {
     {
         require(amount > 0, "Amount can not be equal to ZERO");
         require(duration > 0, "Duration can not be Zero");
-
-        require(
-            ERC20(swanTokenAddress).transferFrom(
-                msg.sender,
-                address(this),
-                amount
-            ),
-            "transfer From failed"
-        );
 
         uint256 oneMonthNum = interestAccountNumber[msg.sender].add(1);
         if (isStaker[msg.sender]) {
@@ -247,6 +239,15 @@ contract SwanStake is Pausable, Ownable {
         userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(amount);
         interestAccountNumber[msg.sender] = interestAccountNumber[msg.sender]
             .add(1);
+
+        require(
+            ERC20(swanTokenAddress).transferFrom(
+                msg.sender,
+                address(this),
+                amount
+            ),
+            "transfer From failed"
+        );
         return true;
     }
 
@@ -272,14 +273,14 @@ contract SwanStake is Pausable, Ownable {
             interestAmount.sub(totalPoolRewards[msg.sender][id]);
         uint256 tokensToSend = interestData.amount.add(remainingInterest);
 
-        require(
-            ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),
-            "Token Transfer Failed"
-        );
         userTotalStakes[msg.sender] = userTotalStakes[msg.sender].sub(interestData.amount);
         interestData.withdrawn = true;
         interestData.amount = 0;
         interestAccountDetails[msg.sender][id] = interestData;
+        require(
+            ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),
+            "Token Transfer Failed"
+        );
         emit ClaimedInterestTokens(msg.sender, tokensToSend);
     }
 
@@ -300,15 +301,14 @@ contract SwanStake is Pausable, Ownable {
         ); // 10,518,984 seconds = 4 months
         uint256 interestAmount = stakeData.stakedAmount.mul(14).div(100);
         uint256 tokensToSend = stakeData.stakedAmount.add(interestAmount);
-        require(
-            ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),
-            "Token Transfer Failed"
-        );
-
         userTotalStakes[msg.sender] = userTotalStakes[msg.sender].sub(stakeData.stakedAmount);
         isStaker[msg.sender] = false;
         stakeData.unstaked = true;
         stakeAccountDetails[msg.sender] = stakeData;
+        require(
+            ERC20(swanTokenAddress).transfer(msg.sender, tokensToSend),
+            "Token Transfer Failed"
+        );
         emit ClaimedStakedTokens(msg.sender, tokensToSend);
     }
 
@@ -353,11 +353,12 @@ contract SwanStake is Pausable, Ownable {
             interestData.interestPayouts = onePercentOfInitialFund.mul(
                 preSaleCycle
             );
+
+            totalPoolRewards[msg.sender][id] = totalPoolRewards[msg.sender][id].add(tokenToSend);
             require(
                 ERC20(swanTokenAddress).transfer(msg.sender, tokenToSend),
                 "Token Transfer Failed"
             );
-            totalPoolRewards[msg.sender][id] = totalPoolRewards[msg.sender][id].add(tokenToSend);
             emit TokenRewardTransferred(msg.sender, tokenToSend);
             return true;
         }
