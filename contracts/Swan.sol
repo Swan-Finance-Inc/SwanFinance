@@ -275,43 +275,4 @@ contract Swan is ERC20 {
 
         return true;
     }
-
-    function sendTeamMemberHrWallet(address userAddress, uint256 value)
-        external
-        whenNotPaused
-        onlyOwner
-        returns (bool)
-    {
-        require(
-            teamMemberHrWallet >= value,
-            "Team and HR wallet has less tokens then value"
-        );
-        teamMemberHrWallet = teamMemberHrWallet.sub(value);
-        uint256 halfTokens = value.div(2);
-        teamTokensLeft[userAddress] = halfTokens.add(
-            teamTokensLeft[userAddress]
-        );
-        transfer(userAddress, halfTokens);
-        transfer(address(this), halfTokens);
-        return true;
-    }
-
-    function redeemTeamTokensLeft() external whenNotPaused returns (bool) {
-        require(teamTokensLeft[msg.sender] > 0, "Zero team tokens left");
-        require(
-            contractSaleOver && now > contractSaleOverTime.add(15552000),
-            "Either sale is not over or 6 months not complete yet"
-        ); // 86400×30×6
-        super._transfer(address(this), msg.sender, teamTokensLeft[msg.sender]);
-        teamTokensLeft[msg.sender] = 0;
-        return true;
-    }
-
-    function saleOverSet() external onlyOwner whenNotPaused returns (bool) {
-        require(!contractSaleOver);
-        contractSaleOver = true;
-        contractSaleOverTime = now;
-        return true;
-    }
-
 }
