@@ -2,31 +2,35 @@ pragma solidity 0.5.16;
 
 contract Owned {
     address public owner;
-    address public newOwner;
-
-    event OwnershipTransferred(address indexed from, address indexed _to);
+    address public nominatedOwner;
 
     constructor(address _owner) public {
+        require(_owner != address(0), "Owner address cannot be 0");
         owner = _owner;
+        emit OwnerChanged(address(0), _owner);
     }
 
-    modifier onlyOwner {
-        require(msg.sender == owner, "Caller is Not the OWNER");
-        _;
-    }
-
-    function transferOwnership(address newOwnerAddress) external onlyOwner {
-        require(
-            newOwnerAddress != address(0),
-            "Invalid Address: New owner is the zero address"
-        );
-        newOwner = newOwnerAddress;
+    function nominateNewOwner(address _owner) external onlyOwner {
+        nominatedOwner = _owner;
+        emit OwnerNominated(_owner);
     }
 
     function acceptOwnership() external {
-        require(msg.sender == newOwner, "Caller is not the selected Owner");
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
-        newOwner = address(0);
+        require(msg.sender == nominatedOwner, "You must be nominated before you can accept ownership");
+        emit OwnerChanged(owner, nominatedOwner);
+        owner = nominatedOwner;
+        nominatedOwner = address(0);
     }
+
+    modifier onlyOwner {
+        _onlyOwner();
+        _;
+    }
+
+    function _onlyOwner() private view {
+        require(msg.sender == owner, "Only the contract owner may perform this action");
+    }
+
+    event OwnerNominated(address newOwner);
+    event OwnerChanged(address oldOwner, address newOwner);
 }
