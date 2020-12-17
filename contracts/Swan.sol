@@ -11,14 +11,7 @@ contract Swan is ERC20,Pausable,Ownable{
     string public name;
     string public symbol;
     uint8 public constant decimals = 18;
-
-    uint256 public teamMemberHrWallet = 5000000000 ether;
-
-    mapping(address => uint256) public teamTokensLeft;
-
-    bool public contractSaleOver = false;
-    uint256 public contractSaleOverTime;
-
+    
     constructor() public Ownable() {
         name = "Swan Finance";
         symbol = "SWAN";
@@ -30,7 +23,7 @@ contract Swan is ERC20,Pausable,Ownable{
         whenNotPaused
         returns (bool)
     {
-        super._transfer(msg.sender, recipient, amount);
+        super.transfer(recipient, amount);
 
         return true;
     }
