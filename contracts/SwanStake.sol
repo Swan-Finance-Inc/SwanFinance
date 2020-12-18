@@ -90,7 +90,6 @@ contract SwanStake is Pausable, Ownable {
     event ClaimedInterestTokens(address indexed _user, uint256 _amount);
     // @dev emitted whenever weekly token rewards are transferred to the user.
     event TokenRewardTransferred(address indexed _user, uint256 _amount);
-
     // @dev returns the current tokenBalance of the Stake Contract
     function totalStakedTokens() external view returns (uint256) {
         return ERC20(swanTokenAddress).balanceOf(address(this));
@@ -258,7 +257,7 @@ contract SwanStake is Pausable, Ownable {
      *        transfers the invested amount as well as the remaining interest to the user.
      *        updates the user's staked balance to ZERO
      */
-    function claimInterestTokens(uint256 id) external whenNotPaused {
+    function claimInterestTokens(uint256 id) external{
         InterestAccount memory interestData =
             interestAccountDetails[msg.sender][id];
         require(
@@ -289,9 +288,8 @@ contract SwanStake is Pausable, Ownable {
      *        calculates the total interest to be transferred to the user after 4 months
      *        transfers the staked amount as well as the remaining interest to the user.
      *        marks the user as NON STAKER.
-     *
      */
-    function claimStakeTokens() external whenNotPaused {
+    function claimStakeTokens() external {
         require(isStaker[msg.sender], "User is not a Staker");
 
         StakeAccount memory stakeData = stakeAccountDetails[msg.sender];
@@ -329,7 +327,7 @@ contract SwanStake is Pausable, Ownable {
         ); // 2,629,746 seconds = 1 month
         require(!interestData.withdrawn, "Amount Has already Been Withdrawn");
 
-        uint256 weeklyCycle = getCycle(msg.sender, id);
+        uint256 weeklyCycle = _getCycle(msg.sender, id);
         require(weeklyCycle > 0, "Cycle is not complete");
 
         uint256 interestAmount =
@@ -363,13 +361,12 @@ contract SwanStake is Pausable, Ownable {
             return true;
         }
     }
-
     /**
      *  @notice returns the cycle for weekly payouts
      *  @param userAddress,id - takes caller's address and interstAccount
      *  @dev  calculates the number of week cycles passed
      */
-    function getCycle(address userAddress, uint256 id)
+    function _getCycle(address userAddress, uint256 id)
         internal
         returns (uint256)
     {
