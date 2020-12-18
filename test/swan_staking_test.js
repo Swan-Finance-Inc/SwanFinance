@@ -306,7 +306,7 @@ contract("SwanStaking", accounts => {
 
   // Increasing time to 1 second more than 6 hours
   it("Time should increase", async () => {
-    await time.increase(time.duration.seconds(21601));
+    await time.increase(time.duration.seconds(604801));
     const interest = await swanInstance.totalPoolRewards(accounts[1], 1);
   });
 

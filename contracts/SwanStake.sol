@@ -383,16 +383,16 @@ contract SwanStake is Pausable, Ownable {
             cycle = now.sub(interestData.time);
             checkCycle[userAddress][id] = true;
         }
-        if (cycle <= 21600) //21600 6 hours for testing
+        if (cycle <= 604800) //604800 = 7 days
         {
             return 0;
-        } else if (cycle > 21600) //21600 6 hours
+        } else if (cycle > 604800) 
         {
             require(
-                now.sub(lastPayoutCall[userAddress][id]) >= 21600,
+                now.sub(lastPayoutCall[userAddress][id]) >= 604800,
                 "Cannot Call Before 6 hours"
             );
-            uint256 secondsToHours = cycle.div(21600); //21600 6 hours
+            uint256 secondsToHours = cycle.div(604800); 
             lastPayoutCall[userAddress][id] = now;
             return secondsToHours;
         }
