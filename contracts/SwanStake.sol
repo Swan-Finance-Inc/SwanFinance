@@ -329,20 +329,20 @@ contract SwanStake is Pausable, Ownable {
         ); // 2,629,746 seconds = 1 month
         require(!interestData.withdrawn, "Amount Has already Been Withdrawn");
 
-        uint256 preSaleCycle = getCycle(msg.sender, id);
-        require(preSaleCycle > 0, "Cycle is not complete");
+        uint256 weeklyCycle = getCycle(msg.sender, id);
+        require(weeklyCycle > 0, "Cycle is not complete");
 
         uint256 interestAmount =
             interestData.amount.mul(interestData.interestRate).div(100);
-        uint256 onePercentOfInitialFund =
+        uint256 interestForOneWeek =
             interestAmount.div(interestData.timeperiod.mul(4));
 
         if (
             interestData.interestPayouts <=
-            onePercentOfInitialFund.mul(preSaleCycle)
+            interestForOneWeek.mul(weeklyCycle)
         ) {
             uint256 tokenToSend =
-                onePercentOfInitialFund.mul(preSaleCycle).sub(
+                interestForOneWeek.mul(weeklyCycle).sub(
                     interestData.interestPayouts
                 );
             require(
@@ -350,8 +350,8 @@ contract SwanStake is Pausable, Ownable {
                     interestAmount,
                 "Total Interest has already been given out"
             );
-            interestData.interestPayouts = onePercentOfInitialFund.mul(
-                preSaleCycle
+            interestData.interestPayouts = interestForOneWeek.mul(
+                weeklyCycle
             );
 
             totalPoolRewards[msg.sender][id] = totalPoolRewards[msg.sender][id].add(tokenToSend);
@@ -396,13 +396,5 @@ contract SwanStake is Pausable, Ownable {
             lastPayoutCall[userAddress][id] = now;
             return secondsToHours;
         }
-    }
-
-    function getUserStakedAmount(address userAddress)
-        external
-        view
-        returns (uint256)
-    {
-        return userTotalStakes[userAddress];
     }
 }
