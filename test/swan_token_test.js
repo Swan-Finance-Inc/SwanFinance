@@ -26,6 +26,11 @@ contract("Swan ERC20 Token", accounts => {
     assert.equal(symbol, "SWAN", "Token symbol is not correct");
   });
 
+   it("Decimal should be 18", async () => {
+    const decimal = await erc20Instance.decimals();
+    assert.equal(decimal.toString(), "18", "Decimal Value is not correct");
+  });
+
   it("Total Supply Should be 50000000000000000000000000000", async () => {
     const totalSupply = await erc20Instance.totalSupply();
     assert.equal(

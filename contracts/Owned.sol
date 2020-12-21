@@ -4,6 +4,9 @@ contract Owned {
     address public owner;
     address public nominatedOwner;
 
+    event OwnerNominated(address newOwner);
+    event OwnerChanged(address oldOwner, address newOwner);
+
     constructor(address _owner) public {
         require(_owner != address(0), "Owner address cannot be 0");
         owner = _owner;
@@ -30,7 +33,4 @@ contract Owned {
     function _onlyOwner() private view {
         require(msg.sender == owner, "Only the contract owner may perform this action");
     }
-
-    event OwnerNominated(address newOwner);
-    event OwnerChanged(address oldOwner, address newOwner);
 }
