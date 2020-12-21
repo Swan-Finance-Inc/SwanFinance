@@ -1,8 +1,8 @@
 pragma solidity 0.5.16;
 
-import "@openzeppelin/contracts/ownership/Ownable.sol";
+
+import "./Pausable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/lifecycle/Pausable.sol";
 
 interface ERC20 {
     function transferFrom(
@@ -19,12 +19,12 @@ interface ERC20 {
 }
 
 ///@title Swan Staking Contract
-contract SwanStake is Pausable, Ownable {
+contract SwanStake is Pausable {
     using SafeMath for uint256;
     address public swanTokenAddress;
     uint256 public currentPrice;
 
-    constructor(address swanToken) public Ownable() {
+    constructor(address swanToken,address _owner) public Owned(_owner) {
         require(
             swanToken != address(0),
             "Token Address cannot be a Zero Address"
@@ -152,6 +152,14 @@ contract SwanStake is Pausable, Ownable {
     {
         require(amount > 0, "Amount can not be equal to ZERO");
         require(duration > 0, "Duration can not be Zero");
+        require(
+            ERC20(swanTokenAddress).transferFrom(
+                msg.sender,
+                address(this),
+                amount
+            ),
+            "transfer From failed"
+        );
 
         uint256 oneMonthNum = interestAccountNumber[msg.sender].add(1);
         if (isStaker[msg.sender]) {
@@ -238,15 +246,6 @@ contract SwanStake is Pausable, Ownable {
         userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(amount);
         interestAccountNumber[msg.sender] = interestAccountNumber[msg.sender]
             .add(1);
-
-        require(
-            ERC20(swanTokenAddress).transferFrom(
-                msg.sender,
-                address(this),
-                amount
-            ),
-            "transfer From failed"
-        );
         return true;
     }
 
