@@ -9,9 +9,7 @@ contract Pausable is Owned {
     event Unpause(bool isPaused);
 
     constructor() internal {
-    // This contract is abstract, and thus cannot be instantiated directly
     require(owner != address(0), "Owner must be set");
-    // Paused will be false, and lastPauseTime will be 0 upon initialisation
   }
 
     modifier whenNotPaused() {
