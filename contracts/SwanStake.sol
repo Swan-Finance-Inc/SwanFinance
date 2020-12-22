@@ -1,6 +1,5 @@
 pragma solidity 0.5.16;
 
-
 import "./Pausable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
@@ -115,6 +114,14 @@ contract SwanStake is Pausable {
             _amount >= currentPrice.mul(2000),
             "Staking Amount is Less Than $2000"
         );
+		require(
+            ERC20(swanTokenAddress).transferFrom(
+                msg.sender,
+                address(this),
+                _amount
+            ),
+            "Token Transfer Failed"
+        );
 
         stakeAccountDetails[msg.sender] = StakeAccount({
             stakedAmount: _amount,
@@ -124,16 +131,6 @@ contract SwanStake is Pausable {
         });
         isStaker[msg.sender] = true;
         userTotalStakes[msg.sender] = userTotalStakes[msg.sender].add(_amount);
-
-        require(
-            ERC20(swanTokenAddress).transferFrom(
-                msg.sender,
-                address(this),
-                _amount
-            ),
-            "Token Transfer Failed"
-        );
-
         emit staked(msg.sender, _amount, 4, 14);
         return true;
     }
