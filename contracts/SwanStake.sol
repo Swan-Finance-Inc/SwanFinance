@@ -258,7 +258,7 @@ contract SwanStake is Pausable {
             interestAccountDetails[msg.sender][id];
         require(
             now >= interestData.time.add(interestData.timeperiod.mul(2629746)),
-            "Deadline is not over"
+            "LockUp Period NOT OVER Yet"
         ); // 2,629,746 seconds = 1 month
         require(interestData.amount > 0, "Invested Amount is ZERO");
 
@@ -383,7 +383,7 @@ contract SwanStake is Pausable {
         {
             require(
                 now.sub(lastPayoutCall[userAddress][id]) >= 604800,
-                "Cannot Call Before 6 hours"
+                "Cannot Call Before 7 days"
             );
             uint256 secondsToHours = cycle.div(604800); 
             lastPayoutCall[userAddress][id] = now;
