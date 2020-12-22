@@ -342,7 +342,7 @@ contract SwanStake is Pausable {
             require(
                 tokenToSend.add(totalPoolRewards[msg.sender][id]) <=
                     interestAmount,
-                "Total Interest has already been given out"
+                "Total Interest Paid Out or Week Cycle Exceeded"
             );
             interestData.interestPayouts = interestForOneWeek.mul(
                 weeklyCycle
