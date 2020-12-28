@@ -29,7 +29,7 @@ contract SwanStake is Pausable {
             "Token Address cannot be a Zero Address"
         );
         swanTokenAddress = swanToken;
-        currentPrice = 1 ether;
+        currentPrice = 1000;
     }
 
     // @notice Stores STAKE ACCOUNT details of the USER
