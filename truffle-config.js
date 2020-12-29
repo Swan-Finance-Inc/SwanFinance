@@ -1,49 +1,47 @@
-/*
- * NB: since truffle-hdwallet-provider 0.0.5 you must wrap HDWallet providers in a 
- * function when declaring them. Failure to do so will cause commands to hang. ex:
- * ```
- * mainnet: {
- *     provider: function() { 
- *       return new HDWalletProvider(mnemonic, 'https://mainnet.infura.io/<infura-key>') 
- *     },
- *     network_id: '1',
- *     gas: 4500000,
- *     gasPrice: 10000000000,
- *   },
- */
-
-
-
- module.exports = {
-  // This will run the `webpack` command on each build.
-  //
-  // The following environment variables will be set when running the command:
-  // WORKING_DIRECTORY: root location of the project
-  // BUILD_DESTINATION_DIRECTORY: expected destination of built assets (important for `truffle serve`)
-  // BUILD_CONTRACTS_DIRECTORY: root location of your build contract files (.sol.js)
-  //
-  build: "webpack"
-  
-}
-
-
-
-
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+require('dotenv').config();
+console.log(process.env.MNEMONIC, process.env.INFURA_API_KEY, process.env.ETHERSCAN_API_KEY)
 module.exports = {
-  plugins: ["solidity-coverage"],
+  // Uncommenting the defaults below 
+  // provides for an easier quick-start with Ganache.
+  // You can also follow this format for other networks;
+  // see <http://truffleframework.com/docs/advanced/configuration>
+  // for more details on how to specify configuration options!
+  //
+  contracts_directory: "./merged",
   networks: {
     development: {
       host: "127.0.0.1",
-      port: 8545,
-      network_id: "*" // Match any network id
+      port: 7545,
+      network_id: "*"
+    },
+    rinkeby: {
+      provider: () =>
+        new HDWalletProvider(
+          process.env.MNEMONIC,
+          `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`
+        ),
+        network_id: 3,       // Ropsten's id
+        gas: 5500000,        // Ropsten has a lower block limit than mainnet
+        confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+        timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+        skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
+    test: {
+      host: "127.0.0.1",
+      port: 7545,
+      network_id: "*"
     }
   },
-  solc: {
-    optimizer: {
-      enabled: true,
-      runs: 200
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+  compilers: {
+    solc: {
+      version: "0.5.16"
     }
+  },
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY
   }
-
 };
-
