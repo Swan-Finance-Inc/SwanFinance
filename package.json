@@ -26,6 +26,7 @@
     "@openzeppelin/test-helpers": "^0.5.5",
     "@truffle/hdwallet-provider": "^1.2.1",
     "bignumber.js": "^9.0.1",
+    "dotenv": "^8.2.0",
     "eslint": "^7.0.0",
     "eslint-plugin-mocha": "^6.3.0",
     "husky": "^4.2.5",

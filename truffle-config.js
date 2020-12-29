@@ -1,6 +1,7 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 require('dotenv').config();
 console.log(process.env.MNEMONIC, process.env.INFURA_API_KEY, process.env.ETHERSCAN_API_KEY)
+
 module.exports = {
   // Uncommenting the defaults below 
   // provides for an easier quick-start with Ganache.
@@ -21,8 +22,8 @@ module.exports = {
           process.env.MNEMONIC,
           `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`
         ),
-        network_id: 3,       // Ropsten's id
-        gas: 5500000,        // Ropsten has a lower block limit than mainnet
+        network_id: 4,       // Rinkeby's id
+        gas: 5500000,        // Rinkeby has a lower block limit than mainnet
         confirmations: 2,    // # of confs to wait between deployments. (default: 0)
         timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
         skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
