@@ -1,7 +1,8 @@
 node_modules
-package-lock.json
-*.lock
+merged
 build
+
+
+package-lock.json
 .env
 yarn.lock
-.merged
