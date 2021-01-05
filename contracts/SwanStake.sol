@@ -94,11 +94,6 @@ contract SwanStake is Pausable {
         return ERC20(swanTokenAddress).balanceOf(address(this));
     }
 
-    function setPrice(uint256 price) external onlyOwner {
-        require(price > 0, "Price Cannot be ZERO");
-        currentPrice = price;
-    }
-
     /**
      * @param _amount - the amount user wants to stake
      * @dev allows the user to stake the initial $2000 worth of SWAN tokens
